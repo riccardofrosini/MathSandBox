@@ -6,10 +6,10 @@ import ai.maths.neat.utils.GenomeUtils;
 import java.util.Objects;
 import java.util.TreeSet;
 
-public class Species {
+class Species {
 
-    private Genome representative;
-    private TreeSet<Genome> genomes;
+    private final Genome representative;
+    private final TreeSet<Genome> genomes;
     private int stagnation = 0;
     private double bestPerformance = 0;
 
@@ -56,7 +56,7 @@ public class Species {
     }
 
     double computeSumOfAdjustedFitness() {
-        return (double) genomes.stream().mapToDouble(genome -> genome.getFitness() /
+        return genomes.stream().mapToDouble(genome -> genome.getFitness() /
                 genomes.stream().mapToInt(value -> GenomeUtils.calculateDistance(genome, value) <= ConstantsAndUtils.SPECIES_DELTA_THRESHOLD ? 1 : 0).sum()).sum();
 
     }

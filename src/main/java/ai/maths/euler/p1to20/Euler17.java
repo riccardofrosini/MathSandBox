@@ -4,7 +4,7 @@ import java.util.HashMap;
 
 public class Euler17 {
 
-    private static HashMap<Integer, NumString> map;
+    private final static HashMap<Integer, NumString> map;
 
     static {
         map = new HashMap<>(29);
@@ -111,13 +111,13 @@ public class Euler17 {
         thousand,
         and;
 
-        private int stringSize;
+        private final int stringSize;
 
         NumString() {
             stringSize = name().length();
         }
 
-        public int getStringSize() {
+        int getStringSize() {
             return stringSize;
         }
     }

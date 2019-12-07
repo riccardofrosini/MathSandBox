@@ -6,7 +6,7 @@ import java.util.LinkedList;
 
 public class Euler46 {
 
-    private static LinkedList<Long> primes = new LinkedList<>();
+    private static final LinkedList<Long> primes = new LinkedList<>();
 
     public static void main(String[] args) {
         System.out.println(smallestNonGoldbach());

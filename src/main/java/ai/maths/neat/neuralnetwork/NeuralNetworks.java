@@ -9,8 +9,8 @@ import java.util.stream.Collectors;
 
 public class NeuralNetworks {
 
-    private TreeSet<Genome> population;
-    private HashSet<Species> speciesCollection;
+    private final TreeSet<Genome> population;
+    private final HashSet<Species> speciesCollection;
 
     private int stagnation = 0;
     private double bestPerformance = 0;
@@ -117,7 +117,7 @@ public class NeuralNetworks {
             neuralNetworks.addNewGenomeToPopulation(crossover);
         }
         //update species stagnation
-        for (Species species : neuralNetworks.getSpeciesCollection()) {
+        for (Species species : neuralNetworks.speciesCollection) {
             if (species.getBestPerformance() < species.getGenomes().last().getFitness()) {
                 species.setStagnation(0);
                 species.setBestPerformance(species.getGenomes().last().getFitness());
@@ -146,9 +146,5 @@ public class NeuralNetworks {
 
     public TreeSet<Genome> getPopulation() {
         return population;
-    }
-
-    public HashSet<Species> getSpeciesCollection() {
-        return speciesCollection;
     }
 }

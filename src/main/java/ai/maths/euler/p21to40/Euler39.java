@@ -5,7 +5,7 @@ import ai.maths.Utils;
 public class Euler39 {
 
     public static void main(String[] args) {
-        int perimiter = 2;
+        int perimeter = 2;
         int countSolutions = 0;
         for (int i = 2; i < 1000; i += 2) {
             int prod = i / 2;
@@ -24,11 +24,11 @@ public class Euler39 {
                         }
                 }
             if (countSol > countSolutions) {
-                perimiter = i;
+                perimeter = i;
                 countSolutions = countSol;
             }
         }
-        System.out.println(perimiter);
+        System.out.println(perimeter);
 
     }
 }

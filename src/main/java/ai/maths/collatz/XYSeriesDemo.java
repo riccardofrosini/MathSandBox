@@ -14,9 +14,9 @@ class XYSeriesDemo extends ApplicationFrame {
 
     private final MyXYSeries series;
 
-    XYSeriesDemo(final String title) {
-        super(title);
-        series = new MyXYSeries(title);
+    XYSeriesDemo() {
+        super("Collatz");
+        series = new MyXYSeries("Collatz");
     }
 
     void postProcess() {

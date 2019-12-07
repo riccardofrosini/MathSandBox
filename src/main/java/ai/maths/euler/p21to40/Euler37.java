@@ -5,8 +5,8 @@ import ai.maths.Utils;
 public class Euler37 {
 
 
-    private static int[] magicNumbersLeft = {2, 3, 5, 7};
-    private static int[] magicNumbersRight = {1, 3, 7, 9};
+    private static final int[] magicNumbersLeft = {2, 3, 5, 7};
+    private static final int[] magicNumbersRight = {1, 3, 7, 9};
 
     public static void main(String[] args) {
         long total = 0;

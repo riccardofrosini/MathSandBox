@@ -12,9 +12,9 @@ public class NodeGene {
     }
 
     private int inputId;
-    private int id;
-    private Type type;
-    private HashSet<ConnectionGene> backConnections;
+    private final int id;
+    private final Type type;
+    private final HashSet<ConnectionGene> backConnections;
 
     NodeGene(int id, Type type) {
         this.id = id;

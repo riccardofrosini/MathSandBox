@@ -4,7 +4,7 @@ import java.math.BigInteger;
 
 public class Euler48 {
 
-    private static BigInteger bi10000000000 = new BigInteger("10000000000");
+    private static final BigInteger bi10000000000 = new BigInteger("10000000000");
 
     public static void main(String[] args) {
         BigInteger sumOfxTox = BigInteger.ZERO;

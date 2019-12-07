@@ -15,7 +15,7 @@ class MyPanel extends JPanel {
     private BufferedImage bufferedImage;
     private Graphics graphics;
 
-    private HashMap<Color, Color> mapRound;
+    private final HashMap<Color, Color> mapRound;
 
     MyPanel() {
         mapRound = new HashMap<>(3);
@@ -41,7 +41,7 @@ class MyPanel extends JPanel {
             }
         });
 
-        MouseAdapter aouseAdapter = new MouseAdapter() {
+        MouseAdapter mouseAdapter = new MouseAdapter() {
             @Override
             public void mouseDragged(MouseEvent e) {
                 super.mouseDragged(e);
@@ -58,8 +58,8 @@ class MyPanel extends JPanel {
 
             }
         };
-        addMouseMotionListener(aouseAdapter);
-        addMouseListener(aouseAdapter);
+        addMouseMotionListener(mouseAdapter);
+        addMouseListener(mouseAdapter);
     }
 
     void setColor(Color color) {

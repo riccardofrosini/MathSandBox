@@ -2,7 +2,7 @@ package ai.maths.neat.functions;
 
 public class SigmoidFunction implements NodeFunction {
 
-    private double constant;
+    private final double constant;
 
     public SigmoidFunction() {
         constant = 1;

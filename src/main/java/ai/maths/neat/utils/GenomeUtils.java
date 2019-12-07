@@ -143,9 +143,9 @@ public class GenomeUtils {
     }
 
     public static double calculateDistance(Genome thisGenome, Genome otherGenome) {
-        double[] edwn = getExcesses_Disjoints_AverageWeightDifferences_Normalisation(thisGenome, otherGenome);
-        return (edwn[0] * ConstantsAndUtils.EXCESS_CONSTANT + edwn[1] * ConstantsAndUtils.DISJOINT_CONSTANT) / edwn[3]
-                + edwn[2] * ConstantsAndUtils.WEIGHT_AVERAGE_CONSTANT;
+        double[] excessDisjointsAverageWeightDifferenceNormalisation = getExcesses_Disjoints_AverageWeightDifferences_Normalisation(thisGenome, otherGenome);
+        return (excessDisjointsAverageWeightDifferenceNormalisation[0] * ConstantsAndUtils.EXCESS_CONSTANT + excessDisjointsAverageWeightDifferenceNormalisation[1] * ConstantsAndUtils.DISJOINT_CONSTANT) / excessDisjointsAverageWeightDifferenceNormalisation[3]
+                + excessDisjointsAverageWeightDifferenceNormalisation[2] * ConstantsAndUtils.WEIGHT_AVERAGE_CONSTANT;
     }
 
     static HashSet<Genome> makeRandomTopologyGenomes(int inputNodes, int outPutNodes) {

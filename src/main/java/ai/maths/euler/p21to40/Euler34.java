@@ -5,12 +5,12 @@ import ai.maths.Utils;
 public class Euler34 {
 
     public static void main(String[] args) {
-        long sumOfsumOfFactorial = 0;
+        long sumOfSumOfFactorial = 0;
         for (int i = 10; i < 2540161; i++) {
             long sumOfFactorial = getSumOfFactorial(i);
-            if (sumOfFactorial == i) sumOfsumOfFactorial = sumOfsumOfFactorial + sumOfFactorial;
+            if (sumOfFactorial == i) sumOfSumOfFactorial = sumOfSumOfFactorial + sumOfFactorial;
         }
-        System.out.println(sumOfsumOfFactorial);
+        System.out.println(sumOfSumOfFactorial);
     }
 
     private static long getSumOfFactorial(int i) {

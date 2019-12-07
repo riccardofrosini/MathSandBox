@@ -28,7 +28,7 @@ public class Collatz1 {
             e = e - 2;
         }
 
-        final XYSeriesDemo demo = new XYSeriesDemo("Collatz");
+        final XYSeriesDemo demo = new XYSeriesDemo();
 
         for (long i = 1; i <= maxIter; i += 2) {
             //System.out.println(i + " " + (double) i / graph.get(i));

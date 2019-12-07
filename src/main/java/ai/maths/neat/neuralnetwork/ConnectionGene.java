@@ -7,10 +7,10 @@ import java.util.Objects;
 
 public class ConnectionGene implements Comparable<ConnectionGene> {
 
-    private NodeGene inNode;
-    private NodeGene outNode;
+    private final NodeGene inNode;
+    private final NodeGene outNode;
+    private final int innovation;
     private double weight;
-    private int innovation;
     private boolean enabled;
 
     ConnectionGene(NodeGene inNode, NodeGene outNode, double weight) {

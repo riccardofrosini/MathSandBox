@@ -9,9 +9,9 @@ import java.util.stream.Collectors;
 public class Genome implements Comparable<Genome> {
 
 
-    private SortedMap<Integer, ConnectionGene> connections;
-    private HashMap<Integer, NodeGene> nodes;
-    private ArrayList<NodeGene> outputNodes;
+    private final SortedMap<Integer, ConnectionGene> connections;
+    private final HashMap<Integer, NodeGene> nodes;
+    private final ArrayList<NodeGene> outputNodes;
     private double fitness;
 
     public Genome() {

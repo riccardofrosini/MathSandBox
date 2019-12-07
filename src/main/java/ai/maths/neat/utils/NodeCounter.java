@@ -6,7 +6,7 @@ public class NodeCounter {
 
     private static int id = 0;
 
-    private static HashMap<Integer, Integer> innovationsHistory = new HashMap<>();
+    private static final HashMap<Integer, Integer> innovationsHistory = new HashMap<>();
 
     public static int geNewIdForInputOutput() {
         id++;

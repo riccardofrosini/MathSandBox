@@ -58,12 +58,12 @@ public class Utils {
 
     public static int getMaxPathOfPyramidNumbers(int[][] pyramid) {
         for (int i = 1; i < pyramid.length; i++) {
-            int[] prevVals = pyramid[i - 1];
-            int[] vals = pyramid[i];
-            for (int j = 0; j < vals.length; j++) {
-                int prevLeft = j < prevVals.length ? prevVals[j] : 0;
-                int prevRight = j - 1 >= 0 ? prevVals[j - 1] : 0;
-                vals[j] += Math.max(prevLeft, prevRight);
+            int[] prevValues = pyramid[i - 1];
+            int[] values = pyramid[i];
+            for (int j = 0; j < values.length; j++) {
+                int prevLeft = j < prevValues.length ? prevValues[j] : 0;
+                int prevRight = j - 1 >= 0 ? prevValues[j - 1] : 0;
+                values[j] += Math.max(prevLeft, prevRight);
             }
         }
         int maxPath = 0;
