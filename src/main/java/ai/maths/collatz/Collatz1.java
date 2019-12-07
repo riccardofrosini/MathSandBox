@@ -43,14 +43,13 @@ public class Collatz1 {
         return ((long) Math.pow(2, 2 * i + 1) - 5) / 3;
     }
 
-    private static long getCenterOfSymmetry(long i) {
+    /*private static long getCenterOfSymmetry(long i) {
         return ((long) Math.pow(2, 2 * i) - 1) / 3;
     }
 
     private static long getMiddleOfTwoAdjacentCentersOfSymmetry(int i) {
         return (long) (5 * Math.pow(2, 2 * i) - 2) / 6;
-
-    }
+    }*/
 
 }
 

@@ -25,8 +25,8 @@ public class Training {
         for (Genome genome : genomes) {
             updateGenomeFunctionWithFitness.apply(genome);
         }
-        NeuralNetworks neuralNetworks = new NeuralNetworks();
-        neuralNetworks.addAllGenomesToPopulation(genomes);
+
+        NeuralNetworks neuralNetworks = new NeuralNetworks(genomes);
 
         for (int i = 0; i < generations; i++) {
             neuralNetworks = neuralNetworks.nextGeneration(updateGenomeFunctionWithFitness);

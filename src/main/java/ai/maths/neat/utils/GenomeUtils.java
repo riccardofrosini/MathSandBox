@@ -9,7 +9,16 @@ import java.util.*;
 
 public class GenomeUtils {
 
-    public static Genome crossover(Genome thisGenome, Genome otherGenome) {
+
+    public static Genome crossoverAndMutateGenome(Genome thisGenome, Genome otherGenome) {
+        return mutateGenome(crossover(thisGenome, otherGenome));
+    }
+
+    public static Genome copyAndMutateGenome(Genome genome) {
+        return mutateGenome(genome.clone());
+    }
+
+    private static Genome crossover(Genome thisGenome, Genome otherGenome) {
         Genome crossover = new Genome();
         thisGenome.copyNodesTo(crossover);
         otherGenome.copyNodesTo(crossover);
@@ -170,7 +179,7 @@ public class GenomeUtils {
         return genomes;
     }
 
-    public static Genome mutateGenome(Genome genome) {
+    private static Genome mutateGenome(Genome genome) {
         if (ConstantsAndUtils.getRandom() <= ConstantsAndUtils.MUTATE_WEIGHTS_PROBABILITY) {
             genome.mutateConnectionWeights();
         }
@@ -183,7 +192,7 @@ public class GenomeUtils {
         return genome;
     }
 
-    public static List<Double> genomeEvaluate(Genome genome, double[] inputs, NodeFunction nodeFunction) {
+    static List<Double> genomeEvaluate(Genome genome, double[] inputs, NodeFunction nodeFunction) {
         HashMap<Integer, NodeGene> nodes = genome.getNodes();
         HashMap<NodeGene, Double> nodeGeneDoubleHashMap = new HashMap<>();
         while (!nodeGeneDoubleHashMap.keySet().containsAll(nodes.values())) {
