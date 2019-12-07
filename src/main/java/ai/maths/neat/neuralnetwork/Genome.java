@@ -14,7 +14,7 @@ public class Genome implements Comparable<Genome> {
     private final ArrayList<NodeGene> outputNodes;
     private double fitness;
 
-    public Genome() {
+    Genome() {
         outputNodes = new ArrayList<>();
         connections = new TreeMap<>();
         nodes = new HashMap<>();
@@ -26,7 +26,7 @@ public class Genome implements Comparable<Genome> {
         connections.put(connectionGene.getInnovation(), connectionGene);
     }
 
-    public void mutateConnectionByAddingNode() {
+    void mutateConnectionByAddingNode() {
         if (nodes.size() >= ConstantsAndUtils.MAX_NODES) {
             return;
         }
@@ -48,7 +48,7 @@ public class Genome implements Comparable<Genome> {
         }
     }
 
-    public void mutateWithNewConnection() {
+    void mutateWithNewConnection() {
         NodeGene[] nodeGenes = nodes.values().toArray(new NodeGene[0]);
         NodeGene inNode = nodeGenes[ConstantsAndUtils.getRandomInt(nodeGenes.length)];
         NodeGene outNode = nodeGenes[ConstantsAndUtils.getRandomInt(nodeGenes.length)];
@@ -59,7 +59,7 @@ public class Genome implements Comparable<Genome> {
         }
     }
 
-    public void mutateConnectionWeights() {
+    void mutateConnectionWeights() {
         for (ConnectionGene connectionGene : connections.values()) {
             if (ConstantsAndUtils.getRandom() <= ConstantsAndUtils.WEIGHT_PERTURBATION_PROBABILITY) {
                 double newWeight = connectionGene.getWeight() + ConstantsAndUtils.getRandomPerturbation();
@@ -70,7 +70,7 @@ public class Genome implements Comparable<Genome> {
         }
     }
 
-    public boolean makeConnection(NodeGene inNode, NodeGene outNode, double weight) {
+    boolean makeConnection(NodeGene inNode, NodeGene outNode, double weight) {
         if (!inNode.equals(outNode) && !connections.containsKey(ConstantsAndUtils.generateInnovation(inNode, outNode)) &&
                 outNode.getType() != NodeGene.Type.INPUT &&
                 inNode.getType() != NodeGene.Type.OUTPUT && !containsBackwardConnection(inNode, outNode)) {
@@ -80,12 +80,12 @@ public class Genome implements Comparable<Genome> {
         return false;
     }
 
-    public void addInputNode(int inputId) {
+    void addInputNode(int inputId) {
         NodeGene nodeGene = new NodeGene(NodeCounter.geNewIdForInputOutput(), inputId);
         nodes.put(nodeGene.getId(), nodeGene);
     }
 
-    public void addOutputNode() {
+    void addOutputNode() {
         NodeGene nodeGene = new NodeGene(NodeCounter.geNewIdForInputOutput(), NodeGene.Type.OUTPUT);
         nodes.put(nodeGene.getId(), nodeGene);
         outputNodes.add(nodeGene);
@@ -111,16 +111,20 @@ public class Genome implements Comparable<Genome> {
         return fitness;
     }
 
-    public void setFitness(double fitness) {
+    void setFitness(double fitness) {
         this.fitness = fitness;
     }
 
-    public SortedMap<Integer, ConnectionGene> getConnections() {
+    SortedMap<Integer, ConnectionGene> getConnections() {
         return connections;
     }
 
-    public HashMap<Integer, NodeGene> getNodes() {
+    HashMap<Integer, NodeGene> getNodes() {
         return nodes;
+    }
+
+    ArrayList<NodeGene> getOutputNodes() {
+        return outputNodes;
     }
 
     @Override
@@ -133,7 +137,7 @@ public class Genome implements Comparable<Genome> {
         return clone;
     }
 
-    public void copyNodesTo(Genome clone) {
+    void copyNodesTo(Genome clone) {
         for (NodeGene node : nodes.values()) {
             NodeGene nodeGene = node.getType() == NodeGene.Type.INPUT ?
                     new NodeGene(node.getId(), node.getInputId()) :
@@ -143,10 +147,6 @@ public class Genome implements Comparable<Genome> {
                 clone.outputNodes.add(nodeGene);
             }
         }
-    }
-
-    public ArrayList<NodeGene> getOutputNodes() {
-        return outputNodes;
     }
 
     @Override

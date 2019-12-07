@@ -1,7 +1,6 @@
 package ai.maths.neat.neuralnetwork;
 
 import ai.maths.neat.utils.ConstantsAndUtils;
-import ai.maths.neat.utils.GenomeUtils;
 
 import java.util.Objects;
 import java.util.TreeSet;

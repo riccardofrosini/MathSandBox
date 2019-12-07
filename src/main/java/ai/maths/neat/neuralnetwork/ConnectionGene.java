@@ -21,23 +21,23 @@ public class ConnectionGene implements Comparable<ConnectionGene> {
         this.enabled = true;
     }
 
-    public NodeGene getInNode() {
+    NodeGene getInNode() {
         return inNode;
     }
 
-    public NodeGene getOutNode() {
+    NodeGene getOutNode() {
         return outNode;
     }
 
-    public double getWeight() {
+    double getWeight() {
         return weight;
     }
 
-    public int getInnovation() {
+    int getInnovation() {
         return innovation;
     }
 
-    public boolean isEnabled() {
+    boolean isEnabled() {
         return enabled;
     }
 
@@ -45,7 +45,7 @@ public class ConnectionGene implements Comparable<ConnectionGene> {
         this.weight = weight;
     }
 
-    public void disable() {
+    void disable() {
         this.enabled = false;
     }
 

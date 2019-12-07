@@ -1,21 +1,25 @@
-package ai.maths.neat.utils;
+package ai.maths.neat.neuralnetwork;
 
 import ai.maths.neat.functions.NodeFunction;
-import ai.maths.neat.neuralnetwork.ConnectionGene;
-import ai.maths.neat.neuralnetwork.Genome;
-import ai.maths.neat.neuralnetwork.NodeGene;
+import ai.maths.neat.utils.ConstantsAndUtils;
 
 import java.util.*;
+import java.util.function.Consumer;
+import java.util.function.Function;
 
 public class GenomeUtils {
 
 
-    public static Genome crossoverAndMutateGenome(Genome thisGenome, Genome otherGenome) {
-        return mutateGenome(crossover(thisGenome, otherGenome));
+    static Genome crossoverAndMutateGenome(Genome thisGenome, Genome otherGenome, Consumer<Genome> updateGenomeFunctionWithFitness) {
+        Genome genome = mutateGenome(crossover(thisGenome, otherGenome));
+        updateGenomeFunctionWithFitness.accept(genome);
+        return genome;
     }
 
-    public static Genome copyAndMutateGenome(Genome genome) {
-        return mutateGenome(genome.clone());
+    static Genome copyAndMutateGenome(Genome genome, Consumer<Genome> updateGenomeFunctionWithFitness) {
+        Genome newGenome = mutateGenome(genome.clone());
+        updateGenomeFunctionWithFitness.accept(newGenome);
+        return newGenome;
     }
 
     private static Genome crossover(Genome thisGenome, Genome otherGenome) {
@@ -151,13 +155,13 @@ public class GenomeUtils {
         return new double[]{excesses, disjoints, averageWeights, thisSize < 20 && otherSize < 20 ? 1 : Math.max(thisSize, otherSize)};
     }
 
-    public static double calculateDistance(Genome thisGenome, Genome otherGenome) {
+    static double calculateDistance(Genome thisGenome, Genome otherGenome) {
         double[] excessDisjointsAverageWeightDifferenceNormalisation = getExcesses_Disjoints_AverageWeightDifferences_Normalisation(thisGenome, otherGenome);
         return (excessDisjointsAverageWeightDifferenceNormalisation[0] * ConstantsAndUtils.EXCESS_CONSTANT + excessDisjointsAverageWeightDifferenceNormalisation[1] * ConstantsAndUtils.DISJOINT_CONSTANT) / excessDisjointsAverageWeightDifferenceNormalisation[3]
                 + excessDisjointsAverageWeightDifferenceNormalisation[2] * ConstantsAndUtils.WEIGHT_AVERAGE_CONSTANT;
     }
 
-    static HashSet<Genome> makeRandomTopologyGenomes(int inputNodes, int outPutNodes) {
+    public static HashSet<Genome> makeRandomTopologyGenomes(int inputNodes, int outPutNodes, Consumer<Genome> updateGenomeFunctionWithFitness) {
         Genome genome = new Genome();
         for (int i = 0; i < inputNodes; i++) {
             genome.addInputNode(i);
@@ -174,6 +178,7 @@ public class GenomeUtils {
             if (ConstantsAndUtils.getRandomBoolean()) {
                 newGenome.mutateConnectionByAddingNode();
             }
+            updateGenomeFunctionWithFitness.accept(newGenome);
             genomes.add(newGenome);
         }
         return genomes;
@@ -192,7 +197,7 @@ public class GenomeUtils {
         return genome;
     }
 
-    static List<Double> genomeEvaluate(Genome genome, double[] inputs, NodeFunction nodeFunction) {
+    private static List<Double> genomeEvaluate(Genome genome, double[] inputs, NodeFunction nodeFunction) {
         HashMap<Integer, NodeGene> nodes = genome.getNodes();
         HashMap<NodeGene, Double> nodeGeneDoubleHashMap = new HashMap<>();
         while (!nodeGeneDoubleHashMap.keySet().containsAll(nodes.values())) {
@@ -223,5 +228,15 @@ public class GenomeUtils {
             results.add(nodeGeneDoubleHashMap.get(outputNode));
         }
         return results;
+    }
+
+    public static Function<double[], List<Double>> getGenomeEvaluator(Genome genome, NodeFunction nodeFunction) {
+        return inputs -> genomeEvaluate(genome, inputs, nodeFunction);
+    }
+
+    public static Consumer<Genome> makeGenomeFunctionToUpdateFitness(Function<Function<double[], List<Double>>, Double> evaluationFunction, NodeFunction nodeFunction) {
+        return genome -> {
+            genome.setFitness(evaluationFunction.apply(input -> GenomeUtils.genomeEvaluate(genome, input, nodeFunction)));
+        };
     }
 }

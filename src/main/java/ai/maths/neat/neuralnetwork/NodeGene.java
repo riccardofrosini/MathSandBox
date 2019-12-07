@@ -40,15 +40,15 @@ public class NodeGene {
         return id;
     }
 
-    public Type getType() {
+    Type getType() {
         return type;
     }
 
-    public int getInputId() {
+    int getInputId() {
         return inputId;
     }
 
-    public HashSet<ConnectionGene> getBackConnections() {
+    HashSet<ConnectionGene> getBackConnections() {
         return backConnections;
     }
 

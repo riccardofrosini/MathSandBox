@@ -3,41 +3,36 @@ package ai.maths.neat.utils;
 import ai.maths.neat.functions.LinearFunction;
 import ai.maths.neat.functions.NodeFunction;
 import ai.maths.neat.neuralnetwork.Genome;
+import ai.maths.neat.neuralnetwork.GenomeUtils;
 import ai.maths.neat.neuralnetwork.NeuralNetworks;
 
-import java.util.HashSet;
 import java.util.List;
-import java.util.TreeSet;
+import java.util.function.Consumer;
 import java.util.function.Function;
 
 public class Training {
 
-    private static TreeSet<Genome> train(int inputs, int outputs, int generations,
-                                         Function<Function<double[], List<Double>>, Double> evaluationFunction, NodeFunction nodeFunction) {
+    private static Function<double[], List<Double>> train(int inputs, int outputs, int generations,
+                                                          Function<Function<double[], List<Double>>, Double> evaluationFunction, NodeFunction nodeFunction) {
 
-        Function<Genome, Double> updateGenomeFunctionWithFitness = genome -> {
-            Double fitness = evaluationFunction.apply(input -> GenomeUtils.genomeEvaluate(genome, input, nodeFunction));
-            genome.setFitness(fitness);
-            return fitness;
-        };
+        Consumer<Genome> updateGenomeFunctionWithFitness = GenomeUtils.makeGenomeFunctionToUpdateFitness(evaluationFunction, nodeFunction);
 
-        HashSet<Genome> genomes = GenomeUtils.makeRandomTopologyGenomes(inputs, outputs);
-        for (Genome genome : genomes) {
-            updateGenomeFunctionWithFitness.apply(genome);
-        }
-
-        NeuralNetworks neuralNetworks = new NeuralNetworks(genomes);
-
+        NeuralNetworks neuralNetworks = new NeuralNetworks(GenomeUtils.makeRandomTopologyGenomes(inputs, outputs, updateGenomeFunctionWithFitness));
+        Genome bestGenome = neuralNetworks.getPopulation().last();
         for (int i = 0; i < generations; i++) {
             neuralNetworks = neuralNetworks.nextGeneration(updateGenomeFunctionWithFitness);
+            Genome thisGenerationBestGenome = neuralNetworks.getPopulation().last();
+            if (thisGenerationBestGenome.getFitness() > bestGenome.getFitness()) {
+                bestGenome = thisGenerationBestGenome;
+            }
         }
 
-        return neuralNetworks.getPopulation();
+        return GenomeUtils.getGenomeEvaluator(neuralNetworks.getPopulation().last(), nodeFunction);
     }
 
     public static void main(String[] args) {
         LinearFunction linearFunction = new LinearFunction();
-        TreeSet<Genome> train = train(2, 1, 30, neuralNetworkEvaluator -> {
+        Function<double[], List<Double>> function = train(2, 1, 30, neuralNetworkEvaluator -> {
 
             double[] input = {3, 4};
             List<Double> evaluate = neuralNetworkEvaluator.apply(input);
@@ -57,16 +52,13 @@ public class Training {
             return score == 0 ? 2000000000 : 1 / score;
         }, linearFunction);
 
-        Genome fittest = train.last();
-        System.out.println(fittest.getFitness());
-        System.out.println(train.first().getFitness());
 
         double[] input = {3, 4};
-        System.out.println(GenomeUtils.genomeEvaluate(fittest, input, linearFunction).get(0));
+        System.out.println(function.apply(input).get(0));
         double[] input1 = {2, 1};
-        System.out.println(GenomeUtils.genomeEvaluate(fittest, input1, linearFunction).get(0));
+        System.out.println(function.apply(input1).get(0));
         double[] input2 = {1, 2};
-        System.out.println(GenomeUtils.genomeEvaluate(fittest, input2, linearFunction).get(0));
+        System.out.println(function.apply(input2).get(0));
 
     }
 }
