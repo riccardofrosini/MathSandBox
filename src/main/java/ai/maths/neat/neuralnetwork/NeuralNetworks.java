@@ -6,7 +6,7 @@ import java.util.*;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
-public class NeuralNetworks {
+class NeuralNetworks {
 
     private final TreeSet<Genome> population;
     private final HashSet<Species> speciesCollection;
@@ -21,7 +21,7 @@ public class NeuralNetworks {
     }
 
     //First initialization stagnation set to 0 bestPerformance set to best performing genome's fitness
-    public NeuralNetworks(Collection<Genome> genomes) {
+    NeuralNetworks(Collection<Genome> genomes) {
         this();
         addAllGenomesToPopulation(genomes);
         bestPerformance = population.last().getFitness();
@@ -53,7 +53,7 @@ public class NeuralNetworks {
     }
 
 
-    public NeuralNetworks nextGeneration(Consumer<Genome> updateGenomeFunctionWithFitness) {
+    NeuralNetworks nextGeneration(Consumer<Genome> updateGenomeFunctionWithFitness) {
         NeuralNetworks neuralNetworks = new NeuralNetworks();
         //remove species with population stagnates
         if (stagnation > ConstantsAndUtils.MAX_POPULATION_STAGNATION_GENERATION) {
@@ -149,7 +149,7 @@ public class NeuralNetworks {
         speciesCollection.add(newSpecies);
     }
 
-    public TreeSet<Genome> getPopulation() {
+    TreeSet<Genome> getPopulation() {
         return population;
     }
 }

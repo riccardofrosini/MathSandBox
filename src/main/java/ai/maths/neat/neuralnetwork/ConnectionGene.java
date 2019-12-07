@@ -1,11 +1,8 @@
 package ai.maths.neat.neuralnetwork;
 
-
-import ai.maths.neat.utils.ConstantsAndUtils;
-
 import java.util.Objects;
 
-public class ConnectionGene implements Comparable<ConnectionGene> {
+class ConnectionGene implements Comparable<ConnectionGene> {
 
     private final NodeGene inNode;
     private final NodeGene outNode;
@@ -17,7 +14,7 @@ public class ConnectionGene implements Comparable<ConnectionGene> {
         this.inNode = inNode;
         this.outNode = outNode;
         this.weight = weight;
-        this.innovation = ConstantsAndUtils.generateInnovation(inNode, outNode);
+        this.innovation = GenomeUtils.generateInnovation(inNode, outNode);
         this.enabled = true;
     }
 

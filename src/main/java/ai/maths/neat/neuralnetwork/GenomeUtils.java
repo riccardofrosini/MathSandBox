@@ -7,7 +7,7 @@ import java.util.*;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
-public class GenomeUtils {
+class GenomeUtils {
 
 
     static Genome crossoverAndMutateGenome(Genome thisGenome, Genome otherGenome, Consumer<Genome> updateGenomeFunctionWithFitness) {
@@ -17,7 +17,7 @@ public class GenomeUtils {
     }
 
     static Genome copyAndMutateGenome(Genome genome, Consumer<Genome> updateGenomeFunctionWithFitness) {
-        Genome newGenome = mutateGenome(genome.clone());
+        Genome newGenome = mutateGenome(cloneGenome(genome));
         updateGenomeFunctionWithFitness.accept(newGenome);
         return newGenome;
     }
@@ -82,7 +82,7 @@ public class GenomeUtils {
         if (((thisConnection.isEnabled() ^ otherConnection.isEnabled()) &&
                 (ConstantsAndUtils.getRandom() <= ConstantsAndUtils.DISABLE_CONNECTION_CROSSOVER_PROBABILITY)) ||
                 (!thisConnection.isEnabled() && !otherConnection.isEnabled())) {
-            crossover.getConnections().get(ConstantsAndUtils.generateInnovation(thisConnection.getInNode(),
+            crossover.getConnections().get(generateInnovation(thisConnection.getInNode(),
                     thisConnection.getOutNode())).disable();
         }
     }
@@ -91,9 +91,13 @@ public class GenomeUtils {
         crossover.makeConnection(crossover.getNodes().get(connection.getInNode().getId()),
                 crossover.getNodes().get(connection.getOutNode().getId()), connection.getWeight());
         if (!connection.isEnabled()) {
-            crossover.getConnections().get(ConstantsAndUtils.generateInnovation(connection.getInNode(),
+            crossover.getConnections().get(generateInnovation(connection.getInNode(),
                     connection.getOutNode())).disable();
         }
+    }
+
+    static int generateInnovation(NodeGene inNode, NodeGene outNode) {
+        return inNode.getId() + outNode.getId() * ConstantsAndUtils.MAX_NODES;
     }
 
     private static double[] getExcesses_Disjoints_AverageWeightDifferences_Normalisation(Genome thisGenome, Genome otherGenome) {
@@ -161,7 +165,17 @@ public class GenomeUtils {
                 + excessDisjointsAverageWeightDifferenceNormalisation[2] * ConstantsAndUtils.WEIGHT_AVERAGE_CONSTANT;
     }
 
-    public static HashSet<Genome> makeRandomTopologyGenomes(int inputNodes, int outPutNodes, Consumer<Genome> updateGenomeFunctionWithFitness) {
+
+    private static Genome cloneGenome(Genome genome) {
+        Genome clone = new Genome();
+        genome.copyNodesTo(clone);
+        for (ConnectionGene connection : genome.getConnections().values()) {
+            clone.addConnection(clone.getNodes().get(connection.getInNode().getId()), clone.getNodes().get(connection.getOutNode().getId()), connection.getWeight());
+        }
+        return clone;
+    }
+
+    static HashSet<Genome> makeRandomTopologyGenomes(int inputNodes, int outPutNodes, Consumer<Genome> updateGenomeFunctionWithFitness) {
         Genome genome = new Genome();
         for (int i = 0; i < inputNodes; i++) {
             genome.addInputNode(i);
@@ -171,7 +185,7 @@ public class GenomeUtils {
         }
         HashSet<Genome> genomes = new HashSet<>();
         for (int i = 0; i < ConstantsAndUtils.MAX_POPULATION; i++) {
-            Genome newGenome = genome.clone();
+            Genome newGenome = cloneGenome(genome);
             for (int j = 0; j < Math.max(inputNodes, outPutNodes); j++) {
                 newGenome.mutateWithNewConnection();
             }
@@ -230,13 +244,11 @@ public class GenomeUtils {
         return results;
     }
 
-    public static Function<double[], List<Double>> getGenomeEvaluator(Genome genome, NodeFunction nodeFunction) {
+    static Function<double[], List<Double>> getGenomeEvaluator(Genome genome, NodeFunction nodeFunction) {
         return inputs -> genomeEvaluate(genome, inputs, nodeFunction);
     }
 
-    public static Consumer<Genome> makeGenomeFunctionToUpdateFitness(Function<Function<double[], List<Double>>, Double> evaluationFunction, NodeFunction nodeFunction) {
-        return genome -> {
-            genome.setFitness(evaluationFunction.apply(input -> GenomeUtils.genomeEvaluate(genome, input, nodeFunction)));
-        };
+    static Consumer<Genome> makeGenomeFunctionToUpdateFitness(Function<Function<double[], List<Double>>, Double> evaluationFunction, NodeFunction nodeFunction) {
+        return genome -> genome.setFitness(evaluationFunction.apply(getGenomeEvaluator(genome, nodeFunction)));
     }
 }

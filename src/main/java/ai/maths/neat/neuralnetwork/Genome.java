@@ -6,8 +6,7 @@ import ai.maths.neat.utils.NodeCounter;
 import java.util.*;
 import java.util.stream.Collectors;
 
-public class Genome implements Comparable<Genome> {
-
+class Genome implements Comparable<Genome> {
 
     private final SortedMap<Integer, ConnectionGene> connections;
     private final HashMap<Integer, NodeGene> nodes;
@@ -20,7 +19,7 @@ public class Genome implements Comparable<Genome> {
         nodes = new HashMap<>();
     }
 
-    private void addConnection(NodeGene inNode, NodeGene outNode, double weight) {
+    void addConnection(NodeGene inNode, NodeGene outNode, double weight) {
         ConnectionGene connectionGene = new ConnectionGene(inNode, outNode, weight);
         outNode.addBackConnection(connectionGene);
         connections.put(connectionGene.getInnovation(), connectionGene);
@@ -71,7 +70,7 @@ public class Genome implements Comparable<Genome> {
     }
 
     boolean makeConnection(NodeGene inNode, NodeGene outNode, double weight) {
-        if (!inNode.equals(outNode) && !connections.containsKey(ConstantsAndUtils.generateInnovation(inNode, outNode)) &&
+        if (!inNode.equals(outNode) && !connections.containsKey(GenomeUtils.generateInnovation(inNode, outNode)) &&
                 outNode.getType() != NodeGene.Type.INPUT &&
                 inNode.getType() != NodeGene.Type.OUTPUT && !containsBackwardConnection(inNode, outNode)) {
             addConnection(inNode, outNode, weight);
@@ -107,7 +106,7 @@ public class Genome implements Comparable<Genome> {
         return false;
     }
 
-    public double getFitness() {
+    double getFitness() {
         return fitness;
     }
 
@@ -125,16 +124,6 @@ public class Genome implements Comparable<Genome> {
 
     ArrayList<NodeGene> getOutputNodes() {
         return outputNodes;
-    }
-
-    @Override
-    public Genome clone() {
-        Genome clone = new Genome();
-        copyNodesTo(clone);
-        for (ConnectionGene connection : connections.values()) {
-            clone.addConnection(clone.nodes.get(connection.getInNode().getId()), clone.nodes.get(connection.getOutNode().getId()), connection.getWeight());
-        }
-        return clone;
     }
 
     void copyNodesTo(Genome clone) {

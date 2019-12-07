@@ -1,7 +1,5 @@
 package ai.maths.neat.utils;
 
-import ai.maths.neat.neuralnetwork.NodeGene;
-
 import java.util.Random;
 
 public class ConstantsAndUtils {
@@ -43,9 +41,4 @@ public class ConstantsAndUtils {
     public static boolean getRandomBoolean() {
         return RANDOM.nextBoolean();
     }
-
-    public static int generateInnovation(NodeGene inNode, NodeGene outNode) {
-        return inNode.getId() + outNode.getId() * ConstantsAndUtils.MAX_NODES;
-    }
-
 }

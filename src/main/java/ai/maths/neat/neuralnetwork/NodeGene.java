@@ -3,7 +3,7 @@ package ai.maths.neat.neuralnetwork;
 import java.util.HashSet;
 import java.util.Objects;
 
-public class NodeGene {
+class NodeGene {
 
     public enum Type {
         INPUT,
@@ -36,7 +36,7 @@ public class NodeGene {
         }
     }
 
-    public int getId() {
+    int getId() {
         return id;
     }
 
