@@ -5,7 +5,7 @@ import java.util.Objects;
 
 class NodeGene {
 
-    public enum Type {
+    enum Type {
         INPUT,
         HIDDEN,
         OUTPUT
