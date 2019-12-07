@@ -1,17 +1,17 @@
 package ai.maths.neat.neuralnetwork;
 
+import ai.maths.neat.functions.FitnessCalculator;
+import ai.maths.neat.functions.GenomeEvaluator;
 import ai.maths.neat.functions.NodeFunction;
 
-import java.util.List;
 import java.util.function.Consumer;
-import java.util.function.Function;
 
 public class NeuralNetworkTrainer {
 
-    public static Function<double[], List<Double>> train(int inputs, int outputs, int generations,
-                                                         Function<Function<double[], List<Double>>, Double> evaluationFunction, NodeFunction nodeFunction) {
+    public static GenomeEvaluator train(int inputs, int outputs, int generations,
+                                        FitnessCalculator fitnessCalculator, NodeFunction nodeFunction) {
 
-        Consumer<Genome> updateGenomeFunctionWithFitness = GenomeUtils.makeGenomeFunctionToUpdateFitness(evaluationFunction, nodeFunction);
+        Consumer<Genome> updateGenomeFunctionWithFitness = GenomeUtils.makeGenomeFunctionToUpdateFitness(fitnessCalculator, nodeFunction);
 
         NeuralNetworks neuralNetworks = new NeuralNetworks(GenomeUtils.makeRandomTopologyGenomes(inputs, outputs, updateGenomeFunctionWithFitness));
         Genome bestGenome = neuralNetworks.getPopulation().last();

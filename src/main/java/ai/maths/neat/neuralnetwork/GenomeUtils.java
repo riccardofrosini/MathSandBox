@@ -1,11 +1,12 @@
 package ai.maths.neat.neuralnetwork;
 
+import ai.maths.neat.functions.FitnessCalculator;
+import ai.maths.neat.functions.GenomeEvaluator;
 import ai.maths.neat.functions.NodeFunction;
 import ai.maths.neat.utils.ConstantsAndUtils;
 
 import java.util.*;
 import java.util.function.Consumer;
-import java.util.function.Function;
 
 class GenomeUtils {
 
@@ -244,11 +245,11 @@ class GenomeUtils {
         return results;
     }
 
-    static Function<double[], List<Double>> getGenomeEvaluator(Genome genome, NodeFunction nodeFunction) {
+    static GenomeEvaluator getGenomeEvaluator(Genome genome, NodeFunction nodeFunction) {
         return inputs -> genomeEvaluate(genome, inputs, nodeFunction);
     }
 
-    static Consumer<Genome> makeGenomeFunctionToUpdateFitness(Function<Function<double[], List<Double>>, Double> evaluationFunction, NodeFunction nodeFunction) {
-        return genome -> genome.setFitness(evaluationFunction.apply(getGenomeEvaluator(genome, nodeFunction)));
+    static Consumer<Genome> makeGenomeFunctionToUpdateFitness(FitnessCalculator fitnessCalculator, NodeFunction nodeFunction) {
+        return genome -> genome.setFitness(fitnessCalculator.calculate(getGenomeEvaluator(genome, nodeFunction)));
     }
 }
