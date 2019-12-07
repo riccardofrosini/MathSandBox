@@ -9,11 +9,11 @@ public class ConnectionGene implements Comparable<ConnectionGene> {
 
     private NodeGene inNode;
     private NodeGene outNode;
-    private float weight;
+    private double weight;
     private int innovation;
     private boolean enabled;
 
-    ConnectionGene(NodeGene inNode, NodeGene outNode, float weight) {
+    ConnectionGene(NodeGene inNode, NodeGene outNode, double weight) {
         this.inNode = inNode;
         this.outNode = outNode;
         this.weight = weight;
@@ -29,7 +29,7 @@ public class ConnectionGene implements Comparable<ConnectionGene> {
         return outNode;
     }
 
-    public float getWeight() {
+    public double getWeight() {
         return weight;
     }
 
@@ -41,7 +41,7 @@ public class ConnectionGene implements Comparable<ConnectionGene> {
         return enabled;
     }
 
-    void setWeight(float weight) {
+    void setWeight(double weight) {
         this.weight = weight;
     }
 
@@ -54,7 +54,7 @@ public class ConnectionGene implements Comparable<ConnectionGene> {
         if (this == o) return true;
         if (!(o instanceof ConnectionGene)) return false;
         ConnectionGene that = (ConnectionGene) o;
-        return Float.compare(that.weight, weight) == 0 &&
+        return Double.compare(that.weight, weight) == 0 &&
                 innovation == that.innovation &&
                 enabled == that.enabled;
     }

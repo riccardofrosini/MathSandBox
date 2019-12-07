@@ -1,7 +1,7 @@
 package ai.maths.neat.utils;
 
+import ai.maths.neat.functions.LinearFunction;
 import ai.maths.neat.functions.NodeFunction;
-import ai.maths.neat.functions.SigmoidFunction;
 import ai.maths.neat.neuralnetwork.Genome;
 import ai.maths.neat.neuralnetwork.NeuralNetworks;
 
@@ -12,62 +12,61 @@ import java.util.function.Function;
 
 public class Training {
 
-    public static TreeSet<Genome> train(int inputs, int outputs, int generations,
-                                        Function<Genome, Float> fun, NodeFunction sigmoid) {
+    private static TreeSet<Genome> train(int inputs, int outputs, int generations,
+                                         Function<Function<double[], List<Double>>, Double> evaluationFunction, NodeFunction nodeFunction) {
+
+        Function<Genome, Double> updateGenomeFunctionWithFitness = genome -> {
+            Double fitness = evaluationFunction.apply(input -> GenomeUtils.genomeEvaluate(genome, input, nodeFunction));
+            genome.setFitness(fitness);
+            return fitness;
+        };
+
         HashSet<Genome> genomes = GenomeUtils.makeRandomTopologyGenomes(inputs, outputs);
         for (Genome genome : genomes) {
-            Float evaluate = fun.apply(genome);
-            genome.setFitness(evaluate);
+            updateGenomeFunctionWithFitness.apply(genome);
         }
         NeuralNetworks neuralNetworks = new NeuralNetworks();
         neuralNetworks.addAllGenomesToPopulation(genomes);
 
         for (int i = 0; i < generations; i++) {
-            System.out.println("Iteration " + i);
-
-            Genome fittest = neuralNetworks.getPopulation().last();
-            System.out.println(fittest.getFitness());
-            System.out.println(neuralNetworks.getPopulation().first().getFitness());
-
-            System.out.println(neuralNetworks.getSpeciesCollection().size());
-
-            float[] input = {3, 4};
-            System.out.println(1 / GenomeUtils.genomeEvaluate(fittest, input, sigmoid).get(0));
-            float[] input1 = {2, 1};
-            System.out.println(1 / GenomeUtils.genomeEvaluate(fittest, input1, sigmoid).get(0));
-
-
-            neuralNetworks = neuralNetworks.nextGeneration(fun);
+            neuralNetworks = neuralNetworks.nextGeneration(updateGenomeFunctionWithFitness);
         }
 
         return neuralNetworks.getPopulation();
     }
 
     public static void main(String[] args) {
-        SigmoidFunction sigmoidFunction = new SigmoidFunction(2);
-        TreeSet<Genome> train = train(2, 1, 1000, genome -> {
+        LinearFunction linearFunction = new LinearFunction();
+        TreeSet<Genome> train = train(2, 1, 30, neuralNetworkEvaluator -> {
 
-            float[] input = {3, 4};
-            List<Float> evaluate = GenomeUtils.genomeEvaluate(genome, input, sigmoidFunction);
-            Float aFloat = evaluate.get(0);
-            float score = (float) -Math.log10(Math.abs(aFloat - ((float) 1 / 7)));
+            double[] input = {3, 4};
+            List<Double> evaluate = neuralNetworkEvaluator.apply(input);
+            Double aDouble = evaluate.get(0);
+            double score = Math.abs(aDouble - (double) 7);
 
-            float[] input1 = {2, 1};
-            evaluate = GenomeUtils.genomeEvaluate(genome, input1, sigmoidFunction);
-            aFloat = evaluate.get(0);
-            score += (float) -Math.log10(Math.abs(aFloat - ((float) 1 / 3)));
+            double[] input1 = {2, 1};
+            evaluate = neuralNetworkEvaluator.apply(input1);
+            aDouble = evaluate.get(0);
+            score += Math.abs(aDouble - (double) 3);
 
-            return score == 0 ? 10000000f : score;
-        }, sigmoidFunction);
+            double[] input2 = {1, 2};
+            evaluate = neuralNetworkEvaluator.apply(input2);
+            aDouble = evaluate.get(0);
+            score += Math.abs(aDouble - (double) 3);
+
+            return score == 0 ? 2000000000 : 1 / score;
+        }, linearFunction);
 
         Genome fittest = train.last();
         System.out.println(fittest.getFitness());
         System.out.println(train.first().getFitness());
 
-        float[] input = {3, 4};
-        System.out.println(1 / GenomeUtils.genomeEvaluate(fittest, input, sigmoidFunction).get(0));
-        float[] input1 = {2, 1};
-        System.out.println(1 / GenomeUtils.genomeEvaluate(fittest, input1, sigmoidFunction).get(0));
+        double[] input = {3, 4};
+        System.out.println(GenomeUtils.genomeEvaluate(fittest, input, linearFunction).get(0));
+        double[] input1 = {2, 1};
+        System.out.println(GenomeUtils.genomeEvaluate(fittest, input1, linearFunction).get(0));
+        double[] input2 = {1, 2};
+        System.out.println(GenomeUtils.genomeEvaluate(fittest, input2, linearFunction).get(0));
 
     }
 }

@@ -3,5 +3,5 @@ package ai.maths.neat.functions;
 @FunctionalInterface
 public interface NodeFunction {
 
-    float function(float in);
+    double function(double in);
 }

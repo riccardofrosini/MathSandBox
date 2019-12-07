@@ -12,7 +12,7 @@ public class Genome implements Comparable<Genome> {
     private SortedMap<Integer, ConnectionGene> connections;
     private HashMap<Integer, NodeGene> nodes;
     private ArrayList<NodeGene> outputNodes;
-    private float fitness;
+    private double fitness;
 
     public Genome() {
         outputNodes = new ArrayList<>();
@@ -20,7 +20,7 @@ public class Genome implements Comparable<Genome> {
         nodes = new HashMap<>();
     }
 
-    private void addConnection(NodeGene inNode, NodeGene outNode, float weight) {
+    private void addConnection(NodeGene inNode, NodeGene outNode, double weight) {
         ConnectionGene connectionGene = new ConnectionGene(inNode, outNode, weight);
         outNode.addBackConnection(connectionGene);
         connections.put(connectionGene.getInnovation(), connectionGene);
@@ -62,7 +62,7 @@ public class Genome implements Comparable<Genome> {
     public void mutateConnectionWeights() {
         for (ConnectionGene connectionGene : connections.values()) {
             if (ConstantsAndUtils.getRandom() <= ConstantsAndUtils.WEIGHT_PERTURBATION_PROBABILITY) {
-                float newWeight = connectionGene.getWeight() + ConstantsAndUtils.getRandomPerturbation();
+                double newWeight = connectionGene.getWeight() + ConstantsAndUtils.getRandomPerturbation();
                 connectionGene.setWeight(Math.min(Math.max(newWeight, -1), 1));
             } else {
                 connectionGene.setWeight(ConstantsAndUtils.getRandomWeight());
@@ -70,7 +70,7 @@ public class Genome implements Comparable<Genome> {
         }
     }
 
-    public boolean makeConnection(NodeGene inNode, NodeGene outNode, float weight) {
+    public boolean makeConnection(NodeGene inNode, NodeGene outNode, double weight) {
         if (!inNode.equals(outNode) && !connections.containsKey(ConstantsAndUtils.generateInnovation(inNode, outNode)) &&
                 outNode.getType() != NodeGene.Type.INPUT &&
                 inNode.getType() != NodeGene.Type.OUTPUT && !containsBackwardConnection(inNode, outNode)) {
@@ -107,11 +107,11 @@ public class Genome implements Comparable<Genome> {
         return false;
     }
 
-    public float getFitness() {
+    public double getFitness() {
         return fitness;
     }
 
-    public void setFitness(float fitness) {
+    public void setFitness(double fitness) {
         this.fitness = fitness;
     }
 

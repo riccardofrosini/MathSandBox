@@ -11,7 +11,7 @@ public class Species {
     private Genome representative;
     private TreeSet<Genome> genomes;
     private int stagnation = 0;
-    private float bestPerformance = 0;
+    private double bestPerformance = 0;
 
     Species(Genome representative) {
         this.representative = representative;
@@ -31,11 +31,11 @@ public class Species {
         this.stagnation = stagnation;
     }
 
-    float getBestPerformance() {
+    double getBestPerformance() {
         return bestPerformance;
     }
 
-    void setBestPerformance(float bestPerformance) {
+    void setBestPerformance(double bestPerformance) {
         this.bestPerformance = bestPerformance;
     }
 
@@ -55,16 +55,10 @@ public class Species {
         return genomes.size();
     }
 
-    float computeSumOfAdjustedFitness() {
-        return (float) genomes.stream().mapToDouble(genome -> genome.getFitness() /
+    double computeSumOfAdjustedFitness() {
+        return (double) genomes.stream().mapToDouble(genome -> genome.getFitness() /
                 genomes.stream().mapToInt(value -> GenomeUtils.calculateDistance(genome, value) <= ConstantsAndUtils.SPECIES_DELTA_THRESHOLD ? 1 : 0).sum()).sum();
 
-    }
-
-    void removedUnfittestGenome(int toRemove) {
-        for (int i = 0; i < toRemove; i++) {
-            genomes.pollFirst();
-        }
     }
 
     @Override

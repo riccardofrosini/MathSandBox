@@ -83,10 +83,10 @@ public class GenomeUtils {
         }
     }
 
-    private static float[] getExcesses_Disjoints_AverageWeightDifferences_Normalisation(Genome thisGenome, Genome otherGenome) {
+    private static double[] getExcesses_Disjoints_AverageWeightDifferences_Normalisation(Genome thisGenome, Genome otherGenome) {
         int excesses = 0;
         int disjoints = 0;
-        float averageWeights = 0;
+        double averageWeights = 0;
         int matching = 0;
         Iterator<ConnectionGene> thisIterator = thisGenome.getConnections().values().iterator();
         Iterator<ConnectionGene> otherIterator = otherGenome.getConnections().values().iterator();
@@ -139,11 +139,11 @@ public class GenomeUtils {
         averageWeights = averageWeights / matching;
         int thisSize = thisGenome.getConnections().size();
         int otherSize = otherGenome.getConnections().size();
-        return new float[]{excesses, disjoints, averageWeights, thisSize < 20 && otherSize < 20 ? 1 : Math.max(thisSize, otherSize)};
+        return new double[]{excesses, disjoints, averageWeights, thisSize < 20 && otherSize < 20 ? 1 : Math.max(thisSize, otherSize)};
     }
 
-    public static float calculateDistance(Genome thisGenome, Genome otherGenome) {
-        float[] edwn = getExcesses_Disjoints_AverageWeightDifferences_Normalisation(thisGenome, otherGenome);
+    public static double calculateDistance(Genome thisGenome, Genome otherGenome) {
+        double[] edwn = getExcesses_Disjoints_AverageWeightDifferences_Normalisation(thisGenome, otherGenome);
         return (edwn[0] * ConstantsAndUtils.EXCESS_CONSTANT + edwn[1] * ConstantsAndUtils.DISJOINT_CONSTANT) / edwn[3]
                 + edwn[2] * ConstantsAndUtils.WEIGHT_AVERAGE_CONSTANT;
     }
@@ -183,35 +183,35 @@ public class GenomeUtils {
         return genome;
     }
 
-    static List<Float> genomeEvaluate(Genome genome, float[] inputs, NodeFunction nodeFunction) {
+    public static List<Double> genomeEvaluate(Genome genome, double[] inputs, NodeFunction nodeFunction) {
         HashMap<Integer, NodeGene> nodes = genome.getNodes();
-        HashMap<NodeGene, Float> nodeGeneFloatHashMap = new HashMap<>();
-        while (!nodeGeneFloatHashMap.keySet().containsAll(nodes.values())) {
+        HashMap<NodeGene, Double> nodeGeneDoubleHashMap = new HashMap<>();
+        while (!nodeGeneDoubleHashMap.keySet().containsAll(nodes.values())) {
             c:
             for (NodeGene node : nodes.values()) {
-                if (!nodeGeneFloatHashMap.containsKey(node)) {
+                if (!nodeGeneDoubleHashMap.containsKey(node)) {
                     if (node.getType() == NodeGene.Type.INPUT) {
-                        nodeGeneFloatHashMap.put(node, nodeFunction.function(inputs[node.getInputId()]));
+                        nodeGeneDoubleHashMap.put(node, nodeFunction.function(inputs[node.getInputId()]));
                     } else {
-                        float value = 0;
+                        double value = 0;
                         for (ConnectionGene backConnection : node.getBackConnections()) {
                             if (backConnection.isEnabled()) {
-                                if (nodeGeneFloatHashMap.containsKey(backConnection.getInNode())) {
-                                    value = value + nodeGeneFloatHashMap.get(backConnection.getInNode()) * backConnection.getWeight();
+                                if (nodeGeneDoubleHashMap.containsKey(backConnection.getInNode())) {
+                                    value = value + nodeGeneDoubleHashMap.get(backConnection.getInNode()) * backConnection.getWeight();
                                 } else if (nodes.values().contains(backConnection.getInNode())) {
                                     continue c;
                                 }
                             }
                         }
-                        nodeGeneFloatHashMap.put(node, nodeFunction.function(value));
+                        nodeGeneDoubleHashMap.put(node, nodeFunction.function(value));
                     }
                 }
             }
         }
         ArrayList<NodeGene> outputNodes = genome.getOutputNodes();
-        List<Float> results = new ArrayList<>(outputNodes.size());
+        List<Double> results = new ArrayList<>(outputNodes.size());
         for (NodeGene outputNode : outputNodes) {
-            results.add(nodeGeneFloatHashMap.get(outputNode));
+            results.add(nodeGeneDoubleHashMap.get(outputNode));
         }
         return results;
     }

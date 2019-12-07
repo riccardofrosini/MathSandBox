@@ -2,18 +2,18 @@ package ai.maths.neat.functions;
 
 public class SigmoidFunction implements NodeFunction {
 
-    private float constant;
+    private double constant;
 
     public SigmoidFunction() {
         constant = 1;
     }
 
-    public SigmoidFunction(float constant) {
+    public SigmoidFunction(double constant) {
         this.constant = constant;
     }
 
     @Override
-    public float function(float in) {
-        return (float) (1 / (1 + Math.pow(Math.E, -in * constant)));
+    public double function(double in) {
+        return (1 / (1 + Math.pow(Math.E, -in * constant)));
     }
 }
