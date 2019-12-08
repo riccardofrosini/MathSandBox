@@ -70,7 +70,7 @@ class NeuralNetworks {
                 species.getGenomes().clear();
             } else if (species.size() > 5) {
                 neuralNetworks.copySpeciesWithBestPerforming(species, species.getGenomes().last());
-                double average = (species.getGenomes().last().getFitness() - species.getGenomes().first().getFitness()) / 2;
+                double average = (species.getGenomes().last().getFitness() + species.getGenomes().first().getFitness()) / 2;
                 species.getGenomes().removeIf(genome -> genome.getFitness() < average);
             }
         }

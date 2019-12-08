@@ -9,7 +9,7 @@ import java.util.function.Consumer;
 public class NeuralNetworkTrainer {
 
     public static GenomeEvaluator train(int inputs, int outputs, int generations,
-                                        FitnessCalculator fitnessCalculator, NodeFunction nodeFunction) {
+                                        NodeFunction nodeFunction, FitnessCalculator fitnessCalculator) {
 
         Consumer<Genome> updateGenomeFunctionWithFitness = GenomeUtils.makeGenomeFunctionToUpdateFitness(fitnessCalculator, nodeFunction);
 
