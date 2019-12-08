@@ -1,7 +1,7 @@
 package ai.maths.neat.neuralnetwork;
 
-import ai.maths.neat.utils.ConstantsAndUtils;
-import ai.maths.neat.utils.NodeCounter;
+import ai.maths.neat.utils.ConfigurationNetwork;
+import ai.maths.neat.utils.RandomUtils;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -26,15 +26,15 @@ class Genome implements Comparable<Genome> {
     }
 
     void mutateConnectionByAddingNode() {
-        if (nodes.size() >= ConstantsAndUtils.MAX_NODES) {
+        if (nodes.size() >= ConfigurationNetwork.MAX_NODES) {
             return;
         }
         if (!connections.isEmpty()) {
             ConnectionGene[] allConnections = connections.values().toArray(new ConnectionGene[0]);
-            ConnectionGene connectionGene = allConnections[ConstantsAndUtils.getRandomInt(allConnections.length)];
+            ConnectionGene connectionGene = allConnections[RandomUtils.getRandomInt(allConnections.length)];
             boolean mutate = false;
             for (int i = 0; i < 10000 && !connectionGene.isEnabled(); i++) {
-                connectionGene = allConnections[ConstantsAndUtils.getRandomInt(allConnections.length)];
+                connectionGene = allConnections[RandomUtils.getRandomInt(allConnections.length)];
                 mutate = true;
             }
             if (mutate) {
@@ -49,22 +49,22 @@ class Genome implements Comparable<Genome> {
 
     void mutateWithNewConnection() {
         NodeGene[] nodeGenes = nodes.values().toArray(new NodeGene[0]);
-        NodeGene inNode = nodeGenes[ConstantsAndUtils.getRandomInt(nodeGenes.length)];
-        NodeGene outNode = nodeGenes[ConstantsAndUtils.getRandomInt(nodeGenes.length)];
+        NodeGene inNode = nodeGenes[RandomUtils.getRandomInt(nodeGenes.length)];
+        NodeGene outNode = nodeGenes[RandomUtils.getRandomInt(nodeGenes.length)];
         // max loops as this could go on forever.
-        for (int i = 0; i < 10000 && !makeConnection(outNode, inNode, ConstantsAndUtils.getRandomWeight()); i++) {
-            inNode = nodeGenes[ConstantsAndUtils.getRandomInt(nodeGenes.length)];
-            outNode = nodeGenes[ConstantsAndUtils.getRandomInt(nodeGenes.length)];
+        for (int i = 0; i < 10000 && !makeConnection(outNode, inNode, RandomUtils.getRandomWeight()); i++) {
+            inNode = nodeGenes[RandomUtils.getRandomInt(nodeGenes.length)];
+            outNode = nodeGenes[RandomUtils.getRandomInt(nodeGenes.length)];
         }
     }
 
     void mutateConnectionWeights() {
         for (ConnectionGene connectionGene : connections.values()) {
-            if (ConstantsAndUtils.getRandom() <= ConstantsAndUtils.WEIGHT_PERTURBATION_PROBABILITY) {
-                double newWeight = connectionGene.getWeight() + ConstantsAndUtils.getRandomPerturbation();
+            if (RandomUtils.getRandom() <= ConfigurationNetwork.WEIGHT_PERTURBATION_PROBABILITY) {
+                double newWeight = connectionGene.getWeight() + RandomUtils.getRandomPerturbation();
                 connectionGene.setWeight(Math.min(Math.max(newWeight, -1), 1));
             } else {
-                connectionGene.setWeight(ConstantsAndUtils.getRandomWeight());
+                connectionGene.setWeight(RandomUtils.getRandomWeight());
             }
         }
     }

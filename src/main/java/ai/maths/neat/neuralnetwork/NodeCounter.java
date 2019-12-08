@@ -1,19 +1,19 @@
-package ai.maths.neat.utils;
+package ai.maths.neat.neuralnetwork;
 
 import java.util.HashMap;
 
-public class NodeCounter {
+class NodeCounter {
 
     private static int id = 0;
 
-    private static final HashMap<Integer, Integer> innovationsHistory = new HashMap<>();
+    private static HashMap<Integer, Integer> innovationsHistory = new HashMap<>();
 
-    public static int geNewIdForInputOutput() {
+    static int geNewIdForInputOutput() {
         id++;
         return id;
     }
 
-    public static int geNewIdForHidden(int innovation) {
+    static int geNewIdForHidden(int innovation) {
         if (innovationsHistory.containsKey(innovation)) {
             return innovationsHistory.get(innovation);
         } else {
@@ -21,7 +21,11 @@ public class NodeCounter {
             innovationsHistory.put(innovation, id);
             return id;
         }
+    }
 
+    static void resetCounter() {
+        id = 0;
+        innovationsHistory = new HashMap<>();
     }
 
 }

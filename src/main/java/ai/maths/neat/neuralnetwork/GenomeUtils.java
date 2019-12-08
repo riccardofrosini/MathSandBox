@@ -3,7 +3,8 @@ package ai.maths.neat.neuralnetwork;
 import ai.maths.neat.functions.FitnessCalculator;
 import ai.maths.neat.functions.GenomeEvaluator;
 import ai.maths.neat.functions.NodeFunction;
-import ai.maths.neat.utils.ConstantsAndUtils;
+import ai.maths.neat.utils.ConfigurationNetwork;
+import ai.maths.neat.utils.RandomUtils;
 
 import java.util.*;
 import java.util.function.Consumer;
@@ -43,13 +44,13 @@ class GenomeUtils {
                     nextThis = true;
                     nextOther = true;
                 } else if (thisConnection.getInnovation() > otherConnection.getInnovation()) {
-                    if (thisGenome.getFitness() < otherGenome.getFitness() || (thisGenome.getFitness() == otherGenome.getFitness() && ConstantsAndUtils.getRandomBoolean())) {
+                    if (thisGenome.getFitness() < otherGenome.getFitness() || (thisGenome.getFitness() == otherGenome.getFitness() && RandomUtils.getRandomBoolean())) {
                         mergeConnectionToCrossover(crossover, otherConnection);
                     }
                     nextThis = false;
                     nextOther = true;
                 } else if (thisConnection.getInnovation() < otherConnection.getInnovation()) {
-                    if (thisGenome.getFitness() > otherGenome.getFitness() || (thisGenome.getFitness() == otherGenome.getFitness() && ConstantsAndUtils.getRandomBoolean())) {
+                    if (thisGenome.getFitness() > otherGenome.getFitness() || (thisGenome.getFitness() == otherGenome.getFitness() && RandomUtils.getRandomBoolean())) {
                         mergeConnectionToCrossover(crossover, thisConnection);
                     }
                     nextThis = true;
@@ -59,7 +60,7 @@ class GenomeUtils {
                 thisConnection = nextThis ? thisIterator.next() : thisConnection;
                 if (thisConnection.getInnovation() == otherConnection.getInnovation()) {
                     addMatchingConnectionToCrossover(crossover, thisConnection, otherConnection);
-                } else if (thisGenome.getFitness() > otherGenome.getFitness() || (thisGenome.getFitness() == otherGenome.getFitness() && ConstantsAndUtils.getRandomBoolean())) {
+                } else if (thisGenome.getFitness() > otherGenome.getFitness() || (thisGenome.getFitness() == otherGenome.getFitness() && RandomUtils.getRandomBoolean())) {
                     mergeConnectionToCrossover(crossover, thisConnection);
                 }
                 nextThis = true;
@@ -67,7 +68,7 @@ class GenomeUtils {
                 otherConnection = nextOther ? otherIterator.next() : otherConnection;
                 if (thisConnection.getInnovation() == otherConnection.getInnovation()) {
                     addMatchingConnectionToCrossover(crossover, thisConnection, otherConnection);
-                } else if (thisGenome.getFitness() < otherGenome.getFitness() || (thisGenome.getFitness() == otherGenome.getFitness() && ConstantsAndUtils.getRandomBoolean())) {
+                } else if (thisGenome.getFitness() < otherGenome.getFitness() || (thisGenome.getFitness() == otherGenome.getFitness() && RandomUtils.getRandomBoolean())) {
                     mergeConnectionToCrossover(crossover, otherConnection);
                 }
                 nextOther = true;
@@ -79,9 +80,9 @@ class GenomeUtils {
     private static void addMatchingConnectionToCrossover(Genome crossover, ConnectionGene thisConnection, ConnectionGene otherConnection) {
         crossover.makeConnection(crossover.getNodes().get(thisConnection.getInNode().getId()),
                 crossover.getNodes().get(thisConnection.getOutNode().getId()),
-                ConstantsAndUtils.getRandomBoolean() ? thisConnection.getWeight() : otherConnection.getWeight());
+                RandomUtils.getRandomBoolean() ? thisConnection.getWeight() : otherConnection.getWeight());
         if (((thisConnection.isEnabled() ^ otherConnection.isEnabled()) &&
-                (ConstantsAndUtils.getRandom() <= ConstantsAndUtils.DISABLE_CONNECTION_CROSSOVER_PROBABILITY)) ||
+                (RandomUtils.getRandom() <= ConfigurationNetwork.DISABLE_CONNECTION_CROSSOVER_PROBABILITY)) ||
                 (!thisConnection.isEnabled() && !otherConnection.isEnabled())) {
             crossover.getConnections().get(generateInnovation(thisConnection.getInNode(),
                     thisConnection.getOutNode())).disable();
@@ -98,7 +99,7 @@ class GenomeUtils {
     }
 
     static int generateInnovation(NodeGene inNode, NodeGene outNode) {
-        return inNode.getId() + outNode.getId() * ConstantsAndUtils.MAX_NODES;
+        return inNode.getId() + outNode.getId() * ConfigurationNetwork.MAX_NODES;
     }
 
     private static double[] getExcesses_Disjoints_AverageWeightDifferences_Normalisation(Genome thisGenome, Genome otherGenome) {
@@ -162,8 +163,9 @@ class GenomeUtils {
 
     static double calculateDistance(Genome thisGenome, Genome otherGenome) {
         double[] excessDisjointsAverageWeightDifferenceNormalisation = getExcesses_Disjoints_AverageWeightDifferences_Normalisation(thisGenome, otherGenome);
-        return (excessDisjointsAverageWeightDifferenceNormalisation[0] * ConstantsAndUtils.EXCESS_CONSTANT + excessDisjointsAverageWeightDifferenceNormalisation[1] * ConstantsAndUtils.DISJOINT_CONSTANT) / excessDisjointsAverageWeightDifferenceNormalisation[3]
-                + excessDisjointsAverageWeightDifferenceNormalisation[2] * ConstantsAndUtils.WEIGHT_AVERAGE_CONSTANT;
+        return (excessDisjointsAverageWeightDifferenceNormalisation[0] * ConfigurationNetwork.EXCESS_CONSTANT
+                + excessDisjointsAverageWeightDifferenceNormalisation[1] * ConfigurationNetwork.DISJOINT_CONSTANT) / excessDisjointsAverageWeightDifferenceNormalisation[3]
+                + excessDisjointsAverageWeightDifferenceNormalisation[2] * ConfigurationNetwork.WEIGHT_AVERAGE_CONSTANT;
     }
 
 
@@ -185,12 +187,12 @@ class GenomeUtils {
             genome.addOutputNode();
         }
         HashSet<Genome> genomes = new HashSet<>();
-        for (int i = 0; i < ConstantsAndUtils.MAX_POPULATION; i++) {
+        for (int i = 0; i < ConfigurationNetwork.MAX_POPULATION; i++) {
             Genome newGenome = cloneGenome(genome);
             for (int j = 0; j < Math.max(inputNodes, outPutNodes); j++) {
                 newGenome.mutateWithNewConnection();
             }
-            if (ConstantsAndUtils.getRandomBoolean()) {
+            if (RandomUtils.getRandomBoolean()) {
                 newGenome.mutateConnectionByAddingNode();
             }
             updateGenomeFunctionWithFitness.accept(newGenome);
@@ -200,24 +202,24 @@ class GenomeUtils {
     }
 
     private static Genome mutateGenome(Genome genome) {
-        if (ConstantsAndUtils.getRandom() <= ConstantsAndUtils.MUTATE_WEIGHTS_PROBABILITY) {
+        if (RandomUtils.getRandom() <= ConfigurationNetwork.MUTATE_WEIGHTS_PROBABILITY) {
             genome.mutateConnectionWeights();
         }
-        if (ConstantsAndUtils.getRandom() <= ConstantsAndUtils.MUTATE_CONNECTION_BY_ADDING_NODE_PROBABILITY) {
+        if (RandomUtils.getRandom() <= ConfigurationNetwork.MUTATE_CONNECTION_BY_ADDING_NODE_PROBABILITY) {
             genome.mutateConnectionByAddingNode();
         }
-        if (ConstantsAndUtils.getRandom() <= ConstantsAndUtils.MUTATE_ADDING_CONNECTION_PROBABILITY) {
+        if (RandomUtils.getRandom() <= ConfigurationNetwork.MUTATE_ADDING_CONNECTION_PROBABILITY) {
             genome.mutateWithNewConnection();
         }
         return genome;
     }
 
     private static List<Double> genomeEvaluate(Genome genome, double[] inputs, NodeFunction nodeFunction) {
-        HashMap<Integer, NodeGene> nodes = genome.getNodes();
+        Collection<NodeGene> nodes = genome.getNodes().values();
         HashMap<NodeGene, Double> nodeGeneDoubleHashMap = new HashMap<>();
-        while (!nodeGeneDoubleHashMap.keySet().containsAll(nodes.values())) {
+        while (!nodeGeneDoubleHashMap.keySet().containsAll(nodes)) {
             c:
-            for (NodeGene node : nodes.values()) {
+            for (NodeGene node : nodes) {
                 if (!nodeGeneDoubleHashMap.containsKey(node)) {
                     if (node.getType() == NodeGene.Type.INPUT) {
                         nodeGeneDoubleHashMap.put(node, nodeFunction.function(inputs[node.getInputId()]));
@@ -227,7 +229,7 @@ class GenomeUtils {
                             if (backConnection.isEnabled()) {
                                 if (nodeGeneDoubleHashMap.containsKey(backConnection.getInNode())) {
                                     value = value + nodeGeneDoubleHashMap.get(backConnection.getInNode()) * backConnection.getWeight();
-                                } else if (nodes.values().contains(backConnection.getInNode())) {
+                                } else if (nodes.contains(backConnection.getInNode())) {
                                     continue c;
                                 }
                             }

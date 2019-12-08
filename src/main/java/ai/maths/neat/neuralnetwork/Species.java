@@ -1,6 +1,6 @@
 package ai.maths.neat.neuralnetwork;
 
-import ai.maths.neat.utils.ConstantsAndUtils;
+import ai.maths.neat.utils.ConfigurationNetwork;
 
 import java.util.Objects;
 import java.util.TreeSet;
@@ -55,7 +55,7 @@ class Species implements Comparable<Species> {
 
     double computeSumOfAdjustedFitness() {
         return genomes.stream().mapToDouble(genome -> genome.getFitness() /
-                genomes.stream().mapToInt(value -> GenomeUtils.calculateDistance(genome, value) <= ConstantsAndUtils.SPECIES_DELTA_THRESHOLD ? 1 : 0).sum()).sum();
+                genomes.stream().mapToInt(value -> GenomeUtils.calculateDistance(genome, value) <= ConfigurationNetwork.SPECIES_DELTA_THRESHOLD ? 1 : 0).sum()).sum();
 
     }
 

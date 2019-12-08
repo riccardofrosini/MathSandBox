@@ -1,6 +1,7 @@
 package ai.maths.neat.neuralnetwork;
 
-import ai.maths.neat.utils.ConstantsAndUtils;
+import ai.maths.neat.utils.ConfigurationNetwork;
+import ai.maths.neat.utils.RandomUtils;
 
 import java.util.*;
 import java.util.function.Consumer;
@@ -29,12 +30,12 @@ class NeuralNetworks {
 
 
     private void addNewGenomeToPopulation(Genome genome) {
-        if (population.size() >= ConstantsAndUtils.MAX_POPULATION) {
+        if (population.size() >= ConfigurationNetwork.MAX_POPULATION) {
             return;
         }
         for (Species species : speciesCollection) {
             double delta = GenomeUtils.calculateDistance(genome, species.getRepresentative());
-            if (delta <= ConstantsAndUtils.SPECIES_DELTA_THRESHOLD) {
+            if (delta <= ConfigurationNetwork.SPECIES_DELTA_THRESHOLD) {
                 population.add(genome);
                 species.add(genome);
                 return;
@@ -56,7 +57,7 @@ class NeuralNetworks {
     NeuralNetworks nextGeneration(Consumer<Genome> updateGenomeFunctionWithFitness) {
         NeuralNetworks neuralNetworks = new NeuralNetworks();
         //remove species with population stagnates
-        if (stagnation > ConstantsAndUtils.MAX_POPULATION_STAGNATION_GENERATION) {
+        if (stagnation > ConfigurationNetwork.MAX_POPULATION_STAGNATION_GENERATION) {
             List<Species> collect = speciesCollection.stream().sorted().collect(Collectors.toList());
             for (int i = 0; i < collect.size() - 2; i++) {
                 collect.get(i).getGenomes().clear();
@@ -65,7 +66,7 @@ class NeuralNetworks {
         }
         //remove stagnating species and weakest genomes. Copy species with best performing
         for (Species species : speciesCollection) {
-            if (species.getStagnation() > ConstantsAndUtils.MAX_SPECIES_STAGNATION_GENERATION && speciesCollection.size() > 1) {
+            if (species.getStagnation() > ConfigurationNetwork.MAX_SPECIES_STAGNATION_GENERATION && speciesCollection.size() > 1) {
                 species.getGenomes().clear();
             } else if (species.size() > 5) {
                 neuralNetworks.copySpeciesWithBestPerforming(species, species.getGenomes().last());
@@ -91,8 +92,8 @@ class NeuralNetworks {
         speciesToAdjustedFitness = tempSpecies;
         //mutate without crossover
         for (Map.Entry<Species, Double> speciesDoubleEntry : speciesToAdjustedFitness.entrySet()) {
-            double toReproduceNonMating = (ConstantsAndUtils.MAX_POPULATION * speciesDoubleEntry.getValue() *
-                    ConstantsAndUtils.MUTATION_WITHOUT_CROSSOVER) / totalAdjustedFitness;
+            double toReproduceNonMating = (ConfigurationNetwork.MAX_POPULATION * speciesDoubleEntry.getValue() *
+                    ConfigurationNetwork.MUTATION_WITHOUT_CROSSOVER) / totalAdjustedFitness;
             Iterator<Genome> iterator = speciesDoubleEntry.getKey().getGenomes().iterator();
             for (int i = 0; i < toReproduceNonMating && iterator.hasNext(); i++) {
                 Genome next = GenomeUtils.copyAndMutateGenome(iterator.next(), updateGenomeFunctionWithFitness);
@@ -101,21 +102,21 @@ class NeuralNetworks {
         }
         //mutate with crossover
         for (Map.Entry<Species, Double> speciesDoubleEntry : speciesToAdjustedFitness.entrySet()) {
-            double toReproduce = (ConstantsAndUtils.MAX_POPULATION * speciesDoubleEntry.getValue() *
-                    (1 - ConstantsAndUtils.MUTATION_WITHOUT_CROSSOVER)) / totalAdjustedFitness;
+            double toReproduce = (ConfigurationNetwork.MAX_POPULATION * speciesDoubleEntry.getValue() *
+                    (1 - ConfigurationNetwork.MUTATION_WITHOUT_CROSSOVER)) / totalAdjustedFitness;
             for (int i = 0; i < toReproduce; i++) {
                 Genome[] genomes = speciesDoubleEntry.getKey().getGenomes().toArray(new Genome[0]);
-                Genome genome1 = genomes[ConstantsAndUtils.getRandomInt(genomes.length)];
-                Genome genome2 = genomes[ConstantsAndUtils.getRandomInt(genomes.length)];
+                Genome genome1 = genomes[RandomUtils.getRandomInt(genomes.length)];
+                Genome genome2 = genomes[RandomUtils.getRandomInt(genomes.length)];
                 Genome crossover = GenomeUtils.crossoverAndMutateGenome(genome1, genome2, updateGenomeFunctionWithFitness);
                 neuralNetworks.addNewGenomeToPopulation(crossover);
             }
         }
         //Interspecies crossover
-        for (int i = 0; i < ConstantsAndUtils.MAX_POPULATION * ConstantsAndUtils.INTERSPECIES_MATING_RATE; i++) {
+        for (int i = 0; i < ConfigurationNetwork.MAX_POPULATION * ConfigurationNetwork.INTERSPECIES_MATING_RATE; i++) {
             Species[] species = speciesToAdjustedFitness.keySet().toArray(new Species[0]);
-            Genome genome1 = species[ConstantsAndUtils.getRandomInt(species.length)].getGenomes().last();
-            Genome genome2 = species[ConstantsAndUtils.getRandomInt(species.length)].getGenomes().last();
+            Genome genome1 = species[RandomUtils.getRandomInt(species.length)].getGenomes().last();
+            Genome genome2 = species[RandomUtils.getRandomInt(species.length)].getGenomes().last();
             Genome crossover = GenomeUtils.crossoverAndMutateGenome(genome1, genome2, updateGenomeFunctionWithFitness);
             neuralNetworks.addNewGenomeToPopulation(crossover);
         }
@@ -151,5 +152,9 @@ class NeuralNetworks {
 
     TreeSet<Genome> getPopulation() {
         return population;
+    }
+
+    int numberOfSpecies() {
+        return speciesCollection.size();
     }
 }

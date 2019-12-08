@@ -1,35 +1,39 @@
 package ai.maths.neat;
 
 import ai.maths.neat.functions.GenomeEvaluator;
-import ai.maths.neat.functions.LinearFunction;
 import ai.maths.neat.neuralnetwork.NeuralNetworkTrainer;
-
-import java.util.List;
+import ai.maths.neat.utils.ConfigurationNetwork;
+import ai.maths.neat.utils.NodeFunctionsCreator;
 
 public class TrainingTester {
 
 
     public static void main(String[] args) {
-        LinearFunction linearFunction = new LinearFunction();
-        GenomeEvaluator genomeEvaluator = NeuralNetworkTrainer.train(2, 1, 30, neuralNetworkEvaluator -> {
+        ConfigurationNetwork.setSpeciesDeltaThreshold(0.1);
+        GenomeEvaluator genomeEvaluator = NeuralNetworkTrainer.train(2, 1, 100, neuralNetworkEvaluator -> {
 
             double[] input = {3, 4};
-            List<Double> evaluate = neuralNetworkEvaluator.evaluateGenome(input);
-            Double aDouble = evaluate.get(0);
+            Double aDouble = neuralNetworkEvaluator.evaluateGenome(input).get(0);
             double score = Math.abs(aDouble - (double) 7);
 
             double[] input1 = {2, 1};
-            evaluate = neuralNetworkEvaluator.evaluateGenome(input1);
-            aDouble = evaluate.get(0);
+            aDouble = neuralNetworkEvaluator.evaluateGenome(input1).get(0);
             score += Math.abs(aDouble - (double) 3);
 
             double[] input2 = {1, 2};
-            evaluate = neuralNetworkEvaluator.evaluateGenome(input2);
-            aDouble = evaluate.get(0);
+            aDouble = neuralNetworkEvaluator.evaluateGenome(input2).get(0);
             score += Math.abs(aDouble - (double) 3);
 
+            double[] input3 = {1, 1};
+            aDouble = neuralNetworkEvaluator.evaluateGenome(input3).get(0);
+            score += Math.abs(aDouble - (double) 2);
+
+            double[] input4 = {3, 1};
+            aDouble = neuralNetworkEvaluator.evaluateGenome(input4).get(0);
+            score += Math.abs(aDouble - (double) 4);
+
             return score == 0 ? 2000000000 : 1 / score;
-        }, linearFunction);
+        }, NodeFunctionsCreator.linearUnit());
 
 
         double[] input = {3, 4};
@@ -38,6 +42,11 @@ public class TrainingTester {
         System.out.println(genomeEvaluator.evaluateGenome(input1).get(0));
         double[] input2 = {1, 2};
         System.out.println(genomeEvaluator.evaluateGenome(input2).get(0));
+        double[] input3 = {1, 1};
+        System.out.println(genomeEvaluator.evaluateGenome(input3).get(0));
+        double[] input4 = {3, 1};
+        System.out.println(genomeEvaluator.evaluateGenome(input4).get(0));
+
 
     }
 }

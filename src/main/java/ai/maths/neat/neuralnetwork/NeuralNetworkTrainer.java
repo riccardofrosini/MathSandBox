@@ -15,13 +15,18 @@ public class NeuralNetworkTrainer {
 
         NeuralNetworks neuralNetworks = new NeuralNetworks(GenomeUtils.makeRandomTopologyGenomes(inputs, outputs, updateGenomeFunctionWithFitness));
         Genome bestGenome = neuralNetworks.getPopulation().last();
+        System.out.println("Generation 0: best genome fitness " + bestGenome.getFitness());
+        System.out.println("              number of species " + neuralNetworks.numberOfSpecies());
         for (int i = 0; i < generations; i++) {
             neuralNetworks = neuralNetworks.nextGeneration(updateGenomeFunctionWithFitness);
             Genome thisGenerationBestGenome = neuralNetworks.getPopulation().last();
+            System.out.println("Generation " + (i + 1) + ": best genome fitness " + thisGenerationBestGenome.getFitness());
+            System.out.println("             number of species " + neuralNetworks.numberOfSpecies());
             if (thisGenerationBestGenome.getFitness() > bestGenome.getFitness()) {
                 bestGenome = thisGenerationBestGenome;
             }
         }
-        return GenomeUtils.getGenomeEvaluator(neuralNetworks.getPopulation().last(), nodeFunction);
+        NodeCounter.resetCounter();
+        return GenomeUtils.getGenomeEvaluator(bestGenome, nodeFunction);
     }
 }
