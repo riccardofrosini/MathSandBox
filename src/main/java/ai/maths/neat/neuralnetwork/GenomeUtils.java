@@ -1,8 +1,8 @@
 package ai.maths.neat.neuralnetwork;
 
-import ai.maths.neat.functions.FitnessCalculator;
-import ai.maths.neat.functions.GenomeEvaluator;
-import ai.maths.neat.functions.NodeFunction;
+import ai.maths.neat.neuralnetwork.functions.FitnessCalculator;
+import ai.maths.neat.neuralnetwork.functions.GenomeEvaluator;
+import ai.maths.neat.neuralnetwork.functions.NodeFunction;
 import ai.maths.neat.utils.ConfigurationNetwork;
 import ai.maths.neat.utils.RandomUtils;
 

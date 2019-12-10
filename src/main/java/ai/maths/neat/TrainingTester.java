@@ -1,7 +1,7 @@
 package ai.maths.neat;
 
-import ai.maths.neat.functions.GenomeEvaluator;
 import ai.maths.neat.neuralnetwork.NeuralNetworkTrainer;
+import ai.maths.neat.neuralnetwork.functions.GenomeEvaluator;
 import ai.maths.neat.utils.ConfigurationNetwork;
 import ai.maths.neat.utils.NodeFunctionsCreator;
 

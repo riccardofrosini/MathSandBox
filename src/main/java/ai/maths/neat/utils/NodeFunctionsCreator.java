@@ -1,6 +1,6 @@
 package ai.maths.neat.utils;
 
-import ai.maths.neat.functions.NodeFunction;
+import ai.maths.neat.neuralnetwork.functions.NodeFunction;
 
 public class NodeFunctionsCreator {
 

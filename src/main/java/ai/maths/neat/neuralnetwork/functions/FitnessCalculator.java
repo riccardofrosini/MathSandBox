@@ -1,4 +1,4 @@
-package ai.maths.neat.functions;
+package ai.maths.neat.neuralnetwork.functions;
 
 
 @FunctionalInterface
