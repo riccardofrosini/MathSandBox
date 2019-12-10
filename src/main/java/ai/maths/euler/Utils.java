@@ -1,4 +1,4 @@
-package ai.maths;
+package ai.maths.euler;
 
 import java.math.BigInteger;
 

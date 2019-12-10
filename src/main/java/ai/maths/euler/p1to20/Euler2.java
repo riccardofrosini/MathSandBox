@@ -1,6 +1,6 @@
 package ai.maths.euler.p1to20;
 
-import ai.maths.Utils;
+import ai.maths.euler.Utils;
 
 public class Euler2 {
     public static void main(String[] args) {

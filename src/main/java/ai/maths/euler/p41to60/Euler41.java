@@ -1,6 +1,6 @@
 package ai.maths.euler.p41to60;
 
-import ai.maths.Utils;
+import ai.maths.euler.Utils;
 
 import java.util.HashMap;
 import java.util.Map;

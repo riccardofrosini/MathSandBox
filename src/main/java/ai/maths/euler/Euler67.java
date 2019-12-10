@@ -1,8 +1,6 @@
 package ai.maths.euler;
 
 
-import ai.maths.Utils;
-
 public class Euler67 {
     public static void main(String[] args) {
         int[][] pyramid = {{59},

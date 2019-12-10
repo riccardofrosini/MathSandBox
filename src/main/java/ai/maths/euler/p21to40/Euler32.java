@@ -1,6 +1,6 @@
 package ai.maths.euler.p21to40;
 
-import ai.maths.Utils;
+import ai.maths.euler.Utils;
 
 import java.util.HashSet;
 
