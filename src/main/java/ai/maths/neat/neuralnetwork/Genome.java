@@ -32,10 +32,11 @@ class Genome implements Comparable<Genome> {
         if (!connections.isEmpty()) {
             ConnectionGene[] allConnections = connections.values().toArray(new ConnectionGene[0]);
             ConnectionGene connectionGene = allConnections[RandomUtils.getRandomInt(allConnections.length)];
-            for (int i = 0; i < 10000 && !connectionGene.isEnabled(); i++) {
+            for (int i = 0; i < 10000 && (!connectionGene.isEnabled() ||
+                    nodes.containsKey(NodeCounter.geNewIdForHidden(connectionGene.getInnovation()))); i++) {
                 connectionGene = allConnections[RandomUtils.getRandomInt(allConnections.length)];
             }
-            if (connectionGene.isEnabled()) {
+            if (connectionGene.isEnabled() && !nodes.containsKey(NodeCounter.geNewIdForHidden(connectionGene.getInnovation()))) {
                 connectionGene.disable();
                 NodeGene nodeGene = new NodeGene(NodeCounter.geNewIdForHidden(connectionGene.getInnovation()), NodeGene.Type.HIDDEN);
                 nodes.put(nodeGene.getId(), nodeGene);
@@ -90,16 +91,15 @@ class Genome implements Comparable<Genome> {
 
     private boolean containsBackwardConnection(NodeGene inNode, NodeGene outNode) {
         Set<NodeGene> backConnections = inNode.getBackConnections().stream().map(ConnectionGene::getInNode).collect(Collectors.toSet());
-        HashSet<NodeGene> nodeGenes = new HashSet<>();
         while (!backConnections.isEmpty()) {
             if (backConnections.contains(outNode)) {
                 return true;
             }
+            HashSet<NodeGene> tempNodeGenes = new HashSet<>();
             for (NodeGene backConnection : backConnections) {
-                nodeGenes.addAll(backConnection.getBackConnections().stream().map(ConnectionGene::getInNode).collect(Collectors.toSet()));
+                tempNodeGenes.addAll(backConnection.getBackConnections().stream().map(ConnectionGene::getInNode).collect(Collectors.toSet()));
             }
-            backConnections = nodeGenes;
-            nodeGenes = new HashSet<>();
+            backConnections = tempNodeGenes;
         }
         return false;
     }
