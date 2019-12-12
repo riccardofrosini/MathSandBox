@@ -50,7 +50,7 @@ class Genome implements Comparable<Genome> {
         NodeGene inNode = nodeGenes[RandomUtils.getRandomInt(nodeGenes.length)];
         NodeGene outNode = nodeGenes[RandomUtils.getRandomInt(nodeGenes.length)];
         // max loops as this could go on forever.
-        for (int i = 0; i < 10000 && !makeConnection(outNode, inNode, RandomUtils.getRandomWeight()); i++) {
+        for (int i = 0; i < 10000 && !makeConnection(inNode, outNode, RandomUtils.getRandomWeight()); i++) {
             inNode = nodeGenes[RandomUtils.getRandomInt(nodeGenes.length)];
             outNode = nodeGenes[RandomUtils.getRandomInt(nodeGenes.length)];
         }

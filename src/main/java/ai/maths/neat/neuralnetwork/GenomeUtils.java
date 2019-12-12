@@ -174,6 +174,10 @@ class GenomeUtils {
         genome.copyNodesTo(clone);
         for (ConnectionGene connection : genome.getConnections().values()) {
             clone.addConnection(clone.getNodes().get(connection.getInNode().getId()), clone.getNodes().get(connection.getOutNode().getId()), connection.getWeight());
+            ConnectionGene connectionGene = clone.getConnections().get(connection.getInnovation());
+            if (!connection.isEnabled()) {
+                connectionGene.disable();
+            }
         }
         return clone;
     }

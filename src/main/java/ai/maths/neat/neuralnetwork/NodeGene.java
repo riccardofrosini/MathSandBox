@@ -31,7 +31,7 @@ class NodeGene {
 
     //Genome will check for duplicates and disabled connections
     void addBackConnection(ConnectionGene connectionGene) {
-        if (connectionGene.getOutNode().equals(this)) {
+        if (equals(connectionGene.getOutNode())) {
             backConnections.add(connectionGene);
         }
     }
