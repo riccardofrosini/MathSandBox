@@ -32,12 +32,10 @@ class Genome implements Comparable<Genome> {
         if (!connections.isEmpty()) {
             ConnectionGene[] allConnections = connections.values().toArray(new ConnectionGene[0]);
             ConnectionGene connectionGene = allConnections[RandomUtils.getRandomInt(allConnections.length)];
-            boolean mutate = false;
             for (int i = 0; i < 10000 && !connectionGene.isEnabled(); i++) {
                 connectionGene = allConnections[RandomUtils.getRandomInt(allConnections.length)];
-                mutate = true;
             }
-            if (mutate) {
+            if (connectionGene.isEnabled()) {
                 connectionGene.disable();
                 NodeGene nodeGene = new NodeGene(NodeCounter.geNewIdForHidden(connectionGene.getInnovation()), NodeGene.Type.HIDDEN);
                 nodes.put(nodeGene.getId(), nodeGene);
@@ -128,14 +126,19 @@ class Genome implements Comparable<Genome> {
 
     void copyNodesTo(Genome clone) {
         for (NodeGene node : nodes.values()) {
-            NodeGene nodeGene = node.getType() == NodeGene.Type.INPUT ?
-                    new NodeGene(node.getId(), node.getInputId()) :
-                    new NodeGene(node.getId(), node.getType());
-            clone.nodes.put(node.getId(), nodeGene);
-            if (node.getType() == NodeGene.Type.OUTPUT && !clone.outputNodes.contains(nodeGene)) {
-                clone.outputNodes.add(nodeGene);
-            }
+            copyNodeTo(node, clone);
         }
+    }
+
+    static void copyNodeTo(NodeGene node, Genome clone) {
+        NodeGene nodeGene = node.getType() == NodeGene.Type.INPUT ?
+                new NodeGene(node.getId(), node.getInputId()) :
+                new NodeGene(node.getId(), node.getType());
+        clone.nodes.put(node.getId(), nodeGene);
+        if (node.getType() == NodeGene.Type.OUTPUT && !clone.outputNodes.contains(nodeGene)) {
+            clone.outputNodes.add(nodeGene);
+        }
+
     }
 
     @Override
