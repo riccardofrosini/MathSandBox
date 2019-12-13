@@ -29,8 +29,8 @@ class GenomeUtils {
         thisGenome.copyNodesTo(crossover);
         otherGenome.copyNodesTo(crossover);
 
-        Iterator<ConnectionGene> thisIterator = thisGenome.getConnections().values().iterator();
-        Iterator<ConnectionGene> otherIterator = otherGenome.getConnections().values().iterator();
+        Iterator<ConnectionGene> thisIterator = thisGenome.getConnections();
+        Iterator<ConnectionGene> otherIterator = otherGenome.getConnections();
         boolean nextThis = true;
         boolean nextOther = true;
         ConnectionGene thisConnection = null;
@@ -78,28 +78,28 @@ class GenomeUtils {
     }
 
     private static void addMatchingConnectionToCrossover(Genome crossover, ConnectionGene thisConnection, ConnectionGene otherConnection) {
-        crossover.makeConnection(crossover.getNodes().get(thisConnection.getInNode().getId()),
-                crossover.getNodes().get(thisConnection.getOutNode().getId()),
+        crossover.makeConnection(thisConnection.getInNode(),
+                thisConnection.getOutNode(),
                 RandomUtils.getRandomBoolean() ? thisConnection.getWeight() : otherConnection.getWeight());
         if (((thisConnection.isEnabled() ^ otherConnection.isEnabled()) &&
                 (RandomUtils.getRandom() <= ConfigurationNetwork.DISABLE_CONNECTION_CROSSOVER_PROBABILITY)) ||
                 (!thisConnection.isEnabled() && !otherConnection.isEnabled())) {
-            crossover.getConnections().get(generateInnovation(thisConnection.getInNode(),
+            crossover.getConnectionWithInnovationNumber(generateInnovation(thisConnection.getInNode(),
                     thisConnection.getOutNode())).disable();
         }
     }
 
     private static void mergeConnectionToCrossover(Genome crossover, ConnectionGene connection) {
-        crossover.makeConnection(crossover.getNodes().get(connection.getInNode().getId()),
-                crossover.getNodes().get(connection.getOutNode().getId()), connection.getWeight());
+        crossover.makeConnection(connection.getInNode(),
+                connection.getOutNode(), connection.getWeight());
         if (!connection.isEnabled()) {
-            crossover.getConnections().get(generateInnovation(connection.getInNode(),
+            crossover.getConnectionWithInnovationNumber(generateInnovation(connection.getInNode(),
                     connection.getOutNode())).disable();
         }
     }
 
-    static int generateInnovation(NodeGene inNode, NodeGene outNode) {
-        return inNode.getId() + outNode.getId() * ConfigurationNetwork.MAX_NODES;
+    static int generateInnovation(int inNode, int outNode) {
+        return inNode + outNode * ConfigurationNetwork.MAX_NODES;
     }
 
     private static double[] getExcesses_Disjoints_AverageWeightDifferences_Normalisation(Genome thisGenome, Genome otherGenome) {
@@ -107,8 +107,8 @@ class GenomeUtils {
         int disjoints = 0;
         double averageWeights = 0;
         int matching = 0;
-        Iterator<ConnectionGene> thisIterator = thisGenome.getConnections().values().iterator();
-        Iterator<ConnectionGene> otherIterator = otherGenome.getConnections().values().iterator();
+        Iterator<ConnectionGene> thisIterator = thisGenome.getConnections();
+        Iterator<ConnectionGene> otherIterator = otherGenome.getConnections();
         boolean nextThis = true;
         boolean nextOther = true;
         ConnectionGene thisConnection = null;
@@ -156,8 +156,8 @@ class GenomeUtils {
             }
         }
         averageWeights = averageWeights / matching;
-        int thisSize = thisGenome.getConnections().size();
-        int otherSize = otherGenome.getConnections().size();
+        int thisSize = thisGenome.getNumberOfConnections();
+        int otherSize = otherGenome.getNumberOfConnections();
         return new double[]{excesses, disjoints, averageWeights, thisSize < 20 && otherSize < 20 ? 1 : Math.max(thisSize, otherSize)};
     }
 
@@ -172,9 +172,11 @@ class GenomeUtils {
     private static Genome cloneGenome(Genome genome) {
         Genome clone = new Genome();
         genome.copyNodesTo(clone);
-        for (ConnectionGene connection : genome.getConnections().values()) {
-            clone.addConnection(clone.getNodes().get(connection.getInNode().getId()), clone.getNodes().get(connection.getOutNode().getId()), connection.getWeight());
-            ConnectionGene connectionGene = clone.getConnections().get(connection.getInnovation());
+        Iterator<ConnectionGene> connections = genome.getConnections();
+        while (connections.hasNext()) {
+            ConnectionGene connection = connections.next();
+            clone.addConnection(connection.getInNode(), connection.getOutNode(), connection.getWeight());
+            ConnectionGene connectionGene = clone.getConnectionWithInnovationNumber(connection.getInnovation());
             if (!connection.isEnabled()) {
                 connectionGene.disable();
             }
@@ -219,7 +221,7 @@ class GenomeUtils {
     }
 
     private static List<Double> genomeEvaluate(Genome genome, double[] inputs, NodeFunction nodeFunction) {
-        Collection<NodeGene> nodes = genome.getNodes().values();
+        Collection<NodeGene> nodes = genome.getNodes();
         HashMap<NodeGene, Double> nodeGeneDoubleHashMap = new HashMap<>();
         while (!nodeGeneDoubleHashMap.keySet().containsAll(nodes)) {
             c:

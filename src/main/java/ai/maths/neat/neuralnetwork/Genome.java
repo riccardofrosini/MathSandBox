@@ -19,9 +19,12 @@ class Genome implements Comparable<Genome> {
         nodes = new HashMap<>();
     }
 
-    void addConnection(NodeGene inNode, NodeGene outNode, double weight) {
-        ConnectionGene connectionGene = new ConnectionGene(inNode, outNode, weight);
-        outNode.addBackConnection(connectionGene);
+    void addConnection(int inNodeId, int outNodeId, double weight) {
+        if (!nodes.containsKey(outNodeId) || !nodes.containsKey(inNodeId)) {
+            throw new RuntimeException("Missing nodes when adding connections.");
+        }
+        ConnectionGene connectionGene = new ConnectionGene(inNodeId, outNodeId, weight);
+        nodes.get(outNodeId).addBackConnection(connectionGene);
         connections.put(connectionGene.getInnovation(), connectionGene);
     }
 
@@ -40,8 +43,8 @@ class Genome implements Comparable<Genome> {
                 connectionGene.disable();
                 NodeGene nodeGene = new NodeGene(NodeCounter.geNewIdForHidden(connectionGene.getInnovation()), NodeGene.Type.HIDDEN);
                 nodes.put(nodeGene.getId(), nodeGene);
-                addConnection(connectionGene.getInNode(), nodeGene, 1);
-                addConnection(nodeGene, connectionGene.getOutNode(), connectionGene.getWeight());
+                addConnection(connectionGene.getInNode(), nodeGene.getId(), 1);
+                addConnection(nodeGene.getId(), connectionGene.getOutNode(), connectionGene.getWeight());
             }
         }
     }
@@ -51,7 +54,7 @@ class Genome implements Comparable<Genome> {
         NodeGene inNode = nodeGenes[RandomUtils.getRandomInt(nodeGenes.length)];
         NodeGene outNode = nodeGenes[RandomUtils.getRandomInt(nodeGenes.length)];
         // max loops as this could go on forever.
-        for (int i = 0; i < 10000 && !makeConnection(inNode, outNode, RandomUtils.getRandomWeight()); i++) {
+        for (int i = 0; i < 10000 && !makeConnection(inNode.getId(), outNode.getId(), RandomUtils.getRandomWeight()); i++) {
             inNode = nodeGenes[RandomUtils.getRandomInt(nodeGenes.length)];
             outNode = nodeGenes[RandomUtils.getRandomInt(nodeGenes.length)];
         }
@@ -68,11 +71,13 @@ class Genome implements Comparable<Genome> {
         }
     }
 
-    boolean makeConnection(NodeGene inNode, NodeGene outNode, double weight) {
-        if (!inNode.equals(outNode) && !connections.containsKey(GenomeUtils.generateInnovation(inNode, outNode)) &&
+    boolean makeConnection(int inNodeId, int outNodeId, double weight) {
+        NodeGene inNode = nodes.get(inNodeId);
+        NodeGene outNode = nodes.get(outNodeId);
+        if (inNodeId != outNodeId && !connections.containsKey(GenomeUtils.generateInnovation(inNodeId, outNodeId)) &&
                 outNode.getType() != NodeGene.Type.INPUT &&
                 inNode.getType() != NodeGene.Type.OUTPUT && !containsBackwardConnection(inNode, outNode)) {
-            addConnection(inNode, outNode, weight);
+            addConnection(inNodeId, outNodeId, weight);
             return true;
         }
         return false;
@@ -90,14 +95,14 @@ class Genome implements Comparable<Genome> {
     }
 
     private boolean containsBackwardConnection(NodeGene inNode, NodeGene outNode) {
-        Set<NodeGene> backConnections = inNode.getBackConnections().stream().map(ConnectionGene::getInNode).collect(Collectors.toSet());
+        Set<Integer> backConnections = inNode.getBackConnections().stream().map(ConnectionGene::getInNode).collect(Collectors.toSet());
         while (!backConnections.isEmpty()) {
             if (backConnections.contains(outNode)) {
                 return true;
             }
-            HashSet<NodeGene> tempNodeGenes = new HashSet<>();
-            for (NodeGene backConnection : backConnections) {
-                tempNodeGenes.addAll(backConnection.getBackConnections().stream().map(ConnectionGene::getInNode).collect(Collectors.toSet()));
+            HashSet<Integer> tempNodeGenes = new HashSet<>();
+            for (Integer backConnection : backConnections) {
+                tempNodeGenes.addAll(nodes.get(backConnection).getBackConnections().stream().map(ConnectionGene::getInNode).collect(Collectors.toSet()));
             }
             backConnections = tempNodeGenes;
         }
@@ -112,12 +117,20 @@ class Genome implements Comparable<Genome> {
         this.fitness = fitness;
     }
 
-    SortedMap<Integer, ConnectionGene> getConnections() {
-        return connections;
+    Iterator<ConnectionGene> getConnections() {
+        return connections.values().iterator();
     }
 
-    HashMap<Integer, NodeGene> getNodes() {
-        return nodes;
+    int getNumberOfConnections() {
+        return connections.size();
+    }
+
+    ConnectionGene getConnectionWithInnovationNumber(int innovation) {
+        return connections.get(innovation);
+    }
+
+    Collection<NodeGene> getNodes() {
+        return nodes.values();
     }
 
     ArrayList<NodeGene> getOutputNodes() {

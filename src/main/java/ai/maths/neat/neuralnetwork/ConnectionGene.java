@@ -4,13 +4,13 @@ import java.util.Objects;
 
 class ConnectionGene implements Comparable<ConnectionGene> {
 
-    private final NodeGene inNode;
-    private final NodeGene outNode;
+    private final int inNode;
+    private final int outNode;
     private final int innovation;
     private double weight;
     private boolean enabled;
 
-    ConnectionGene(NodeGene inNode, NodeGene outNode, double weight) {
+    ConnectionGene(int inNode, int outNode, double weight) {
         this.inNode = inNode;
         this.outNode = outNode;
         this.weight = weight;
@@ -18,11 +18,11 @@ class ConnectionGene implements Comparable<ConnectionGene> {
         this.enabled = true;
     }
 
-    NodeGene getInNode() {
+    int getInNode() {
         return inNode;
     }
 
-    NodeGene getOutNode() {
+    int getOutNode() {
         return outNode;
     }
 

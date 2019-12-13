@@ -1,7 +1,7 @@
 package ai.maths.neat.neuralnetwork;
 
-import java.util.HashSet;
 import java.util.Objects;
+import java.util.TreeSet;
 
 class NodeGene {
 
@@ -14,25 +14,27 @@ class NodeGene {
     private int inputId;
     private final int id;
     private final Type type;
-    private final HashSet<ConnectionGene> backConnections;
+    private final TreeSet<ConnectionGene> backConnections;
 
     NodeGene(int id, Type type) {
         this.id = id;
         this.type = type;
-        this.backConnections = new HashSet<>();
+        this.backConnections = new TreeSet<>();
     }
 
     NodeGene(int id, int inputId) {
         this.inputId = inputId;
         this.id = id;
         this.type = Type.INPUT;
-        this.backConnections = new HashSet<>(0);
+        this.backConnections = new TreeSet<>();
     }
 
     //Genome will check for duplicates and disabled connections
     void addBackConnection(ConnectionGene connectionGene) {
-        if (equals(connectionGene.getOutNode())) {
+        if (id == connectionGene.getOutNode()) {
             backConnections.add(connectionGene);
+        } else {
+            throw new RuntimeException("Adding connection with wrong outNodeId");
         }
     }
 
@@ -48,7 +50,7 @@ class NodeGene {
         return inputId;
     }
 
-    HashSet<ConnectionGene> getBackConnections() {
+    TreeSet<ConnectionGene> getBackConnections() {
         return backConnections;
     }
 
