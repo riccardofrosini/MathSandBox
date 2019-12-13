@@ -17,16 +17,19 @@ public class NeuralNetworkTrainer {
         Genome bestGenome = neuralNetworks.getPopulation().last();
         System.out.println("Generation 0: best genome fitness " + bestGenome.getFitness());
         System.out.println("              number of species " + neuralNetworks.numberOfSpecies());
+        System.out.println(GenomeSerializerDeserializer.toJson(bestGenome));
         for (int i = 0; i < generations; i++) {
             neuralNetworks = neuralNetworks.nextGeneration(updateGenomeFunctionWithFitness);
             Genome thisGenerationBestGenome = neuralNetworks.getPopulation().last();
             System.out.println("Generation " + (i + 1) + ": best genome fitness " + thisGenerationBestGenome.getFitness());
             System.out.println("             number of species " + neuralNetworks.numberOfSpecies());
+            System.out.println(GenomeSerializerDeserializer.toJson(thisGenerationBestGenome));
             if (thisGenerationBestGenome.getFitness() > bestGenome.getFitness()) {
                 bestGenome = thisGenerationBestGenome;
             }
         }
         NodeCounter.resetCounter();
+        System.out.println(GenomeSerializerDeserializer.toJson(bestGenome));
         return GenomeUtils.getGenomeEvaluator(bestGenome, nodeFunction);
     }
 }

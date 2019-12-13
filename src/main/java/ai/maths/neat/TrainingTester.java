@@ -9,8 +9,8 @@ public class TrainingTester {
 
 
     public static void main(String[] args) {
-        ConfigurationNetwork.setSpeciesDeltaThreshold(0.2);
-        NeuralNetworkTrainer.train(9, 1, 100, NodeFunctionsCreator.rectifiedLinearUnit(), genomeEvaluator -> {
+        ConfigurationNetwork.SPECIES_DELTA_THRESHOLD = 3;
+        GenomeEvaluator geno = NeuralNetworkTrainer.train(9, 1, 100, NodeFunctionsCreator.getSimpleSigmoid(), genomeEvaluator -> {
                     double score = 0;
                     double[] input1 =
                             {-1, 0, 1,
@@ -62,6 +62,7 @@ public class TrainingTester {
         }
         return -10000;
     }
+
 
     public static void main1(String[] args) {
         ConfigurationNetwork.setSpeciesDeltaThreshold(0.1);
