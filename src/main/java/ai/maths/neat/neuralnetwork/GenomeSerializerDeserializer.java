@@ -5,6 +5,7 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
 
 import java.util.List;
+import java.util.TreeSet;
 
 public class GenomeSerializerDeserializer {
 
@@ -25,7 +26,7 @@ public class GenomeSerializerDeserializer {
         for (ConnectionGene connection : genomeDeserialization.stream().map(NodeGene::getBackConnections).reduce((accumulator, connectionGenes) -> {
             accumulator.addAll(connectionGenes);
             return accumulator;
-        }).get()) {
+        }).orElse(new TreeSet<>())) {
             genome.addConnection(connection.getInNode(), connection.getOutNode(), connection.getWeight());
             if (!connection.isEnabled()) {
                 genome.getConnectionWithInnovationNumber(connection.getInnovation()).disable();

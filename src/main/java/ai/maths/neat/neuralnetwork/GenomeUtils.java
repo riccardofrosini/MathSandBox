@@ -29,8 +29,8 @@ class GenomeUtils {
         thisGenome.copyNodesTo(crossover);
         otherGenome.copyNodesTo(crossover);
 
-        Iterator<ConnectionGene> thisIterator = thisGenome.getConnections();
-        Iterator<ConnectionGene> otherIterator = otherGenome.getConnections();
+        Iterator<ConnectionGene> thisIterator = thisGenome.getConnections().iterator();
+        Iterator<ConnectionGene> otherIterator = otherGenome.getConnections().iterator();
         boolean nextThis = true;
         boolean nextOther = true;
         ConnectionGene thisConnection = null;
@@ -107,8 +107,8 @@ class GenomeUtils {
         int disjoints = 0;
         double averageWeights = 0;
         int matching = 0;
-        Iterator<ConnectionGene> thisIterator = thisGenome.getConnections();
-        Iterator<ConnectionGene> otherIterator = otherGenome.getConnections();
+        Iterator<ConnectionGene> thisIterator = thisGenome.getConnections().iterator();
+        Iterator<ConnectionGene> otherIterator = otherGenome.getConnections().iterator();
         boolean nextThis = true;
         boolean nextOther = true;
         ConnectionGene thisConnection = null;
@@ -172,9 +172,7 @@ class GenomeUtils {
     private static Genome cloneGenome(Genome genome) {
         Genome clone = new Genome();
         genome.copyNodesTo(clone);
-        Iterator<ConnectionGene> connections = genome.getConnections();
-        while (connections.hasNext()) {
-            ConnectionGene connection = connections.next();
+        for (ConnectionGene connection : genome.getConnections()) {
             clone.addConnection(connection.getInNode(), connection.getOutNode(), connection.getWeight());
             ConnectionGene connectionGene = clone.getConnectionWithInnovationNumber(connection.getInnovation());
             if (!connection.isEnabled()) {

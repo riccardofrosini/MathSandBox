@@ -35,13 +35,15 @@ class Genome implements Comparable<Genome> {
         if (!connections.isEmpty()) {
             ConnectionGene[] allConnections = connections.values().toArray(new ConnectionGene[0]);
             ConnectionGene connectionGene = allConnections[RandomUtils.getRandomInt(allConnections.length)];
+            int newIdForHiddenNode = NodeCounter.getNewIdForHiddenNode(connectionGene.getInnovation());
             for (int i = 0; i < 10000 && (!connectionGene.isEnabled() ||
-                    nodes.containsKey(NodeCounter.geNewIdForHidden(connectionGene.getInnovation()))); i++) {
+                    nodes.containsKey(newIdForHiddenNode)); i++) {
                 connectionGene = allConnections[RandomUtils.getRandomInt(allConnections.length)];
+                newIdForHiddenNode = NodeCounter.getNewIdForHiddenNode(connectionGene.getInnovation());
             }
-            if (connectionGene.isEnabled() && !nodes.containsKey(NodeCounter.geNewIdForHidden(connectionGene.getInnovation()))) {
+            if (connectionGene.isEnabled() && !nodes.containsKey(newIdForHiddenNode)) {
                 connectionGene.disable();
-                NodeGene nodeGene = new NodeGene(NodeCounter.geNewIdForHidden(connectionGene.getInnovation()), NodeGene.Type.HIDDEN);
+                NodeGene nodeGene = new NodeGene(newIdForHiddenNode, NodeGene.Type.HIDDEN);
                 nodes.put(nodeGene.getId(), nodeGene);
                 addConnection(connectionGene.getInNode(), nodeGene.getId(), 1);
                 addConnection(nodeGene.getId(), connectionGene.getOutNode(), connectionGene.getWeight());
@@ -84,12 +86,12 @@ class Genome implements Comparable<Genome> {
     }
 
     void addInputNode(int inputId) {
-        NodeGene nodeGene = new NodeGene(NodeCounter.geNewIdForInputOutput(), inputId);
+        NodeGene nodeGene = new NodeGene(NodeCounter.getNewIdForInputOutputNode(), inputId);
         nodes.put(nodeGene.getId(), nodeGene);
     }
 
     void addOutputNode() {
-        NodeGene nodeGene = new NodeGene(NodeCounter.geNewIdForInputOutput(), NodeGene.Type.OUTPUT);
+        NodeGene nodeGene = new NodeGene(NodeCounter.getNewIdForInputOutputNode(), NodeGene.Type.OUTPUT);
         nodes.put(nodeGene.getId(), nodeGene);
         outputNodes.add(nodeGene);
     }
@@ -117,8 +119,8 @@ class Genome implements Comparable<Genome> {
         this.fitness = fitness;
     }
 
-    Iterator<ConnectionGene> getConnections() {
-        return connections.values().iterator();
+    Collection<ConnectionGene> getConnections() {
+        return connections.values();
     }
 
     int getNumberOfConnections() {

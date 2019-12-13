@@ -8,12 +8,12 @@ class NodeCounter {
 
     private static HashMap<Integer, Integer> innovationsHistory = new HashMap<>();
 
-    static int geNewIdForInputOutput() {
+    static int getNewIdForInputOutputNode() {
         id++;
         return id;
     }
 
-    static int geNewIdForHidden(int innovation) {
+    static int getNewIdForHiddenNode(int innovation) {
         if (innovationsHistory.containsKey(innovation)) {
             return innovationsHistory.get(innovation);
         } else {
