@@ -143,10 +143,6 @@ class Genome implements Comparable<Genome> {
         return outputNodes;
     }
 
-    HashMap<Integer, NodeGene> getNodes() {
-        return nodes;
-    }
-
     void copyNodesTo(Genome clone) {
         for (NodeGene node : nodes.values()) {
             copyNodeTo(node, clone);

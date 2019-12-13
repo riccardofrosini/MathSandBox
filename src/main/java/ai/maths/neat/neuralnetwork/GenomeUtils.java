@@ -75,7 +75,7 @@ class GenomeUtils {
             }
         }
 
-        crossover.getNodes().values().removeIf(nodeGene -> nodeGene.getType() != NodeGene.Type.INPUT && nodeGene.getBackConnections().isEmpty());
+        crossover.getNodesCollection().removeIf(nodeGene -> nodeGene.getType() != NodeGene.Type.INPUT && nodeGene.getBackConnections().isEmpty());
         return crossover;
     }
 
