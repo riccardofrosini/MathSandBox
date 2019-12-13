@@ -13,7 +13,7 @@ public class GenomeSerializerDeserializer {
     private static final Gson GSON = new GsonBuilder().create();
 
     static String toJson(Genome genome) {
-        return GSON.toJson(genome.getNodes());
+        return GSON.toJson(genome.getNodesCollection());
     }
 
     static Genome loadJson(String json) {

@@ -29,8 +29,8 @@ class GenomeUtils {
         thisGenome.copyNodesTo(crossover);
         otherGenome.copyNodesTo(crossover);
 
-        Iterator<ConnectionGene> thisIterator = thisGenome.getConnections().iterator();
-        Iterator<ConnectionGene> otherIterator = otherGenome.getConnections().iterator();
+        Iterator<ConnectionGene> thisIterator = thisGenome.getConnectionsCollection().iterator();
+        Iterator<ConnectionGene> otherIterator = otherGenome.getConnectionsCollection().iterator();
         boolean nextThis = true;
         boolean nextOther = true;
         ConnectionGene thisConnection = null;
@@ -74,6 +74,8 @@ class GenomeUtils {
                 nextOther = true;
             }
         }
+
+        crossover.getNodes().values().removeIf(nodeGene -> nodeGene.getType() != NodeGene.Type.INPUT && nodeGene.getBackConnections().isEmpty());
         return crossover;
     }
 
@@ -107,8 +109,8 @@ class GenomeUtils {
         int disjoints = 0;
         double averageWeights = 0;
         int matching = 0;
-        Iterator<ConnectionGene> thisIterator = thisGenome.getConnections().iterator();
-        Iterator<ConnectionGene> otherIterator = otherGenome.getConnections().iterator();
+        Iterator<ConnectionGene> thisIterator = thisGenome.getConnectionsCollection().iterator();
+        Iterator<ConnectionGene> otherIterator = otherGenome.getConnectionsCollection().iterator();
         boolean nextThis = true;
         boolean nextOther = true;
         ConnectionGene thisConnection = null;
@@ -172,7 +174,7 @@ class GenomeUtils {
     private static Genome cloneGenome(Genome genome) {
         Genome clone = new Genome();
         genome.copyNodesTo(clone);
-        for (ConnectionGene connection : genome.getConnections()) {
+        for (ConnectionGene connection : genome.getConnectionsCollection()) {
             clone.addConnection(connection.getInNode(), connection.getOutNode(), connection.getWeight());
             ConnectionGene connectionGene = clone.getConnectionWithInnovationNumber(connection.getInnovation());
             if (!connection.isEnabled()) {
@@ -219,7 +221,7 @@ class GenomeUtils {
     }
 
     private static List<Double> genomeEvaluate(Genome genome, double[] inputs, NodeFunction nodeFunction) {
-        Collection<NodeGene> nodes = genome.getNodes();
+        Collection<NodeGene> nodes = genome.getNodesCollection();
         HashMap<NodeGene, Double> nodeGeneDoubleHashMap = new HashMap<>();
         while (!nodeGeneDoubleHashMap.keySet().containsAll(nodes)) {
             c:

@@ -119,7 +119,7 @@ class Genome implements Comparable<Genome> {
         this.fitness = fitness;
     }
 
-    Collection<ConnectionGene> getConnections() {
+    Collection<ConnectionGene> getConnectionsCollection() {
         return connections.values();
     }
 
@@ -135,12 +135,16 @@ class Genome implements Comparable<Genome> {
         return nodes.get(nodeId);
     }
 
-    Collection<NodeGene> getNodes() {
+    Collection<NodeGene> getNodesCollection() {
         return nodes.values();
     }
 
     ArrayList<NodeGene> getOutputNodes() {
         return outputNodes;
+    }
+
+    HashMap<Integer, NodeGene> getNodes() {
+        return nodes;
     }
 
     void copyNodesTo(Genome clone) {
