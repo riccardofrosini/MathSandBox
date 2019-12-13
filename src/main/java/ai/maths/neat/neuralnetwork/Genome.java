@@ -97,7 +97,7 @@ class Genome implements Comparable<Genome> {
     private boolean containsBackwardConnection(NodeGene inNode, NodeGene outNode) {
         Set<Integer> backConnections = inNode.getBackConnections().stream().map(ConnectionGene::getInNode).collect(Collectors.toSet());
         while (!backConnections.isEmpty()) {
-            if (backConnections.contains(outNode)) {
+            if (backConnections.contains(outNode.getId())) {
                 return true;
             }
             HashSet<Integer> tempNodeGenes = new HashSet<>();
@@ -127,6 +127,10 @@ class Genome implements Comparable<Genome> {
 
     ConnectionGene getConnectionWithInnovationNumber(int innovation) {
         return connections.get(innovation);
+    }
+
+    NodeGene getNodeWithId(int nodeId) {
+        return nodes.get(nodeId);
     }
 
     Collection<NodeGene> getNodes() {

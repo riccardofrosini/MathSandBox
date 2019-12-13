@@ -233,9 +233,9 @@ class GenomeUtils {
                         double value = 0;
                         for (ConnectionGene backConnection : node.getBackConnections()) {
                             if (backConnection.isEnabled()) {
-                                if (nodeGeneDoubleHashMap.containsKey(backConnection.getInNode())) {
-                                    value = value + nodeGeneDoubleHashMap.get(backConnection.getInNode()) * backConnection.getWeight();
-                                } else if (nodes.contains(backConnection.getInNode())) {
+                                if (nodeGeneDoubleHashMap.containsKey(genome.getNodeWithId(backConnection.getInNode()))) {
+                                    value = value + nodeGeneDoubleHashMap.get(genome.getNodeWithId(backConnection.getInNode())) * backConnection.getWeight();
+                                } else if (nodes.contains(genome.getNodeWithId(backConnection.getInNode()))) {
                                     continue c;
                                 }
                             }
