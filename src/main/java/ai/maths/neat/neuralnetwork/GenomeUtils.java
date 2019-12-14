@@ -88,6 +88,7 @@ class GenomeUtils {
         return crossover;
     }
 
+    //Should replace replaceOrMakeNewConnection with makeNewConnection is it possible that the connection is already present?
     private static void addMatchingConnectionToCrossover(Genome crossover, ConnectionGene thisConnection, ConnectionGene otherConnection) {
         boolean connectionMade = crossover.replaceOrMakeNewConnection(thisConnection.getInNode(),
                 thisConnection.getOutNode(),
@@ -100,6 +101,7 @@ class GenomeUtils {
         }
     }
 
+    //Should replace replaceOrMakeNewConnection with makeNewConnection is it possible that the connection is already present?
     private static void mergeConnectionToCrossover(Genome crossover, ConnectionGene connection) {
         boolean connectionMade = crossover.replaceOrMakeNewConnection(connection.getInNode(),
                 connection.getOutNode(), connection.getWeight());
