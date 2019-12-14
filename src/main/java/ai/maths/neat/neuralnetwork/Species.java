@@ -5,7 +5,7 @@ import ai.maths.neat.utils.ConfigurationNetwork;
 import java.util.Objects;
 import java.util.TreeSet;
 
-class Species implements Comparable<Species> {
+class Species {
 
     private final Genome representative;
     private final TreeSet<Genome> genomes;
@@ -71,17 +71,6 @@ class Species implements Comparable<Species> {
     @Override
     public int hashCode() {
         return Objects.hash(representative, genomes);
-    }
-
-    @Override
-    public int compareTo(Species o) {
-        if (o.bestPerformance > bestPerformance) {
-            return -1;
-        }
-        if (o.bestPerformance < bestPerformance) {
-            return 1;
-        }
-        return equals(o) ? 0 : hashCode() - o.hashCode() < 0 ? -1 : 1;
     }
 }
 

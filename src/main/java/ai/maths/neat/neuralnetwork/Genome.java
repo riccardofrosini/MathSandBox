@@ -56,7 +56,7 @@ class Genome implements Comparable<Genome> {
         NodeGene inNode = nodeGenes[RandomUtils.getRandomInt(nodeGenes.length)];
         NodeGene outNode = nodeGenes[RandomUtils.getRandomInt(nodeGenes.length)];
         // max loops as this could go on forever.
-        for (int i = 0; i < 10000 && !makeConnection(inNode.getId(), outNode.getId(), RandomUtils.getRandomWeight()); i++) {
+        for (int i = 0; i < 10000 && !makeNewConnection(inNode.getId(), outNode.getId(), RandomUtils.getRandomWeight()); i++) {
             inNode = nodeGenes[RandomUtils.getRandomInt(nodeGenes.length)];
             outNode = nodeGenes[RandomUtils.getRandomInt(nodeGenes.length)];
         }
@@ -73,12 +73,20 @@ class Genome implements Comparable<Genome> {
         }
     }
 
-    boolean makeConnection(int inNodeId, int outNodeId, double weight) {
+    private boolean makeNewConnection(int inNodeId, int outNodeId, double weight) {
+        if (connections.containsKey(GenomeUtils.generateInnovation(inNodeId, outNodeId))) {
+            return false;
+        }
+        return replaceOrMakeNewConnection(inNodeId, outNodeId, weight);
+    }
+
+    boolean replaceOrMakeNewConnection(int inNodeId, int outNodeId, double weight) {
         NodeGene inNode = nodes.get(inNodeId);
         NodeGene outNode = nodes.get(outNodeId);
-        if (inNodeId != outNodeId && !connections.containsKey(GenomeUtils.generateInnovation(inNodeId, outNodeId)) &&
+        if (inNodeId != outNodeId &&
                 outNode.getType() != NodeGene.Type.INPUT &&
                 inNode.getType() != NodeGene.Type.OUTPUT && !containsBackwardConnection(inNode, outNode)) {
+            outNode.getBackConnections().removeIf(connectionGene -> connectionGene.getInNode() == inNodeId);
             addConnection(inNodeId, outNodeId, weight);
             return true;
         }

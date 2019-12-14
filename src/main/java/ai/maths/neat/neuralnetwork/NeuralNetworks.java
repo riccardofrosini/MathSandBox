@@ -58,7 +58,7 @@ class NeuralNetworks {
         NeuralNetworks neuralNetworks = new NeuralNetworks();
         //remove species with population stagnates
         if (stagnation > ConfigurationNetwork.MAX_POPULATION_STAGNATION_GENERATION) {
-            List<Species> collect = speciesCollection.stream().sorted().collect(Collectors.toList());
+            List<Species> collect = speciesCollection.stream().sorted(Comparator.comparingDouble(Species::getBestPerformance)).collect(Collectors.toList());
             for (int i = 0; i < collect.size() - 2; i++) {
                 collect.get(i).getGenomes().clear();
             }

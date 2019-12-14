@@ -89,21 +89,21 @@ class GenomeUtils {
     }
 
     private static void addMatchingConnectionToCrossover(Genome crossover, ConnectionGene thisConnection, ConnectionGene otherConnection) {
-        crossover.makeConnection(thisConnection.getInNode(),
+        boolean connectionMade = crossover.replaceOrMakeNewConnection(thisConnection.getInNode(),
                 thisConnection.getOutNode(),
                 RandomUtils.getRandomBoolean() ? thisConnection.getWeight() : otherConnection.getWeight());
-        if (((thisConnection.isEnabled() ^ otherConnection.isEnabled()) &&
+        if (connectionMade && (((thisConnection.isEnabled() ^ otherConnection.isEnabled()) &&
                 (RandomUtils.getRandom() <= ConfigurationNetwork.DISABLE_CONNECTION_CROSSOVER_PROBABILITY)) ||
-                (!thisConnection.isEnabled() && !otherConnection.isEnabled())) {
+                (!thisConnection.isEnabled() && !otherConnection.isEnabled()))) {
             crossover.getConnectionWithInnovationNumber(generateInnovation(thisConnection.getInNode(),
                     thisConnection.getOutNode())).disable();
         }
     }
 
     private static void mergeConnectionToCrossover(Genome crossover, ConnectionGene connection) {
-        crossover.makeConnection(connection.getInNode(),
+        boolean connectionMade = crossover.replaceOrMakeNewConnection(connection.getInNode(),
                 connection.getOutNode(), connection.getWeight());
-        if (!connection.isEnabled()) {
+        if (!connection.isEnabled() && connectionMade) {
             crossover.getConnectionWithInnovationNumber(generateInnovation(connection.getInNode(),
                     connection.getOutNode())).disable();
         }
