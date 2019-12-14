@@ -207,9 +207,6 @@ class GenomeUtils {
             for (int j = 0; j < Math.max(inputNodes, outPutNodes); j++) {
                 newGenome.mutateWithNewConnection();
             }
-            if (RandomUtils.getRandomBoolean()) {
-                newGenome.mutateConnectionByAddingNode();
-            }
             updateGenomeFunctionWithFitness.accept(newGenome);
             genomes.add(newGenome);
         }
