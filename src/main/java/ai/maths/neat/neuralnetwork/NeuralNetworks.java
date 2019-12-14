@@ -53,7 +53,6 @@ class NeuralNetworks {
         }
     }
 
-
     NeuralNetworks nextGeneration(Consumer<Genome> updateGenomeFunctionWithFitness) {
         NeuralNetworks neuralNetworks = new NeuralNetworks();
         //remove species with population stagnates
@@ -63,17 +62,27 @@ class NeuralNetworks {
                 collect.get(i).getGenomes().clear();
             }
             stagnation = 0;
-        }
-        //remove stagnating species and weakest genomes. Copy species with best performing
-        for (Species species : speciesCollection) {
-            if (species.getStagnation() > ConfigurationNetwork.MAX_SPECIES_STAGNATION_GENERATION && speciesCollection.size() > 1) {
-                species.getGenomes().clear();
-            } else if (species.size() > 5) {
-                neuralNetworks.copySpeciesWithBestPerforming(species, species.getGenomes().last());
-                double average = (species.getGenomes().last().getFitness() + species.getGenomes().first().getFitness()) / 2;
-                species.getGenomes().removeIf(genome -> genome.getFitness() < average);
+        } else {
+            //remove stagnating species
+            for (Species species : speciesCollection) {
+                if (species.getStagnation() > ConfigurationNetwork.MAX_SPECIES_STAGNATION_GENERATION && speciesCollection.size() > 1) {
+                    species.getGenomes().clear();
+                }
             }
         }
+
+        //Remove weakest genomes. Copy species with best performing genome
+        for (Species species : speciesCollection) {
+            if (species.size() != 0) {
+                neuralNetworks.copySpeciesWithBestPerforming(species, species.getGenomes().last());
+                if (species.size() > 5) {
+                    for (int i = 0; i < species.size() * 0.2; i++) {
+                        species.getGenomes().pollFirst();
+                    }
+                }
+            }
+        }
+
         //calculate adjusted fitness
         HashMap<Species, Double> speciesToAdjustedFitness = new HashMap<>();
         double totalAdjustedFitness = 0;
@@ -90,6 +99,7 @@ class NeuralNetworks {
             }
         }
         speciesToAdjustedFitness = tempSpecies;
+
         //mutate without crossover
         for (Map.Entry<Species, Double> speciesDoubleEntry : speciesToAdjustedFitness.entrySet()) {
             double toReproduceNonMating = (ConfigurationNetwork.MAX_POPULATION * speciesDoubleEntry.getValue() *
