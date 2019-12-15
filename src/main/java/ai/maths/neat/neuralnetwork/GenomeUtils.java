@@ -75,7 +75,8 @@ class GenomeUtils {
             }
         }
 
-        crossover.getNodesCollection().removeIf(nodeGene -> nodeGene.getType() != NodeGene.Type.INPUT && nodeGene.getBackConnections().isEmpty());
+        crossover.getNodesCollection().removeIf(nodeGene -> nodeGene.getType() != NodeGene.Type.INPUT
+                && nodeGene.getType() != NodeGene.Type.OUTPUT && nodeGene.getBackConnections().isEmpty());
         crossover.getConnectionsCollection().removeIf(connectionGene -> {
             if (crossover.getNodeWithId(connectionGene.getInNode()) == null) {
                 if (crossover.getNodeWithId(connectionGene.getOutNode()) != null) {
