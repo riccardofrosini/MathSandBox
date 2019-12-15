@@ -100,35 +100,47 @@ class NeuralNetworks {
         }
         speciesToAdjustedFitness = tempSpecies;
 
+        int remainingToAdd = ConfigurationNetwork.MAX_POPULATION - neuralNetworks.getPopulation().size();
+        System.out.println("Copied over genomes " + neuralNetworks.getPopulation().size());
+
         //mutate without crossover
+        System.out.println("Mutate without crossover " + remainingToAdd *
+                ConfigurationNetwork.MUTATION_WITHOUT_CROSSOVER);
         for (Map.Entry<Species, Double> speciesDoubleEntry : speciesToAdjustedFitness.entrySet()) {
-            double toReproduceNonMating = (ConfigurationNetwork.MAX_POPULATION * speciesDoubleEntry.getValue() *
-                    ConfigurationNetwork.MUTATION_WITHOUT_CROSSOVER) / totalAdjustedFitness;
+            double toReproduceNonMating = (remainingToAdd * speciesDoubleEntry.getValue() *
+                    ConfigurationNetwork.MUTATION_WITHOUT_CROSSOVER) /
+                    totalAdjustedFitness;
             Iterator<Genome> iterator = speciesDoubleEntry.getKey().getGenomes().iterator();
             for (int i = 0; i < toReproduceNonMating && iterator.hasNext(); i++) {
                 Genome next = GenomeUtils.copyAndMutateGenome(iterator.next(), updateGenomeFunctionWithFitness);
                 neuralNetworks.addNewGenomeToPopulation(next);
             }
         }
-        //mutate with crossover
+
+        System.out.println("Mutate with crossover " + (remainingToAdd *
+                (1 - ConfigurationNetwork.MUTATION_WITHOUT_CROSSOVER)));
         for (Map.Entry<Species, Double> speciesDoubleEntry : speciesToAdjustedFitness.entrySet()) {
-            double toReproduce = (ConfigurationNetwork.MAX_POPULATION * speciesDoubleEntry.getValue() *
-                    (1 - ConfigurationNetwork.MUTATION_WITHOUT_CROSSOVER)) / totalAdjustedFitness;
+            double toReproduce = (remainingToAdd * speciesDoubleEntry.getValue() *
+                    (1 - ConfigurationNetwork.MUTATION_WITHOUT_CROSSOVER)) /
+                    totalAdjustedFitness;
             for (int i = 0; i < toReproduce; i++) {
-                Genome[] genomes = speciesDoubleEntry.getKey().getGenomes().toArray(new Genome[0]);
-                Genome genome1 = genomes[RandomUtils.getRandomInt(genomes.length)];
-                Genome genome2 = genomes[RandomUtils.getRandomInt(genomes.length)];
-                Genome crossover = GenomeUtils.crossoverAndMutateGenome(genome1, genome2, updateGenomeFunctionWithFitness);
-                neuralNetworks.addNewGenomeToPopulation(crossover);
+                if (RandomUtils.getRandom() <= ConfigurationNetwork.INTERSPECIES_MATING_RATE) {
+                    //Interspecies crossover
+                    System.out.println("Crossover mutation!");
+                    Species[] species = speciesToAdjustedFitness.keySet().toArray(new Species[0]);
+                    Genome genome1 = species[RandomUtils.getRandomInt(species.length)].getGenomes().last();
+                    Genome genome2 = species[RandomUtils.getRandomInt(species.length)].getGenomes().last();
+                    Genome crossover = GenomeUtils.crossoverAndMutateGenome(genome1, genome2, updateGenomeFunctionWithFitness);
+                    neuralNetworks.addNewGenomeToPopulation(crossover);
+                } else {
+                    //mutate with crossover
+                    Genome[] genomes = speciesDoubleEntry.getKey().getGenomes().toArray(new Genome[0]);
+                    Genome genome1 = genomes[RandomUtils.getRandomInt(genomes.length)];
+                    Genome genome2 = genomes[RandomUtils.getRandomInt(genomes.length)];
+                    Genome crossover = GenomeUtils.crossoverAndMutateGenome(genome1, genome2, updateGenomeFunctionWithFitness);
+                    neuralNetworks.addNewGenomeToPopulation(crossover);
+                }
             }
-        }
-        //Interspecies crossover
-        for (int i = 0; i < ConfigurationNetwork.MAX_POPULATION * ConfigurationNetwork.INTERSPECIES_MATING_RATE; i++) {
-            Species[] species = speciesToAdjustedFitness.keySet().toArray(new Species[0]);
-            Genome genome1 = species[RandomUtils.getRandomInt(species.length)].getGenomes().last();
-            Genome genome2 = species[RandomUtils.getRandomInt(species.length)].getGenomes().last();
-            Genome crossover = GenomeUtils.crossoverAndMutateGenome(genome1, genome2, updateGenomeFunctionWithFitness);
-            neuralNetworks.addNewGenomeToPopulation(crossover);
         }
         //update species stagnation
         for (Species species : neuralNetworks.speciesCollection) {
