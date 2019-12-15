@@ -121,7 +121,6 @@ class NeuralNetworks {
             for (int i = 0; i < toReproduce; i++) {
                 if (RandomUtils.getRandom() <= ConfigurationNetwork.INTERSPECIES_MATING_RATE) {
                     //Interspecies crossover
-                    System.out.println("Interspecies crossover mutation!");
                     Species[] species = speciesToAdjustedFitness.keySet().toArray(new Species[0]);
                     Genome genome1 = species[RandomUtils.getRandomInt(species.length)].getGenomes().last();
                     Genome genome2 = species[RandomUtils.getRandomInt(species.length)].getGenomes().last();
@@ -173,5 +172,31 @@ class NeuralNetworks {
 
     int numberOfSpecies() {
         return speciesCollection.size();
+    }
+
+    @Override
+    public String toString() {
+        List<Species> collect = speciesCollection.stream().sorted(Comparator.comparingDouble(Species::getBestPerformance)).collect(Collectors.toList());
+        StringBuilder str = new StringBuilder();
+        str.append("Size                ");
+        for (Species species : collect) {
+            str.append(String.format("%10d ", species.size()));
+        }
+        str.append("\n");
+        str.append("Best Performance    ");
+        for (Species species : collect) {
+            str.append(String.format("%10.2f ", species.getBestPerformance()));
+        }
+        str.append("\n");
+        str.append("Stagnation          ");
+        for (Species species : collect) {
+            str.append(String.format("%10d ", species.getStagnation()));
+        }
+        str.append("\n");
+        str.append("Best Fitness        ");
+        for (Species species : collect) {
+            str.append(String.format("%10.2f ", species.getGenomes().last().getFitness()));
+        }
+        return str.toString();
     }
 }
