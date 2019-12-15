@@ -9,7 +9,7 @@ public class SumsTrainer {
 
     public static void main(String[] args) {
         ConfigurationNetwork.SPECIES_DELTA_THRESHOLD = 3;
-        GenomeEvaluator genomeEvaluator = NeuralNetworkTrainer.train(2, 1, 10,
+        GenomeEvaluator genomeEvaluator = NeuralNetworkTrainer.train(2, 1, 35,
                 NodeFunctionsCreator.linearUnit(), neuralNetworkEvaluator -> {
 
                     double[] input = {3, 4};
