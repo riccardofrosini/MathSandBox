@@ -1,5 +1,7 @@
 package ai.maths.neat.neuralnetwork;
 
+import ai.maths.neat.neuralnetwork.functions.GenomeEvaluator;
+import ai.maths.neat.neuralnetwork.functions.NodeFunction;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
@@ -33,5 +35,11 @@ public class GenomeSerializerDeserializer {
             }
         }
         return genome;
+    }
+
+    public static GenomeEvaluator getEvaluatorFromJson(String json, NodeFunction nodeFunction) {
+        Genome genome = loadJson(json);
+        return GenomeUtils.getGenomeEvaluator(genome, nodeFunction);
+
     }
 }
