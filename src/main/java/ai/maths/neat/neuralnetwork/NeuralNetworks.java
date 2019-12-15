@@ -101,11 +101,8 @@ class NeuralNetworks {
         speciesToAdjustedFitness = tempSpecies;
 
         int remainingToAdd = ConfigurationNetwork.MAX_POPULATION - neuralNetworks.getPopulation().size();
-        System.out.println("Copied over genomes " + neuralNetworks.getPopulation().size());
 
         //mutate without crossover
-        System.out.println("Mutate without crossover " + remainingToAdd *
-                ConfigurationNetwork.MUTATION_WITHOUT_CROSSOVER);
         for (Map.Entry<Species, Double> speciesDoubleEntry : speciesToAdjustedFitness.entrySet()) {
             double toReproduceNonMating = (remainingToAdd * speciesDoubleEntry.getValue() *
                     ConfigurationNetwork.MUTATION_WITHOUT_CROSSOVER) /
@@ -117,8 +114,6 @@ class NeuralNetworks {
             }
         }
 
-        System.out.println("Mutate with crossover " + (remainingToAdd *
-                (1 - ConfigurationNetwork.MUTATION_WITHOUT_CROSSOVER)));
         for (Map.Entry<Species, Double> speciesDoubleEntry : speciesToAdjustedFitness.entrySet()) {
             double toReproduce = (remainingToAdd * speciesDoubleEntry.getValue() *
                     (1 - ConfigurationNetwork.MUTATION_WITHOUT_CROSSOVER)) /
