@@ -126,7 +126,7 @@ class NeuralNetworks {
             for (int i = 0; i < toReproduce; i++) {
                 if (RandomUtils.getRandom() <= ConfigurationNetwork.INTERSPECIES_MATING_RATE) {
                     //Interspecies crossover
-                    System.out.println("Crossover mutation!");
+                    System.out.println("Interspecies crossover mutation!");
                     Species[] species = speciesToAdjustedFitness.keySet().toArray(new Species[0]);
                     Genome genome1 = species[RandomUtils.getRandomInt(species.length)].getGenomes().last();
                     Genome genome2 = species[RandomUtils.getRandomInt(species.length)].getGenomes().last();
