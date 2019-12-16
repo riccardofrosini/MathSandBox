@@ -176,7 +176,7 @@ class NeuralNetworks {
 
     @Override
     public String toString() {
-        List<Species> collect = speciesCollection.stream().sorted(Comparator.comparingDouble(Species::getBestPerformance)).collect(Collectors.toList());
+        List<Species> collect = speciesCollection.stream().sorted((o1, o2) -> -Double.compare(o1.getBestPerformance(), o2.getBestPerformance())).collect(Collectors.toList());
         StringBuilder str = new StringBuilder();
         str.append("Size                ");
         for (Species species : collect) {
