@@ -180,6 +180,10 @@ class NeuralNetworks {
         return speciesCollection.size();
     }
 
+    int getStagnation() {
+        return stagnation;
+    }
+
     @Override
     public String toString() {
         List<Species> collect = speciesCollection.stream().sorted((o1, o2) -> -Double.compare(o1.getBestPerformance(), o2.getBestPerformance())).collect(Collectors.toList());
