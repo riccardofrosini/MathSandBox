@@ -55,7 +55,7 @@ class NeuralNetworks {
 
     NeuralNetworks nextGeneration(Consumer<Genome> updateGenomeFunctionWithFitness) {
         NeuralNetworks neuralNetworks = new NeuralNetworks();
-        //remove species with population stagnates
+        //remove species with stagnating population
         if (stagnation > ConfigurationNetwork.MAX_POPULATION_STAGNATION_GENERATION) {
             List<Species> collect = speciesCollection.stream().sorted(Comparator.comparingDouble(Species::getBestPerformance)).collect(Collectors.toList());
             for (int i = 0; i < collect.size() - 2; i++) {
@@ -190,29 +190,27 @@ class NeuralNetworks {
         StringBuilder str = new StringBuilder();
         str.append("Size                ");
         for (Species species : collect) {
-            if (species.size() != 0) {
-                str.append(String.format("%10d ", species.size()));
-            }
+            str.append(String.format("%10d ", species.size()));
         }
         str.append("\n");
         str.append("Best Performance    ");
         for (Species species : collect) {
-            if (species.size() != 0) {
-                str.append(String.format("%10.2f ", species.getBestPerformance()));
-            }
+            str.append(String.format("%10.2f ", species.getBestPerformance()));
+
         }
         str.append("\n");
         str.append("Stagnation          ");
         for (Species species : collect) {
-            if (species.size() != 0) {
-                str.append(String.format("%10d ", species.getStagnation()));
-            }
+            str.append(String.format("%10d ", species.getStagnation()));
+
         }
         str.append("\n");
         str.append("Best Fitness        ");
         for (Species species : collect) {
             if (species.size() != 0) {
                 str.append(String.format("%10.2f ", species.getGenomes().last().getFitness()));
+            } else {
+                str.append(String.format("%10.2f ", 0.0));
             }
         }
         return str.toString();
