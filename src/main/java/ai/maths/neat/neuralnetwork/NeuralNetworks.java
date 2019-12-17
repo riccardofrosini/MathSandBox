@@ -107,10 +107,14 @@ class NeuralNetworks {
             double toReproduceNonMating = (remainingToAdd * speciesDoubleEntry.getValue() *
                     ConfigurationNetwork.MUTATION_WITHOUT_CROSSOVER) /
                     totalAdjustedFitness;
-            Iterator<Genome> iterator = speciesDoubleEntry.getKey().getGenomes().iterator();
-            for (int i = 0; i < toReproduceNonMating && iterator.hasNext(); i++) {
+            Iterator<Genome> iterator = speciesDoubleEntry.getKey().getGenomes().descendingIterator();
+            for (int i = 0; i < toReproduceNonMating; i++) {
+                if (!iterator.hasNext()) {
+                    iterator = speciesDoubleEntry.getKey().getGenomes().descendingIterator();
+                }
                 Genome next = GenomeUtils.copyAndMutateGenome(iterator.next(), updateGenomeFunctionWithFitness);
                 neuralNetworks.addNewGenomeToPopulation(next);
+
             }
         }
 
