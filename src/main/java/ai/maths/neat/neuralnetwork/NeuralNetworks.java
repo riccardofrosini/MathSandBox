@@ -74,11 +74,12 @@ class NeuralNetworks {
         //Remove weakest genomes. Copy species with best performing genome
         for (Species species : speciesCollection) {
             if (species.size() != 0) {
-                neuralNetworks.copySpeciesWithBestPerformingAndRandomRepresentative(species);
+                neuralNetworks.copySpeciesWithRandomRepresentative(species);
                 if (species.size() > 5) {
                     for (int i = 0; i < species.size() * 0.2; i++) {
                         species.getGenomes().pollFirst();
                     }
+                    neuralNetworks.addNewGenomeToPopulation(species.getGenomes().last());
                 }
             }
         }
@@ -142,12 +143,14 @@ class NeuralNetworks {
         }
         //update species stagnation
         for (Species species : neuralNetworks.speciesCollection) {
-            double bestPerformanceOfSpecies = species.getGenomes().last().getFitness();
-            if (species.getBestPerformance() < bestPerformanceOfSpecies) {
-                species.setStagnation(0);
-                species.setBestPerformance(bestPerformanceOfSpecies);
-            } else {
-                species.incrementStagnation();
+            if (species.size() != 0) {
+                double bestPerformanceOfSpecies = species.getGenomes().last().getFitness();
+                if (species.getBestPerformance() < bestPerformanceOfSpecies) {
+                    species.setStagnation(0);
+                    species.setBestPerformance(bestPerformanceOfSpecies);
+                } else {
+                    species.incrementStagnation();
+                }
             }
         }
         //Update population stagnation
@@ -161,12 +164,11 @@ class NeuralNetworks {
         return neuralNetworks;
     }
 
-    private void copySpeciesWithBestPerformingAndRandomRepresentative(Species species) {
-        Species newSpecies = new Species(species.getRepresentative());
+    private void copySpeciesWithRandomRepresentative(Species species) {
+        Genome[] genomes = species.getGenomes().toArray(new Genome[0]);
+        Species newSpecies = new Species(genomes[RandomUtils.getRandomInt(genomes.length)]);
         newSpecies.setBestPerformance(species.getBestPerformance());
         newSpecies.setStagnation(species.getStagnation());
-        newSpecies.add(species.getGenomes().last());
-        population.add(species.getGenomes().last());
         speciesCollection.add(newSpecies);
     }
 
@@ -184,22 +186,30 @@ class NeuralNetworks {
         StringBuilder str = new StringBuilder();
         str.append("Size                ");
         for (Species species : collect) {
-            str.append(String.format("%10d ", species.size()));
+            if (species.size() != 0) {
+                str.append(String.format("%10d ", species.size()));
+            }
         }
         str.append("\n");
         str.append("Best Performance    ");
         for (Species species : collect) {
-            str.append(String.format("%10.2f ", species.getBestPerformance()));
+            if (species.size() != 0) {
+                str.append(String.format("%10.2f ", species.getBestPerformance()));
+            }
         }
         str.append("\n");
         str.append("Stagnation          ");
         for (Species species : collect) {
-            str.append(String.format("%10d ", species.getStagnation()));
+            if (species.size() != 0) {
+                str.append(String.format("%10d ", species.getStagnation()));
+            }
         }
         str.append("\n");
         str.append("Best Fitness        ");
         for (Species species : collect) {
-            str.append(String.format("%10.2f ", species.getGenomes().last().getFitness()));
+            if (species.size() != 0) {
+                str.append(String.format("%10.2f ", species.getGenomes().last().getFitness()));
+            }
         }
         return str.toString();
     }
