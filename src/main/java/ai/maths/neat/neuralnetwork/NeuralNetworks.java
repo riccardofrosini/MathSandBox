@@ -74,7 +74,7 @@ class NeuralNetworks {
         //Remove weakest genomes. Copy species with best performing genome
         for (Species species : speciesCollection) {
             if (species.size() != 0) {
-                neuralNetworks.copySpeciesWithBestPerforming(species, species.getGenomes().last());
+                neuralNetworks.copySpeciesWithBestPerformingAndRandomRepresentative(species);
                 if (species.size() > 5) {
                     for (int i = 0; i < species.size() * 0.2; i++) {
                         species.getGenomes().pollFirst();
@@ -161,12 +161,12 @@ class NeuralNetworks {
         return neuralNetworks;
     }
 
-    private void copySpeciesWithBestPerforming(Species species, Genome bestPerforming) {
+    private void copySpeciesWithBestPerformingAndRandomRepresentative(Species species) {
         Species newSpecies = new Species(species.getRepresentative());
         newSpecies.setBestPerformance(species.getBestPerformance());
         newSpecies.setStagnation(species.getStagnation());
-        newSpecies.add(bestPerforming);
-        population.add(bestPerforming);
+        newSpecies.add(species.getGenomes().last());
+        population.add(species.getGenomes().last());
         speciesCollection.add(newSpecies);
     }
 
