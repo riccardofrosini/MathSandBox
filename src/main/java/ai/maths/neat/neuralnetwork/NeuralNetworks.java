@@ -101,7 +101,7 @@ class NeuralNetworks {
         }
         speciesToAdjustedFitness = tempSpecies;
 
-        int remainingToAdd = ConfigurationNetwork.MAX_POPULATION - neuralNetworks.getPopulation().size();
+        int remainingToAdd = ConfigurationNetwork.MAX_POPULATION - neuralNetworks.population.size();
 
         //mutate without crossover
         for (Map.Entry<Species, Double> speciesDoubleEntry : speciesToAdjustedFitness.entrySet()) {
@@ -172,8 +172,8 @@ class NeuralNetworks {
         speciesCollection.add(newSpecies);
     }
 
-    TreeSet<Genome> getPopulation() {
-        return population;
+    Genome getBestPerformingFromPopulation() {
+        return population.last();
     }
 
     @Override

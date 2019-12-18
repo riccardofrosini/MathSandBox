@@ -14,16 +14,16 @@ public class NeuralNetworkTrainer {
         Consumer<Genome> updateGenomeFunctionWithFitness = GenomeUtils.makeGenomeFunctionToUpdateFitness(fitnessCalculator, nodeFunction);
 
         NeuralNetworks neuralNetworks = new NeuralNetworks(GenomeUtils.makeRandomTopologyGenomes(inputs, outputs, updateGenomeFunctionWithFitness));
-        Genome bestGenome = neuralNetworks.getPopulation().last();
+        Genome bestGenome = neuralNetworks.getBestPerformingFromPopulation();
         System.out.println("Generation 0");
-        System.out.println(GenomeSerializerDeserializer.toJson(bestGenome));
         System.out.println(neuralNetworks);
+        System.out.println(GenomeSerializerDeserializer.toJson(bestGenome));
         for (int i = 0; i < generations; i++) {
             neuralNetworks = neuralNetworks.nextGeneration(updateGenomeFunctionWithFitness);
-            Genome thisGenerationBestGenome = neuralNetworks.getPopulation().last();
+            Genome thisGenerationBestGenome = neuralNetworks.getBestPerformingFromPopulation();
             System.out.println("Generation " + (i + 1));
-            System.out.println(GenomeSerializerDeserializer.toJson(thisGenerationBestGenome));
             System.out.println(neuralNetworks);
+            System.out.println(GenomeSerializerDeserializer.toJson(thisGenerationBestGenome));
             if (thisGenerationBestGenome.getFitness() > bestGenome.getFitness()) {
                 bestGenome = thisGenerationBestGenome;
             }
