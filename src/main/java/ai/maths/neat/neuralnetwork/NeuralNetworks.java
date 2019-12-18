@@ -181,11 +181,11 @@ class NeuralNetworks {
         StringBuilder str = new StringBuilder();
         str.append(String.format("               Best genome fitness %10.2f", population.last().getFitness()));
         str.append("\n");
-        str.append(String.format("               Number of species %10d", speciesCollection.size()));
+        str.append(String.format("               Number of species   %10d", speciesCollection.size()));
         str.append("\n");
-        str.append(String.format("               Population size %10d", population.size()));
+        str.append(String.format("               Population size     %10d", population.size()));
         str.append("\n");
-        str.append(String.format("               Stagnation %10d", stagnation));
+        str.append(String.format("               Stagnation          %10d", stagnation));
         str.append("\n");
         List<Species> collect = speciesCollection.stream().sorted((o1, o2) -> -Double.compare(o1.getBestPerformance(), o2.getBestPerformance())).collect(Collectors.toList());
         str.append("               Size                ");
