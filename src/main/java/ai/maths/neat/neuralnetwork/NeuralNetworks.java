@@ -186,26 +186,34 @@ class NeuralNetworks {
 
     @Override
     public String toString() {
-        List<Species> collect = speciesCollection.stream().sorted((o1, o2) -> -Double.compare(o1.getBestPerformance(), o2.getBestPerformance())).collect(Collectors.toList());
         StringBuilder str = new StringBuilder();
-        str.append("Size                ");
+        str.append(String.format("               Best genome fitness %10.2f", population.last().getFitness()));
+        str.append("\n");
+        str.append(String.format("               Number of species %10d", speciesCollection.size()));
+        str.append("\n");
+        str.append(String.format("               Population size %10d", population.size()));
+        str.append("\n");
+        str.append(String.format("               Stagnation %10d", stagnation));
+        str.append("\n");
+        List<Species> collect = speciesCollection.stream().sorted((o1, o2) -> -Double.compare(o1.getBestPerformance(), o2.getBestPerformance())).collect(Collectors.toList());
+        str.append("               Size                ");
         for (Species species : collect) {
             str.append(String.format("%10d ", species.size()));
         }
         str.append("\n");
-        str.append("Best Performance    ");
+        str.append("               Best Performance    ");
         for (Species species : collect) {
             str.append(String.format("%10.2f ", species.getBestPerformance()));
 
         }
         str.append("\n");
-        str.append("Stagnation          ");
+        str.append("               Stagnation          ");
         for (Species species : collect) {
             str.append(String.format("%10d ", species.getStagnation()));
 
         }
         str.append("\n");
-        str.append("Best Fitness        ");
+        str.append("               Best Fitness        ");
         for (Species species : collect) {
             if (species.size() != 0) {
                 str.append(String.format("%10.2f ", species.getGenomes().last().getFitness()));
