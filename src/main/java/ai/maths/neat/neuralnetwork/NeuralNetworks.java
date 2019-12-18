@@ -176,14 +176,6 @@ class NeuralNetworks {
         return population;
     }
 
-    int numberOfSpecies() {
-        return speciesCollection.size();
-    }
-
-    int getStagnation() {
-        return stagnation;
-    }
-
     @Override
     public String toString() {
         StringBuilder str = new StringBuilder();
