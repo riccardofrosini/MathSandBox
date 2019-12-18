@@ -15,19 +15,13 @@ public class NeuralNetworkTrainer {
 
         NeuralNetworks neuralNetworks = new NeuralNetworks(GenomeUtils.makeRandomTopologyGenomes(inputs, outputs, updateGenomeFunctionWithFitness));
         Genome bestGenome = neuralNetworks.getPopulation().last();
-        System.out.println("Generation 0: best genome fitness " + bestGenome.getFitness());
-        System.out.println("              number of species " + neuralNetworks.numberOfSpecies());
-        System.out.println("              population size " + neuralNetworks.getPopulation().size());
-        System.out.println("              stagnation " + neuralNetworks.getStagnation());
+        System.out.println("Generation 0");
         System.out.println(GenomeSerializerDeserializer.toJson(bestGenome));
         System.out.println(neuralNetworks);
         for (int i = 0; i < generations; i++) {
             neuralNetworks = neuralNetworks.nextGeneration(updateGenomeFunctionWithFitness);
             Genome thisGenerationBestGenome = neuralNetworks.getPopulation().last();
-            System.out.println("Generation " + (i + 1) + ": best genome fitness " + thisGenerationBestGenome.getFitness());
-            System.out.println("               number of species " + neuralNetworks.numberOfSpecies());
-            System.out.println("               population size " + neuralNetworks.getPopulation().size());
-            System.out.println("               stagnation " + neuralNetworks.getStagnation());
+            System.out.println("Generation " + (i + 1));
             System.out.println(GenomeSerializerDeserializer.toJson(thisGenerationBestGenome));
             System.out.println(neuralNetworks);
             if (thisGenerationBestGenome.getFitness() > bestGenome.getFitness()) {
