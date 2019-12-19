@@ -2,6 +2,7 @@ package ai.maths.neat;
 
 import ai.maths.neat.neuralnetwork.NeuralNetworkTrainer;
 import ai.maths.neat.neuralnetwork.functions.GenomeEvaluator;
+import ai.maths.neat.utils.ConfigurationNetwork;
 import ai.maths.neat.utils.NodeFunctionsCreator;
 import ai.maths.tictactoe.TicTacToe;
 
@@ -29,10 +30,11 @@ public class TicTacToeTrainer {
             }
         }
         System.out.println(ticTacToeHashSet.size());
-        GenomeEvaluator geno = NeuralNetworkTrainer.train(9, 1, 500, NodeFunctionsCreator.linearUnit(), genomeEvaluator -> {
+        ConfigurationNetwork.SPECIES_DELTA_THRESHOLD = 3;
+        GenomeEvaluator geno = NeuralNetworkTrainer.train(27, 9, 500, NodeFunctionsCreator.linearUnit(), genomeEvaluator -> {
                     double score = 0;
                     for (TicTacToe ticTacToe : ticTacToeHashSet) {
-                        int move = evaluateOut1(genomeEvaluator, ticTacToe.getBoard());
+                        int move = evaluateIn27Out9(genomeEvaluator, ticTacToe.getBoard());
                         ticTacToe = ticTacToe.makeMove(move);
                         if (ticTacToe == null) {
                             continue;
@@ -42,7 +44,7 @@ public class TicTacToeTrainer {
                             integer = ticTacToe.returnEval();
                             ticTacToeHashMap.put(ticTacToe, integer);
                         }
-                        score += (double) (integer + 2) / 10;
+                        score += (double) (integer + 1) / 10;
                         score++;
                     }
                     return score;
@@ -52,9 +54,11 @@ public class TicTacToeTrainer {
         TicTacToe ticTacToe = new TicTacToe();
         while (ticTacToe != null && !ticTacToe.getPossibleMoves().isEmpty()) {
             int[] board = ticTacToe.getBoard();
-            int move = evaluateOut1(geno, board);
+            int move = evaluateIn27Out9(geno, board);
             ticTacToe = ticTacToe.makeMove(move);
-            if (ticTacToe == null) break;
+            if (ticTacToe == null) {
+                break;
+            }
             System.out.println(ticTacToe);
             ticTacToe = ticTacToe.makeBestMove();
             System.out.println(ticTacToe);
@@ -62,28 +66,69 @@ public class TicTacToeTrainer {
         System.out.println(ticTacToe);
     }
 
-    private static int evaluateOut1(GenomeEvaluator genomeEvaluator, int[] board) {
-        return (int) Math.floor(genomeEvaluator.evaluateGenome(boardToDoubleInput(board)).get(0) * 9);
+    static int evaluateIn27Out1(GenomeEvaluator genomeEvaluator, int[] board) {
+        double[] doubles = new double[27];
+        for (int i = 0; i < board.length; i++) {
+            if (board[i] == 0) {
+                doubles[i * 3] = 1;
+            }
+            if (board[i] == 1) {
+                doubles[i * 3 + 1] = 1;
+            }
+            if (board[i] == -1) {
+                doubles[i * 3 + 2] = 1;
+            }
+        }
+        return (int) Math.floor(genomeEvaluator.evaluateGenome(doubles).get(0) * 9);
     }
 
-    private static int evaluateOut9(GenomeEvaluator genomeEvaluator, int[] board) {
-        int ret = -1;
-        List<Double> doubles = genomeEvaluator.evaluateGenome(boardToDoubleInput(board));
-        for (int i = 0; i < doubles.size(); i++) {
-            if (doubles.get(i) >= 1) {
-                if (ret == -1) {
-                    ret = i;
-                } else return -1;
+    static int evaluateIn27Out9(GenomeEvaluator genomeEvaluator, int[] board) {
+        double[] doubles = new double[27];
+        for (int i = 0; i < board.length; i++) {
+            if (board[i] == 0) {
+                doubles[i * 3] = 1;
+            }
+            if (board[i] == 1) {
+                doubles[i * 3 + 1] = 1;
+            }
+            if (board[i] == -1) {
+                doubles[i * 3 + 2] = 1;
+            }
+        }
+        List<Double> evaluation = genomeEvaluator.evaluateGenome(doubles);
+        int ret = 0;
+        double largest = 0;
+        for (int i = 0; i < evaluation.size(); i++) {
+            if (evaluation.get(i) > largest) {
+                largest = evaluation.get(i);
+                ret = i;
             }
         }
         return ret;
     }
 
-    private static double[] boardToDoubleInput(int[] board) {
+    private static int evaluateIn9Out1(GenomeEvaluator genomeEvaluator, int[] board) {
         double[] doubles = new double[board.length];
         for (int i = 0; i < board.length; i++) {
-            doubles[i] = board[i] + 2;
+            doubles[i] = board[i] == 0 ? 0 : ((double) board[i] + 3) / 2;
         }
-        return doubles;
+        return (int) Math.floor(genomeEvaluator.evaluateGenome(doubles).get(0) * 9);
+    }
+
+    private static int evaluateIn9Out9(GenomeEvaluator genomeEvaluator, int[] board) {
+        double[] doubles = new double[board.length];
+        for (int i = 0; i < board.length; i++) {
+            doubles[i] = board[i] == 0 ? 0 : ((double) board[i] + 3) / 2;
+        }
+        List<Double> evaluation = genomeEvaluator.evaluateGenome(doubles);
+        int ret = 0;
+        double largest = 0;
+        for (int i = 0; i < evaluation.size(); i++) {
+            if (evaluation.get(i) > largest) {
+                largest = evaluation.get(i);
+                ret = i;
+            }
+        }
+        return ret;
     }
 }
