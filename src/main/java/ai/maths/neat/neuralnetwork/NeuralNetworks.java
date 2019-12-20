@@ -77,7 +77,7 @@ class NeuralNetworks {
             if (species.size() != 0) {
                 neuralNetworks.copySpeciesWithRandomRepresentative(species);
                 if (species.size() > 5) {
-                    for (int i = 0; i < species.size() * 0.2; i++) {
+                    for (int i = 0; i < species.size() * ConfigurationNetwork.WEAKEST_GENOMES_REMOVAL_PERCENTAGE; i++) {
                         species.getGenomes().pollFirst();
                     }
                     neuralNetworks.addNewGenomeToPopulation(species.getGenomes().last());
@@ -120,20 +120,21 @@ class NeuralNetworks {
             }
         }
 
+        //mutate with crossover
         for (Map.Entry<Species, Double> speciesDoubleEntry : speciesToAdjustedFitness.entrySet()) {
             double toReproduce = (remainingToAdd * speciesDoubleEntry.getValue() *
                     (1 - ConfigurationNetwork.MUTATION_WITHOUT_CROSSOVER)) /
                     totalAdjustedFitness;
             for (int i = 0; i < toReproduce; i++) {
                 if (RandomUtils.getRandom() <= ConfigurationNetwork.INTERSPECIES_MATING_RATE) {
-                    //Interspecies crossover
+                    //Interspecies mutate and crossover
                     Species[] species = speciesToAdjustedFitness.keySet().toArray(new Species[0]);
                     Genome genome1 = species[RandomUtils.getRandomInt(species.length)].getGenomes().last();
                     Genome genome2 = species[RandomUtils.getRandomInt(species.length)].getGenomes().last();
                     Genome crossover = GenomeUtils.crossoverAndMutateGenome(genome1, genome2, updateGenomeFunctionWithFitness);
                     neuralNetworks.addNewGenomeToPopulation(crossover);
                 } else {
-                    //mutate with crossover
+                    //mutate and crossover
                     Genome[] genomes = speciesDoubleEntry.getKey().getGenomes().toArray(new Genome[0]);
                     Genome genome1 = genomes[RandomUtils.getRandomInt(genomes.length)];
                     Genome genome2 = genomes[RandomUtils.getRandomInt(genomes.length)];
@@ -143,6 +144,7 @@ class NeuralNetworks {
             }
         }
         neuralNetworks.updateSpeciesStagnationAndBestPerformance();
+
         //Update population stagnation
         double bestPerformanceOfNextGenerationPopulation = neuralNetworks.population.last().getFitness();
         if (bestPerformance < bestPerformanceOfNextGenerationPopulation) {

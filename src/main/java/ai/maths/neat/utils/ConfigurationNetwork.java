@@ -18,6 +18,7 @@ public class ConfigurationNetwork {
     private final static int MAX_POPULATION_STAGNATION_GENERATION_DEFAULT = 20;
     private final static double INTERSPECIES_MATING_RATE_DEFAULT = 0.001;
     private final static double PERTURBATION_PERCENTAGE_DEFAULT = 0.05;
+    private final static double WEAKEST_GENOMES_REMOVAL_PERCENTAGE_DEFAULT = 0.2;
 
 
     public static int MAX_NODES = MAX_NODES_DEFAULT;
@@ -36,4 +37,5 @@ public class ConfigurationNetwork {
     public static int MAX_POPULATION_STAGNATION_GENERATION = MAX_POPULATION_STAGNATION_GENERATION_DEFAULT;
     public static double INTERSPECIES_MATING_RATE = INTERSPECIES_MATING_RATE_DEFAULT;
     public static double PERTURBATION_PERCENTAGE = PERTURBATION_PERCENTAGE_DEFAULT;
+    public static double WEAKEST_GENOMES_REMOVAL_PERCENTAGE = WEAKEST_GENOMES_REMOVAL_PERCENTAGE_DEFAULT;
 }

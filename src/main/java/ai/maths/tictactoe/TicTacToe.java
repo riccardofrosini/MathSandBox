@@ -53,45 +53,29 @@ public final class TicTacToe {
     }
 
     public TicTacToe makeBestMove() {
-        int whoWonPosition = whoWonPosition();
-        if (whoWonPosition != 0) return this;
-        List<Integer> possibleMoves = getPossibleMoves();
-        if (possibleMoves.isEmpty()) return this;
-
-        Integer bestMove = null;
-        int evaluation = cross ? -1 : 1;
-        for (Integer possibleMove : possibleMoves) {
-            Integer currentEval = makeMove(possibleMove).returnEval();
-            if ((cross && currentEval >= evaluation) || (!cross && currentEval <= evaluation)) {
-                bestMove = possibleMove;
-                evaluation = currentEval;
-            }
-        }
-        if (bestMove != null) {
-            return makeMove(bestMove);
-        }
-        return this;
+        Integer move = returnBestMoveAndEval()[0];
+        return move == null ? this : makeMove(move);
     }
 
-    public Integer returnBestMove() {
+    public Integer[] returnBestMoveAndEval() {
         int whoWonPosition = whoWonPosition();
-        if (whoWonPosition != 0) return null;
+        if (whoWonPosition != 0) return new Integer[]{null, null};
         List<Integer> possibleMoves = getPossibleMoves();
-        if (possibleMoves.isEmpty()) return null;
+        if (possibleMoves.isEmpty()) return new Integer[]{null, null};
 
         Integer bestMove = null;
-        int evaluation = cross ? -1 : 1;
+        int bestEval = cross ? -1 : 1;
         for (Integer possibleMove : possibleMoves) {
             Integer currentEval = makeMove(possibleMove).returnEval();
-            if ((cross && currentEval >= evaluation) || (!cross && currentEval <= evaluation)) {
+            if ((cross && currentEval >= bestEval) || (!cross && currentEval <= bestEval)) {
                 bestMove = possibleMove;
-                evaluation = currentEval;
+                bestEval = currentEval;
             }
         }
         if (bestMove != null) {
-            return bestMove;
+            return new Integer[]{bestMove, bestEval};
         }
-        return null;
+        return new Integer[]{null, null};
     }
 
     public Integer returnEval() {
