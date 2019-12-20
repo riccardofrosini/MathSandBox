@@ -18,7 +18,7 @@ public class GenomeSerializerDeserializer {
         return GSON.toJson(genome.getNodesCollection());
     }
 
-    static Genome loadJson(String json) {
+    private static Genome loadJson(String json) {
         List<NodeGene> genomeDeserialization = GSON.fromJson(json, new TypeToken<List<NodeGene>>() {
         }.getType());
         Genome genome = new Genome();

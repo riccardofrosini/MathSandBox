@@ -66,7 +66,7 @@ public final class TicTacToe {
         Integer bestMove = null;
         int bestEval = cross ? -1 : 1;
         for (Integer possibleMove : possibleMoves) {
-            Integer currentEval = makeMove(possibleMove).returnEval();
+            int currentEval = makeMove(possibleMove).returnEval();
             if ((cross && currentEval >= bestEval) || (!cross && currentEval <= bestEval)) {
                 bestMove = possibleMove;
                 bestEval = currentEval;
@@ -78,7 +78,7 @@ public final class TicTacToe {
         return new Integer[]{null, null};
     }
 
-    public Integer returnEval() {
+    public int returnEval() {
         int whoWonPosition = whoWonPosition();
         if (whoWonPosition != 0) return whoWonPosition;
         List<Integer> possibleMoves = getPossibleMoves();
@@ -86,7 +86,7 @@ public final class TicTacToe {
 
         int evaluation = cross ? -1 : 1;
         for (Integer possibleMove : possibleMoves) {
-            Integer currentEval = makeMove(possibleMove).returnEval();
+            int currentEval = makeMove(possibleMove).returnEval();
             if ((cross && currentEval >= evaluation) || (!cross && currentEval <= evaluation)) {
                 evaluation = currentEval;
             }
