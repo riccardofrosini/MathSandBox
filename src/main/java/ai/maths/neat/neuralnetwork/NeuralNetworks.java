@@ -25,6 +25,7 @@ class NeuralNetworks {
     NeuralNetworks(Collection<Genome> genomes) {
         this();
         addAllGenomesToPopulation(genomes);
+        updateSpeciesStagnationAndBestPerformance();
         bestPerformance = population.last().getFitness();
     }
 
@@ -141,8 +142,21 @@ class NeuralNetworks {
                 }
             }
         }
-        //update species stagnation
-        for (Species species : neuralNetworks.speciesCollection) {
+        neuralNetworks.updateSpeciesStagnationAndBestPerformance();
+        //Update population stagnation
+        double bestPerformanceOfNextGenerationPopulation = neuralNetworks.population.last().getFitness();
+        if (bestPerformance < bestPerformanceOfNextGenerationPopulation) {
+            neuralNetworks.bestPerformance = bestPerformanceOfNextGenerationPopulation;
+        } else {
+            neuralNetworks.stagnation = stagnation + 1;
+            neuralNetworks.bestPerformance = bestPerformance;
+        }
+        return neuralNetworks;
+    }
+
+    //update species stagnation
+    private void updateSpeciesStagnationAndBestPerformance() {
+        for (Species species : speciesCollection) {
             if (species.size() != 0) {
                 double bestPerformanceOfSpecies = species.getGenomes().last().getFitness();
                 if (species.getBestPerformance() < bestPerformanceOfSpecies) {
@@ -153,15 +167,6 @@ class NeuralNetworks {
                 }
             }
         }
-        //Update population stagnation
-        double bestPerformanceOfNextGenerationPopulation = neuralNetworks.population.last().getFitness();
-        if (bestPerformance < bestPerformanceOfNextGenerationPopulation) {
-            neuralNetworks.bestPerformance = bestPerformanceOfNextGenerationPopulation;
-        } else {
-            neuralNetworks.stagnation = stagnation + 1;
-            neuralNetworks.bestPerformance = bestPerformance;
-        }
-        return neuralNetworks;
     }
 
     private void copySpeciesWithRandomRepresentative(Species species) {
@@ -179,33 +184,33 @@ class NeuralNetworks {
     @Override
     public String toString() {
         StringBuilder str = new StringBuilder();
-        str.append(String.format("               Best genome fitness %10.2f", population.last().getFitness()));
+        str.append(String.format("    Best genome fitness %10.2f", population.last().getFitness()));
         str.append("\n");
-        str.append(String.format("               Number of species   %10d", speciesCollection.size()));
+        str.append(String.format("    Number of species   %10d", speciesCollection.size()));
         str.append("\n");
-        str.append(String.format("               Population size     %10d", population.size()));
+        str.append(String.format("    Population size     %10d", population.size()));
         str.append("\n");
-        str.append(String.format("               Stagnation          %10d", stagnation));
+        str.append(String.format("    Stagnation          %10d", stagnation));
         str.append("\n");
         List<Species> collect = speciesCollection.stream().sorted((o1, o2) -> -Double.compare(o1.getBestPerformance(), o2.getBestPerformance())).collect(Collectors.toList());
-        str.append("               Size                ");
+        str.append("    Size                ");
         for (Species species : collect) {
             str.append(String.format("%10d ", species.size()));
         }
         str.append("\n");
-        str.append("               Best Performance    ");
+        str.append("    Best Performance    ");
         for (Species species : collect) {
             str.append(String.format("%10.2f ", species.getBestPerformance()));
 
         }
         str.append("\n");
-        str.append("               Stagnation          ");
+        str.append("    Stagnation          ");
         for (Species species : collect) {
             str.append(String.format("%10d ", species.getStagnation()));
 
         }
         str.append("\n");
-        str.append("               Best Fitness        ");
+        str.append("    Best Fitness        ");
         for (Species species : collect) {
             if (species.size() != 0) {
                 str.append(String.format("%10.2f ", species.getGenomes().last().getFitness()));
