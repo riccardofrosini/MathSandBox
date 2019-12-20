@@ -58,8 +58,8 @@ public final class TicTacToe {
         List<Integer> possibleMoves = getPossibleMoves();
         if (possibleMoves.isEmpty()) return this;
 
-        int evaluation = cross ? -1 : 1;
         Integer bestMove = null;
+        int evaluation = cross ? -1 : 1;
         for (Integer possibleMove : possibleMoves) {
             Integer currentEval = makeMove(possibleMove).returnEval();
             if ((cross && currentEval >= evaluation) || (!cross && currentEval <= evaluation)) {
@@ -70,8 +70,28 @@ public final class TicTacToe {
         if (bestMove != null) {
             return makeMove(bestMove);
         }
-
         return this;
+    }
+
+    public Integer returnBestMove() {
+        int whoWonPosition = whoWonPosition();
+        if (whoWonPosition != 0) return null;
+        List<Integer> possibleMoves = getPossibleMoves();
+        if (possibleMoves.isEmpty()) return null;
+
+        Integer bestMove = null;
+        int evaluation = cross ? -1 : 1;
+        for (Integer possibleMove : possibleMoves) {
+            Integer currentEval = makeMove(possibleMove).returnEval();
+            if ((cross && currentEval >= evaluation) || (!cross && currentEval <= evaluation)) {
+                bestMove = possibleMove;
+                evaluation = currentEval;
+            }
+        }
+        if (bestMove != null) {
+            return bestMove;
+        }
+        return null;
     }
 
     public Integer returnEval() {
@@ -149,5 +169,9 @@ public final class TicTacToe {
         int result = Objects.hash(cross);
         result = 31 * result + Arrays.hashCode(board);
         return result;
+    }
+
+    public boolean isCross() {
+        return cross;
     }
 }
