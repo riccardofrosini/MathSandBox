@@ -18,8 +18,9 @@ class NodeAndConnectionCounter {
     }
 
     static int getNewIdForHiddenNode(int innovation) {
-        if (innovationsNodeHistory.containsKey(innovation)) {
-            return innovationsNodeHistory.get(innovation);
+        Integer id = innovationsNodeHistory.get(innovation);
+        if (id != null) {
+            return id;
         } else {
             idNode++;
             innovationsNodeHistory.put(innovation, idNode);
@@ -29,8 +30,9 @@ class NodeAndConnectionCounter {
 
     static int getNewInnovationForConnection(int inNode, int outNode) {
         int innovation = inNode + outNode * ConfigurationNetwork.MAX_NODES;
-        if (innovationsConnectionHistory.containsKey(innovation)) {
-            return innovationsConnectionHistory.get(innovation);
+        Integer id = innovationsConnectionHistory.get(innovation);
+        if (id != null) {
+            return id;
         } else {
             idConnection++;
             innovationsConnectionHistory.put(innovation, idConnection);
