@@ -29,13 +29,13 @@ class NodeAndConnectionCounter {
     }
 
     static int getNewInnovationForConnection(int inNode, int outNode) {
-        int innovation = inNode + outNode * ConfigurationNetwork.MAX_NODES;
-        Integer id = innovationsConnectionHistory.get(innovation);
+        int nodesConnectionId = inNode + outNode * ConfigurationNetwork.MAX_NODES;
+        Integer id = innovationsConnectionHistory.get(nodesConnectionId);
         if (id != null) {
             return id;
         } else {
             idConnection++;
-            innovationsConnectionHistory.put(innovation, idConnection);
+            innovationsConnectionHistory.put(nodesConnectionId, idConnection);
             return idConnection;
         }
     }
