@@ -35,11 +35,11 @@ class Genome implements Comparable<Genome> {
         if (!connections.isEmpty()) {
             ConnectionGene[] allConnections = connections.values().toArray(new ConnectionGene[0]);
             ConnectionGene connectionGene = allConnections[RandomUtils.getRandomInt(allConnections.length)];
-            int newIdForHiddenNode = NodeCounter.getNewIdForHiddenNode(connectionGene.getInnovation());
+            int newIdForHiddenNode = NodeAndConnectionCounter.getNewIdForHiddenNode(connectionGene.getInnovation());
             for (int i = 0; i < 10000 && (!connectionGene.isEnabled() ||
                     nodes.containsKey(newIdForHiddenNode)); i++) {
                 connectionGene = allConnections[RandomUtils.getRandomInt(allConnections.length)];
-                newIdForHiddenNode = NodeCounter.getNewIdForHiddenNode(connectionGene.getInnovation());
+                newIdForHiddenNode = NodeAndConnectionCounter.getNewIdForHiddenNode(connectionGene.getInnovation());
             }
             if (connectionGene.isEnabled() && !nodes.containsKey(newIdForHiddenNode)) {
                 connectionGene.disable();
@@ -74,7 +74,7 @@ class Genome implements Comparable<Genome> {
     }
 
     private boolean makeNewConnection(int inNodeId, int outNodeId, double weight) {
-        if (connections.containsKey(GenomeUtils.generateInnovation(inNodeId, outNodeId))) {
+        if (connections.containsKey(NodeAndConnectionCounter.getNewInnovationForConnection(inNodeId, outNodeId))) {
             return false;
         }
         return replaceOrMakeNewConnection(inNodeId, outNodeId, weight);
@@ -94,12 +94,12 @@ class Genome implements Comparable<Genome> {
     }
 
     void addInputNode(int inputId) {
-        NodeGene nodeGene = new NodeGene(NodeCounter.getNewIdForInputOutputNode(), inputId);
+        NodeGene nodeGene = new NodeGene(NodeAndConnectionCounter.getNewIdForInputOutputNode(), inputId);
         nodes.put(nodeGene.getId(), nodeGene);
     }
 
     void addOutputNode() {
-        NodeGene nodeGene = new NodeGene(NodeCounter.getNewIdForInputOutputNode(), NodeGene.Type.OUTPUT);
+        NodeGene nodeGene = new NodeGene(NodeAndConnectionCounter.getNewIdForInputOutputNode(), NodeGene.Type.OUTPUT);
         nodes.put(nodeGene.getId(), nodeGene);
         outputNodes.add(nodeGene);
     }

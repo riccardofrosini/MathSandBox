@@ -28,7 +28,7 @@ public class NeuralNetworkTrainer {
                 bestGenome = thisGenerationBestGenome;
             }
         }
-        NodeCounter.resetCounter();
+        NodeAndConnectionCounter.resetCounter();
         System.out.println(GenomeSerializerDeserializer.toJson(bestGenome));
         return GenomeUtils.getGenomeEvaluator(bestGenome, nodeFunction);
     }

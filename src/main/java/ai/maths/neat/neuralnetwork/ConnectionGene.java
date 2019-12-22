@@ -14,7 +14,7 @@ class ConnectionGene implements Comparable<ConnectionGene> {
         this.inNode = inNode;
         this.outNode = outNode;
         this.weight = weight;
-        this.innovation = GenomeUtils.generateInnovation(inNode, outNode);
+        this.innovation = NodeAndConnectionCounter.getNewInnovationForConnection(inNode, outNode);
         this.enabled = true;
     }
 

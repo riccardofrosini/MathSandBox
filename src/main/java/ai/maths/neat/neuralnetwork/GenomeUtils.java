@@ -97,7 +97,7 @@ class GenomeUtils {
         if (connectionMade && (((thisConnection.isEnabled() ^ otherConnection.isEnabled()) &&
                 (RandomUtils.getRandom() <= ConfigurationNetwork.DISABLE_CONNECTION_CROSSOVER_PROBABILITY)) ||
                 (!thisConnection.isEnabled() && !otherConnection.isEnabled()))) {
-            crossover.getConnectionWithInnovationNumber(generateInnovation(thisConnection.getInNode(),
+            crossover.getConnectionWithInnovationNumber(NodeAndConnectionCounter.getNewInnovationForConnection(thisConnection.getInNode(),
                     thisConnection.getOutNode())).disable();
         }
     }
@@ -107,13 +107,9 @@ class GenomeUtils {
         boolean connectionMade = crossover.replaceOrMakeNewConnection(connection.getInNode(),
                 connection.getOutNode(), connection.getWeight());
         if (!connection.isEnabled() && connectionMade) {
-            crossover.getConnectionWithInnovationNumber(generateInnovation(connection.getInNode(),
+            crossover.getConnectionWithInnovationNumber(NodeAndConnectionCounter.getNewInnovationForConnection(connection.getInNode(),
                     connection.getOutNode())).disable();
         }
-    }
-
-    static int generateInnovation(int inNode, int outNode) {
-        return inNode + outNode * ConfigurationNetwork.MAX_NODES;
     }
 
     private static double[] getExcesses_Disjoints_AverageWeightDifferences_Normalisation(Genome thisGenome, Genome otherGenome) {
