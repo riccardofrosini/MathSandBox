@@ -29,7 +29,7 @@ public class GenomeSerializerDeserializer {
             accumulator.addAll(connectionGenes);
             return accumulator;
         }).orElse(new TreeSet<>())) {
-            genome.addConnection(connection.getInNode(), connection.getOutNode(), connection.getWeight());
+            genome.addConnection(connection);
             if (!connection.isEnabled()) {
                 genome.getConnectionWithInnovationNumber(connection.getInnovation()).disable();
             }

@@ -19,6 +19,14 @@ class Genome implements Comparable<Genome> {
         nodes = new HashMap<>();
     }
 
+    void addConnection(ConnectionGene connectionGene) {
+        if (!nodes.containsKey(connectionGene.getOutNode()) || !nodes.containsKey(connectionGene.getInNode())) {
+            throw new RuntimeException("Missing nodes when adding connections.");
+        }
+        nodes.get(connectionGene.getOutNode()).addBackConnection(connectionGene);
+        connections.put(connectionGene.getInnovation(), connectionGene);
+    }
+
     void addConnection(int inNodeId, int outNodeId, double weight) {
         if (!nodes.containsKey(outNodeId) || !nodes.containsKey(inNodeId)) {
             throw new RuntimeException("Missing nodes when adding connections.");
