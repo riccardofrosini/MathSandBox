@@ -12,27 +12,34 @@ import java.util.List;
 
 public class TicTacToeTrainer {
 
-    static HashMap<TicTacToe, Integer> ticTacToeHashMap = new HashMap<>();
-    static HashSet<TicTacToe> ticTacToeHashSet = new HashSet<>();
+    static final HashMap<TicTacToe, Integer> ticTacToeHashMap = new HashMap<>();
+    static final HashSet<TicTacToe> ticTacToeHashSet = new HashSet<>();
 
-    static void fillUpEvaluationsAndPositions(TicTacToe ticTacToe) {
-        Integer integer = ticTacToe.returnEval();
+    private static void fillUpEvaluationsAndPositions(TicTacToe ticTacToe) {
+        int eval = ticTacToe.returnEval();
         if (ticTacToe.isCross() && !ticTacToe.getPossibleMoves().isEmpty()) {
             ticTacToeHashSet.add(ticTacToe);
         }
-        ticTacToeHashMap.put(ticTacToe, integer);
+        ticTacToeHashMap.put(ticTacToe, eval);
         List<Integer> possibleMoves = ticTacToe.getPossibleMoves();
         for (Integer possibleMove : possibleMoves) {
             fillUpEvaluationsAndPositions(ticTacToe.makeMove(possibleMove));
         }
     }
 
-    public static void main(String[] args) {
+    static void fillUpEvaluationsAndPositions() {
         fillUpEvaluationsAndPositions(new TicTacToe());
+    }
+
+    public static void main(String[] args) {
+        fillUpEvaluationsAndPositions();
         System.out.println(ticTacToeHashMap.size());
         System.out.println(ticTacToeHashSet.size());
-        ConfigurationNetwork.SPECIES_DELTA_THRESHOLD = 1;
-        GenomeEvaluator geno = NeuralNetworkTrainer.train(27, 9, 500, NodeFunctionsCreator.linearUnit(), genomeEvaluator -> {
+        ConfigurationNetwork.MAX_POPULATION = 5000;
+        ConfigurationNetwork.MAX_POPULATION_STAGNATION_GENERATION = 50;
+        ConfigurationNetwork.MAX_SPECIES_STAGNATION_GENERATION = 40;
+        ConfigurationNetwork.SPECIES_DELTA_THRESHOLD = 2;
+        GenomeEvaluator geno = NeuralNetworkTrainer.train(27, 9, 10000, NodeFunctionsCreator.linearUnit(), genomeEvaluator -> {
                     double score = 0;
                     for (TicTacToe ticTacToe : ticTacToeHashSet) {
                         int move = getMoveIn27Out9(genomeEvaluator, ticTacToe.getBoard());
@@ -40,8 +47,8 @@ public class TicTacToeTrainer {
                         if (ticTacToe == null) {
                             continue;
                         }
-                        score += (double) (ticTacToeHashMap.get(ticTacToe) + 1) / 2;
-                        score++;
+                        score += (double) (ticTacToeHashMap.get(ticTacToe) + 1) / 10;
+                        //score++;
                     }
                     return score;
                 }
@@ -112,11 +119,17 @@ public class TicTacToeTrainer {
         for (int i = 0; i < board.length; i++) {
             if (board[i] == 0) {
                 doubles[i * 3] = 1;
+                doubles[i * 3 + 1] = 0;
+                doubles[i * 3 + 2] = 0;
             }
             if (board[i] == 1) {
+                doubles[i * 3] = 0;
                 doubles[i * 3 + 1] = 1;
+                doubles[i * 3 + 2] = 0;
             }
             if (board[i] == -1) {
+                doubles[i * 3] = 0;
+                doubles[i * 3 + 1] = 0;
                 doubles[i * 3 + 2] = 1;
             }
         }
