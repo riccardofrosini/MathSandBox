@@ -56,7 +56,6 @@ class Species {
     double computeSumOfAdjustedFitness() {
         return genomes.stream().mapToDouble(genome -> genome.getFitness() /
                 genomes.stream().mapToInt(value -> GenomeUtils.calculateDistance(genome, value) <= ConfigurationNetwork.SPECIES_DELTA_THRESHOLD ? 1 : 0).sum()).sum();
-
     }
 
     @Override
