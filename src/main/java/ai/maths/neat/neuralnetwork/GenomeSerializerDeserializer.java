@@ -23,7 +23,7 @@ public class GenomeSerializerDeserializer {
         }.getType());
         Genome genome = new Genome();
         for (NodeGene node : genomeDeserialization) {
-            Genome.copyNodeTo(node.getType() == NodeGene.Type.INPUT ? new NodeGene(node.getId(), node.getInputId()) : new NodeGene(node.getId(), node.getType()), genome);
+            Genome.copyNodeTo(node, genome);
         }
         for (ConnectionGene connection : genomeDeserialization.stream().map(NodeGene::getBackConnections).reduce((accumulator, connectionGenes) -> {
             accumulator.addAll(connectionGenes);
