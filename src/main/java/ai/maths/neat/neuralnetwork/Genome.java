@@ -52,9 +52,9 @@ class Genome implements Comparable<Genome> {
             if (connectionGene.isEnabled() && !nodes.containsKey(newIdForHiddenNode)) {
                 connectionGene.disable();
                 NodeGene nodeGene = new NodeGene(newIdForHiddenNode, NodeGene.Type.HIDDEN);
-                nodes.put(nodeGene.getId(), nodeGene);
-                addConnection(connectionGene.getInNode(), nodeGene.getId(), 1);
-                addConnection(nodeGene.getId(), connectionGene.getOutNode(), connectionGene.getWeight());
+                nodes.put(newIdForHiddenNode, nodeGene);
+                addConnection(connectionGene.getInNode(), newIdForHiddenNode, 1);
+                addConnection(newIdForHiddenNode, connectionGene.getOutNode(), connectionGene.getWeight());
             }
         }
     }
