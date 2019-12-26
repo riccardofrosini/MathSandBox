@@ -52,6 +52,14 @@ public class GenomeSerializerDeserializer {
     }
 
     static BufferedImage getBufferedImageFromGenome(Genome genome) {
+        int height = 10000;
+        int width = 10000;
+        BufferedImage image = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
+        drawGenomeOnGraphics(genome, height, width, image.getGraphics());
+        return image;
+    }
+
+    public static void drawGenomeOnGraphics(Genome genome, int width, int height, Graphics graphics) {
         Collection<NodeGene> nodes = genome.getNodesCollection();
         HashMap<Integer, Integer> nodeToLayer = new HashMap<>();
         int maxLayer = 0;
@@ -73,23 +81,19 @@ public class GenomeSerializerDeserializer {
         TreeMap<Integer, HashSet<Integer>> layerToNode = new TreeMap<>();
         nodeToLayer.forEach((key, value) -> layerToNode.computeIfAbsent(value, k -> new HashSet<>()).add(key));
 
-        int height = 10000;
-        int width = 10000;
-        BufferedImage image = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
         HashMap<Integer, Point> nodeToPoint = new HashMap<>();
-        Graphics graphics = image.getGraphics();
         graphics.setColor(Color.WHITE);
-        graphics.fillRect(0, 0, image.getWidth(), image.getHeight());
+        graphics.fillRect(0, 0, width, height);
         graphics.setColor(Color.BLACK);
         Font currentFont = graphics.getFont();
-        Font newFont = currentFont.deriveFont(currentFont.getSize() * 5f);
+        Font newFont = currentFont.deriveFont((float) currentFont.getSize() * width / 500);
         graphics.setFont(newFont);
 
-        int positionX = 50;
+        int positionX = width / 50;
         for (Integer layer : layerToNode.keySet()) {
-            int positionY = 50;
+            int positionY = height / 50;
             for (Integer nodeGene : layerToNode.get(layer)) {
-                graphics.fillOval(positionX, positionY, 100, 100);
+                graphics.fillOval(positionX, positionY, width / 100, width / 100);
                 graphics.drawString(Integer.toString(nodeGene), positionX, positionY);
                 nodeToPoint.put(nodeGene, new Point(positionX, positionY));
                 positionY += height / layerToNode.get(layer).size();
@@ -98,7 +102,7 @@ public class GenomeSerializerDeserializer {
         }
 
 
-        ((Graphics2D) graphics).setStroke(new BasicStroke(10));
+        ((Graphics2D) graphics).setStroke(new BasicStroke(width / 500));
         for (NodeGene node : nodes) {
             for (ConnectionGene connectionGene : node.getBackConnections()) {
                 Integer backNodeId = connectionGene.getInNode();
@@ -107,12 +111,11 @@ public class GenomeSerializerDeserializer {
                 }
                 Point point1 = nodeToPoint.get(node.getId());
                 Point point2 = nodeToPoint.get(backNodeId);
-                graphics.drawLine(point1.x + 50, point1.y + 50, point2.x + 50, point2.y + 50);
+                graphics.drawLine(point1.x + width / 200, point1.y + height / 200, point2.x + width / 200, point2.y + height / 200);
                 graphics.setColor(Color.BLACK);
-                graphics.drawString(String.format("%6.4f", connectionGene.getWeight()), Math.min(point1.x, point2.x) + 50 + Math.abs(point2.x - point1.x) / 2, Math.min(point1.y, point2.y) + 50 + Math.abs(point2.y - point1.y) / 2);
+                graphics.drawString(String.format("%6.4f", connectionGene.getWeight()), Math.min(point1.x, point2.x) + width / 50 + Math.abs(point2.x - point1.x) / 2, Math.min(point1.y, point2.y) + height / 50 + Math.abs(point2.y - point1.y) / 2);
             }
         }
-        return image;
     }
 
     private static int getMaxLayer(HashMap<Integer, Integer> nodeToLayer, int maxLayer, NodeGene node) {
