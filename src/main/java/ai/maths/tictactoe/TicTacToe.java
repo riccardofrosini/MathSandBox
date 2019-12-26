@@ -130,12 +130,13 @@ public final class TicTacToe {
     public String toString() {
         StringBuilder ret = new StringBuilder();
         for (int i = 0; i < 3; i++) {
-            ret.append("|");
             for (int j = 0; j < 3; j++) {
-                ret.append(board[i * 3 + j] == -1 ? "O|" : board[i * 3 + j] == 1 ? "X|" : "_|");
+                ret.append(board[i * 3 + j] == -1 ? "O" : board[i * 3 + j] == 1 ? "X" : " ");
+                if (j != 2) ret.append("|");
             }
-            ret.append("\n-------\n");
+            if (i != 2) ret.append("\n-+-+-\n");
         }
+        ret.append("\n");
         return ret.toString();
     }
 
