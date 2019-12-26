@@ -8,6 +8,7 @@ import ai.maths.neat.utils.RandomUtils;
 
 import java.util.*;
 import java.util.function.Consumer;
+import java.util.stream.Collectors;
 
 class GenomeUtils {
 
@@ -234,36 +235,34 @@ class GenomeUtils {
 
     private static List<Double> genomeEvaluate(Genome genome, double[] inputs, NodeFunction nodeFunction) {
         Collection<NodeGene> nodes = genome.getNodesCollection();
-        HashMap<NodeGene, Double> nodeGeneDoubleHashMap = new HashMap<>();
-        while (!nodeGeneDoubleHashMap.keySet().containsAll(nodes)) {
-            c:
+        HashMap<Integer, Double> nodeToEvaluation = new HashMap<>();
+        while (!nodeToEvaluation.keySet().containsAll(nodes)) {
             for (NodeGene node : nodes) {
-                if (!nodeGeneDoubleHashMap.containsKey(node)) {
+                int nodeId = node.getId();
+                if (!nodeToEvaluation.containsKey(nodeId)) {
                     if (node.getType() == NodeGene.Type.INPUT) {
-                        nodeGeneDoubleHashMap.put(node, nodeFunction.function(inputs[node.getInputId()]));
+                        nodeToEvaluation.put(nodeId, nodeFunction.function(inputs[node.getInputId()]));
                     } else {
-                        double value = 0;
-                        for (ConnectionGene backConnection : node.getBackConnections()) {
-                            if (backConnection.isEnabled()) {
-                                NodeGene backNode = genome.getNodeWithId(backConnection.getInNode());
-                                if (nodeGeneDoubleHashMap.containsKey(backNode)) {
-                                    value = value + nodeGeneDoubleHashMap.get(backNode) * backConnection.getWeight();
-                                } else if (nodes.contains(backNode)) {
-                                    continue c;
-                                }
-                            }
-                        }
-                        nodeGeneDoubleHashMap.put(node, nodeFunction.function(value));
+                        addEvaluationToMap(nodeFunction, nodeToEvaluation, node);
                     }
                 }
             }
         }
-        ArrayList<NodeGene> outputNodes = genome.getOutputNodes();
-        List<Double> results = new ArrayList<>(outputNodes.size());
-        for (NodeGene outputNode : outputNodes) {
-            results.add(nodeGeneDoubleHashMap.get(outputNode));
+        return genome.getOutputNodes().stream().map(nodeGene -> nodeToEvaluation.get(nodeGene.getId())).collect(Collectors.toList());
+    }
+
+    private static void addEvaluationToMap(NodeFunction nodeFunction, HashMap<Integer, Double> nodeToEvaluation, NodeGene node) {
+        double value = 0;
+        for (ConnectionGene backConnection : node.getBackConnections()) {
+            if (backConnection.isEnabled()) {
+                if (nodeToEvaluation.containsKey(backConnection.getInNode())) {
+                    value = value + nodeToEvaluation.get(backConnection.getInNode()) * backConnection.getWeight();
+                } else {
+                    return;
+                }
+            }
         }
-        return results;
+        nodeToEvaluation.put(node.getId(), nodeFunction.function(value));
     }
 
     static GenomeEvaluator getGenomeEvaluator(Genome genome, NodeFunction nodeFunction) {
