@@ -236,7 +236,7 @@ class GenomeUtils {
     private static List<Double> genomeEvaluate(Genome genome, double[] inputs, NodeFunction nodeFunction) {
         Collection<NodeGene> nodes = genome.getNodesCollection();
         HashMap<Integer, Double> nodeToEvaluation = new HashMap<>();
-        while (!nodeToEvaluation.keySet().containsAll(nodes)) {
+        while (nodeToEvaluation.size() != nodes.size()) {
             for (NodeGene node : nodes) {
                 int nodeId = node.getId();
                 if (!nodeToEvaluation.containsKey(nodeId)) {

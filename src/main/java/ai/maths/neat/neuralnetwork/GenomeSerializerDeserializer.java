@@ -55,7 +55,7 @@ public class GenomeSerializerDeserializer {
         Collection<NodeGene> nodes = genome.getNodesCollection();
         HashMap<Integer, Integer> nodeToLayer = new HashMap<>();
         int maxLayer = 0;
-        while (!nodeToLayer.keySet().containsAll(nodes)) {
+        while (nodeToLayer.size() != nodes.size()) {
             for (NodeGene node : nodes) {
                 int nodeId = node.getId();
                 if (!nodeToLayer.containsKey(nodeId)) {
