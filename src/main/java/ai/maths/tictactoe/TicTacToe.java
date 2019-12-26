@@ -24,7 +24,7 @@ public final class TicTacToe {
 
 
     public TicTacToe makeMove(int move) {
-        if (move < 0 || move >= 9 || board[move] != 0 || isEndPosition()) {
+        if (move < 0 || move >= 9 || board[move] != 0 || whoWonPosition() != null) {
             return null;
         }
         TicTacToe ticTacToe = new TicTacToe(board, !cross);
@@ -32,61 +32,57 @@ public final class TicTacToe {
         return ticTacToe;
     }
 
-
-    public List<Integer> getPossibleMoves() {
-        List<Integer> moves = new ArrayList<>(9);
-        if (isEndPosition()) {
+    public List<TicTacToe> getPossibleBoards() {
+        List<TicTacToe> moves = new ArrayList<>(9);
+        if (whoWonPosition() != null) {
             return moves;
         }
         for (int i = 0; i < 9; i++) {
             if (board[i] == 0) {
-                moves.add(i);
+                moves.add(makeMove(i));
             }
         }
         return moves;
     }
 
     public TicTacToe makeRandomMove() {
-        List<Integer> possibleMoves = getPossibleMoves();
+        List<TicTacToe> possibleMoves = getPossibleBoards();
         if (possibleMoves.isEmpty()) return null;
-        return makeMove(possibleMoves.get(RandomUtils.getRandomInt(possibleMoves.size())));
+        return possibleMoves.get(RandomUtils.getRandomInt(possibleMoves.size()));
     }
 
     public TicTacToe makeBestMove() {
         Integer move = returnBestMoveAndEval()[0];
-        return move == null ? this : makeMove(move);
+        return move == null ? null : makeMove(move);
     }
 
     public Integer[] returnBestMoveAndEval() {
-        int whoWonPosition = whoWonPosition();
-        if (whoWonPosition != 0) return new Integer[]{null, null};
-        List<Integer> possibleMoves = getPossibleMoves();
-        if (possibleMoves.isEmpty()) return new Integer[]{null, null};
+        Integer whoWonPosition = whoWonPosition();
+        if (whoWonPosition != null) return new Integer[]{null, whoWonPosition};
 
         Integer bestMove = null;
         int bestEval = cross ? -1 : 1;
-        for (Integer possibleMove : possibleMoves) {
-            int currentEval = makeMove(possibleMove).returnEval();
-            if ((cross && currentEval >= bestEval) || (!cross && currentEval <= bestEval)) {
-                bestMove = possibleMove;
-                bestEval = currentEval;
+        for (int i = 0; i < 9; i++) {
+            TicTacToe ticTacToe = makeMove(i);
+            if (ticTacToe != null) {
+                int currentEval = ticTacToe.returnEval();
+                if ((cross && currentEval >= bestEval) || (!cross && currentEval <= bestEval)) {
+                    bestMove = i;
+                    bestEval = currentEval;
+                }
             }
         }
-        if (bestMove != null) {
-            return new Integer[]{bestMove, bestEval};
-        }
-        return new Integer[]{null, null};
+        return new Integer[]{bestMove, bestEval};
     }
 
     public int returnEval() {
-        int whoWonPosition = whoWonPosition();
-        if (whoWonPosition != 0) return whoWonPosition;
-        List<Integer> possibleMoves = getPossibleMoves();
-        if (possibleMoves.isEmpty()) return 0;
+        Integer whoWonPosition = whoWonPosition();
+        if (whoWonPosition != null) return whoWonPosition;
+        List<TicTacToe> possibleMoves = getPossibleBoards();
 
         int evaluation = cross ? -1 : 1;
-        for (Integer possibleMove : possibleMoves) {
-            int currentEval = makeMove(possibleMove).returnEval();
+        for (TicTacToe possibleMove : possibleMoves) {
+            int currentEval = possibleMove.returnEval();
             if ((cross && currentEval >= evaluation) || (!cross && currentEval <= evaluation)) {
                 evaluation = currentEval;
             }
@@ -94,11 +90,7 @@ public final class TicTacToe {
         return evaluation;
     }
 
-    private boolean isEndPosition() {
-        return whoWonPosition() != 0;
-    }
-
-    private int whoWonPosition() {
+    private Integer whoWonPosition() {
         if ((board[0] == 1 && board[1] == 1 && board[2] == 1) ||
                 (board[3] == 1 && board[4] == 1 && board[5] == 1) ||
                 (board[6] == 1 && board[7] == 1 && board[8] == 1) ||
@@ -119,7 +111,12 @@ public final class TicTacToe {
                 (board[2] == -1 && board[4] == -1 && board[6] == -1)) {
             return -1;
         }
-        return 0;
+        if (board[0] != 0 && board[1] != 0 && board[2] != 0 &&
+                board[3] != 0 && board[4] != 0 && board[5] != 0 &&
+                board[6] != 0 && board[7] != 0 && board[8] != 0) {
+            return 0;
+        }
+        return null;
     }
 
     public int[] getBoard() {
