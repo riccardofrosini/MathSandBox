@@ -97,6 +97,8 @@ public class GenomeSerializerDeserializer {
             positionX += width / layerToNode.size();
         }
 
+
+        ((Graphics2D) graphics).setStroke(new BasicStroke(10));
         for (NodeGene node : nodes) {
             for (ConnectionGene connectionGene : node.getBackConnections()) {
                 Integer backNodeId = connectionGene.getInNode();
@@ -105,7 +107,6 @@ public class GenomeSerializerDeserializer {
                 }
                 Point point1 = nodeToPoint.get(node.getId());
                 Point point2 = nodeToPoint.get(backNodeId);
-                ((Graphics2D) graphics).setStroke(new BasicStroke(10));
                 graphics.drawLine(point1.x + 50, point1.y + 50, point2.x + 50, point2.y + 50);
                 graphics.setColor(Color.BLACK);
                 graphics.drawString(String.format("%6.4f", connectionGene.getWeight()), Math.min(point1.x, point2.x) + 50 + Math.abs(point2.x - point1.x) / 2, Math.min(point1.y, point2.y) + 50 + Math.abs(point2.y - point1.y) / 2);
