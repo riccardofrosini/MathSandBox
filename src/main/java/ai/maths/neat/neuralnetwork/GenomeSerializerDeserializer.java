@@ -78,8 +78,8 @@ public class GenomeSerializerDeserializer {
         for (NodeGene outputNode : genome.getOutputNodes()) {
             nodeToLayer.put(outputNode.getId(), maxLayer + 1);
         }
-        TreeMap<Integer, HashSet<Integer>> layerToNode = new TreeMap<>();
-        nodeToLayer.forEach((key, value) -> layerToNode.computeIfAbsent(value, k -> new HashSet<>()).add(key));
+        TreeMap<Integer, TreeSet<Integer>> layerToNode = new TreeMap<>();
+        nodeToLayer.forEach((key, value) -> layerToNode.computeIfAbsent(value, k -> new TreeSet<>()).add(key));
 
         HashMap<Integer, Point> nodeToPoint = new HashMap<>();
         graphics.setColor(Color.WHITE);
