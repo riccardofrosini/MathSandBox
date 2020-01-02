@@ -89,14 +89,15 @@ public class GenomeSerializerDeserializer {
         Font newFont = currentFont.deriveFont((float) currentFont.getSize() * width / 500);
         graphics.setFont(newFont);
 
-        int positionX = width / 50;
+        int positionX = width / (layerToNode.size() * 2);
         for (Integer layer : layerToNode.keySet()) {
-            int positionY = height / 50;
-            for (Integer nodeGene : layerToNode.get(layer)) {
+            TreeSet<Integer> nodeGenes = layerToNode.get(layer);
+            int positionY = height / (nodeGenes.size() * 2);
+            for (Integer nodeGene : nodeGenes) {
                 graphics.fillOval(positionX, positionY, width / 100, width / 100);
                 graphics.drawString(Integer.toString(nodeGene), positionX, positionY);
                 nodeToPoint.put(nodeGene, new Point(positionX, positionY));
-                positionY += height / layerToNode.get(layer).size();
+                positionY += height / nodeGenes.size();
             }
             positionX += width / layerToNode.size();
         }
