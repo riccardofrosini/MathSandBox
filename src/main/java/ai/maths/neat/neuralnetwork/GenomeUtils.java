@@ -209,13 +209,25 @@ class GenomeUtils {
             genome.addOutputNode();
         }
         HashSet<Genome> genomes = new HashSet<>();
+        NodeGene[] nodeGenes = genome.getNodesCollection().toArray(new NodeGene[0]);
         for (int i = 0; i < ConfigurationNetwork.MAX_POPULATION; i++) {
             Genome newGenome = cloneGenome(genome);
-            for (int j = 0; j < Math.max(inputNodes, outPutNodes); j++) {
-                newGenome.mutateWithNewConnection();
+
+            for (NodeGene nodeGene : newGenome.getNodesCollection()) {
+                boolean endLoop = false;
+                for (int j = 0; j < 10000 && !endLoop; j++) {
+                    NodeGene inOutNode = nodeGenes[RandomUtils.getRandomInt(nodeGenes.length)];
+                    if (nodeGene.getType() == NodeGene.Type.INPUT) {
+                        endLoop = newGenome.replaceOrMakeNewConnection(nodeGene.getId(), inOutNode.getId(),
+                                RandomUtils.getRandomWeight());
+                    } else {
+                        endLoop = newGenome.replaceOrMakeNewConnection(inOutNode.getId(), nodeGene.getId(),
+                                RandomUtils.getRandomWeight());
+                    }
+                }
+                updateGenomeFunctionWithFitness.accept(newGenome);
+                genomes.add(newGenome);
             }
-            updateGenomeFunctionWithFitness.accept(newGenome);
-            genomes.add(newGenome);
         }
         return genomes;
     }
@@ -251,7 +263,8 @@ class GenomeUtils {
         return genome.getOutputNodes().stream().map(nodeGene -> nodeToEvaluation.get(nodeGene.getId())).collect(Collectors.toList());
     }
 
-    private static void addEvaluationToMap(NodeFunction nodeFunction, HashMap<Integer, Double> nodeToEvaluation, NodeGene node) {
+    private static void addEvaluationToMap(NodeFunction
+                                                   nodeFunction, HashMap<Integer, Double> nodeToEvaluation, NodeGene node) {
         double value = 0;
         for (ConnectionGene backConnection : node.getBackConnections()) {
             if (backConnection.isEnabled()) {
@@ -269,7 +282,8 @@ class GenomeUtils {
         return inputs -> genomeEvaluate(genome, inputs, nodeFunction);
     }
 
-    static Consumer<Genome> makeGenomeFunctionToUpdateFitness(FitnessCalculator fitnessCalculator, NodeFunction nodeFunction) {
+    static Consumer<Genome> makeGenomeFunctionToUpdateFitness(FitnessCalculator fitnessCalculator, NodeFunction
+            nodeFunction) {
         return genome -> genome.setFitness(fitnessCalculator.calculate(getGenomeEvaluator(genome, nodeFunction)));
     }
 }
