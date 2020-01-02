@@ -37,10 +37,10 @@ public class NeuralNetworkTrainer {
 }
 
 class GenomeGraphics extends JFrame {
-    Panel panel;
-    Genome genome;
+    private Panel panel;
+    private Genome genome;
 
-    public void setGenome(Genome genome) {
+    void setGenome(Genome genome) {
         this.genome = genome;
         paintGraphicsWithGenome(panel.getGraphics());
     }
@@ -49,7 +49,7 @@ class GenomeGraphics extends JFrame {
         GenomeSerializerDeserializer.drawGenomeOnGraphics(genome, 800, 800, graphics);
     }
 
-    public GenomeGraphics(Genome genome) {
+    GenomeGraphics(Genome genome) {
         super();
         this.genome = genome;
         setPreferredSize(new Dimension(1000, 1000));
