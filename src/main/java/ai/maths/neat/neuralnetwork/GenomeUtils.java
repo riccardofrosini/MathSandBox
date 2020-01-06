@@ -225,9 +225,9 @@ class GenomeUtils {
                                 RandomUtils.getRandomWeight());
                     }
                 }
-                updateGenomeFunctionWithFitness.accept(newGenome);
-                genomes.add(newGenome);
             }
+            updateGenomeFunctionWithFitness.accept(newGenome);
+            genomes.add(newGenome);
         }
         return genomes;
     }
