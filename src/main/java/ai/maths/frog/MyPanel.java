@@ -66,14 +66,14 @@ class MyPanel extends JPanel {
         for (int i = 0; i < getWidth(); i++) {
             for (int j = 0; j < getHeight(); j++) {
                 for (Map.Entry<Color, Color> colorColorEntry : mapRound.entrySet()) {
-                    getRgb(i, j, colorColorEntry.getKey(), colorColorEntry.getValue(), bufferedImageTemp);
+                    setRgb(i, j, colorColorEntry.getKey(), colorColorEntry.getValue(), bufferedImageTemp);
                 }
             }
         }
         getGraphics().drawImage(bufferedImage, 0, 0, null);
     }
 
-    private void getRgb(int cX, int cY, Color color1C, Color color2C, BufferedImage bufferedImageTemp) {
+    private void setRgb(int cX, int cY, Color color1C, Color color2C, BufferedImage bufferedImageTemp) {
         int color1 = color1C.getRGB();
         int color2 = color2C.getRGB();
         int rgb = bufferedImageTemp.getRGB(cX, cY);
