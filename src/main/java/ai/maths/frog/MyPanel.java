@@ -50,17 +50,15 @@ class MyPanel extends JPanel {
         this.color = color;
     }
 
+
     @Override
     protected void paintComponent(Graphics g) {
-        bufferedImage = new BufferedImage(getWidth(), getHeight(), BufferedImage.TYPE_INT_RGB);
-        graphics = bufferedImage.getGraphics();
-        graphics.setColor(Color.WHITE);
-        graphics.fillRect(0, 0, bufferedImage.getWidth(), bufferedImage.getHeight());
-        g.drawImage(bufferedImage, 0, 0, null);
-    }
-
-
-    void runAnimation() {
+        if (bufferedImage == null || graphics == null) {
+            bufferedImage = new BufferedImage(getWidth(), getHeight(), BufferedImage.TYPE_INT_RGB);
+            graphics = bufferedImage.getGraphics();
+            graphics.setColor(Color.WHITE);
+            graphics.fillRect(0, 0, bufferedImage.getWidth(), bufferedImage.getHeight());
+        }
         BufferedImage bufferedImageTemp = new BufferedImage(getWidth(), getHeight(), BufferedImage.TYPE_INT_RGB);
         bufferedImageTemp.setData(bufferedImage.getData());
         for (int i = 0; i < getWidth(); i++) {
@@ -70,7 +68,7 @@ class MyPanel extends JPanel {
                 }
             }
         }
-        getGraphics().drawImage(bufferedImage, 0, 0, null);
+        g.drawImage(bufferedImage, 0, 0, null);
     }
 
     private void setRgb(int cX, int cY, Color color1C, Color color2C, BufferedImage bufferedImageTemp) {

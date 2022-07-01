@@ -28,7 +28,7 @@ public class Asd {
                     while (live) {
                         try {
                             Thread.sleep(10);
-                            ((MyPanel) image).runAnimation();
+                            image.repaint();
                         } catch (InterruptedException ignored) {
                         }
                     }
