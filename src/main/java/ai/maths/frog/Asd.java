@@ -9,20 +9,18 @@ import javax.swing.JRadioButton;
 
 public class Asd {
 
-
     private JPanel panel;
     private JRadioButton redButton;
     private JRadioButton greenButton;
     private JRadioButton blueButton;
-    private JPanel panel1;
+    private JPanel image;
     private JButton runAnimation;
     private boolean live = false;
 
-
     private Asd() {
-        redButton.addActionListener(evt -> ((MyPanel) panel1).setColor(Color.RED));
-        greenButton.addActionListener(evt -> ((MyPanel) panel1).setColor(Color.GREEN));
-        blueButton.addActionListener(evt -> ((MyPanel) panel1).setColor(Color.BLUE));
+        redButton.addActionListener(evt -> ((MyPanel) image).setColor(Color.RED));
+        greenButton.addActionListener(evt -> ((MyPanel) image).setColor(Color.GREEN));
+        blueButton.addActionListener(evt -> ((MyPanel) image).setColor(Color.BLUE));
         runAnimation.addActionListener(e -> {
             if (!live) {
                 live = true;
@@ -30,7 +28,7 @@ public class Asd {
                     while (live) {
                         try {
                             Thread.sleep(10);
-                            ((MyPanel) panel1).runAnimation();
+                            ((MyPanel) image).runAnimation();
                         } catch (InterruptedException ignored) {
                         }
                     }
@@ -50,9 +48,6 @@ public class Asd {
     }
 
     private void createUIComponents() {
-        panel1 = new MyPanel();
+        image = new MyPanel();
     }
 }
-
-
-

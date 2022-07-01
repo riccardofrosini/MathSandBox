@@ -12,7 +12,6 @@ import javax.swing.JPanel;
 
 class MyPanel extends JPanel {
 
-
     private Color color;
     private BufferedImage bufferedImage;
     private Graphics graphics;
@@ -25,8 +24,6 @@ class MyPanel extends JPanel {
         mapRound.put(Color.GREEN, Color.BLUE);
         mapRound.put(Color.BLUE, Color.RED);
         color = Color.RED;
-
-
 
         MouseAdapter mouseAdapter = new MouseAdapter() {
             @Override
@@ -43,7 +40,6 @@ class MyPanel extends JPanel {
                 graphics.setColor(color);
                 graphics.fillOval(Math.max(e.getX() - 15, 0), Math.max(e.getY() - 15, 0), 30, 30);
                 getGraphics().drawImage(bufferedImage, 0, 0, null);
-
             }
         };
         addMouseMotionListener(mouseAdapter);
@@ -71,7 +67,6 @@ class MyPanel extends JPanel {
             for (int j = 0; j < getHeight(); j++) {
                 for (Map.Entry<Color, Color> colorColorEntry : mapRound.entrySet()) {
                     getRgb(i, j, colorColorEntry.getKey(), colorColorEntry.getValue(), bufferedImageTemp);
-
                 }
             }
         }
@@ -89,7 +84,6 @@ class MyPanel extends JPanel {
             int maxX = Math.max(cX - r, 0);
             int minY = Math.min(cY + r, getHeight() - 1);
             int maxY = Math.max(cY - r, 0);
-
             for (int i = maxX; i <= minX; i++) {
                 for (int j = maxY; j <= minY; j++) {
                     if ((i != cX && j != cY) && bufferedImageTemp.getRGB(i, j) == color1 && (i - cX) * (i - cX) + (j - cY) * (j - cY) <= rSquared) {
