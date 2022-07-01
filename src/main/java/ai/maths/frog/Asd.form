@@ -32,7 +32,7 @@
         </constraints>
         <properties>
           <selected value="true"/>
-          <text resource-bundle="ai/maths/frog/application" key="red"/>
+          <text resource-bundle="application" key="red"/>
         </properties>
       </component>
       <component id="ee6ec" class="javax.swing.JRadioButton" binding="blueButton">
@@ -40,7 +40,7 @@
           <grid row="1" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
         </constraints>
         <properties>
-          <text resource-bundle="ai/maths/frog/application" key="blue"/>
+          <text resource-bundle="application" key="blue"/>
         </properties>
       </component>
       <component id="a437a" class="javax.swing.JRadioButton" binding="greenButton">
@@ -48,7 +48,7 @@
           <grid row="1" column="2" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
         </constraints>
         <properties>
-          <text resource-bundle="ai/maths/frog/application" key="green"/>
+          <text resource-bundle="application" key="green"/>
         </properties>
       </component>
       <component id="5129f" class="javax.swing.JButton" binding="runAnimation">
@@ -56,7 +56,7 @@
           <grid row="1" column="3" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
         </constraints>
         <properties>
-          <text resource-bundle="ai/maths/frog/application" key="animation"/>
+          <text resource-bundle="application" key="animation"/>
         </properties>
       </component>
     </children>

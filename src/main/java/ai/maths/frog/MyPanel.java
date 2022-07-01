@@ -1,12 +1,14 @@
 package ai.maths.frog;
 
-import javax.swing.*;
-import java.awt.*;
+import java.awt.Color;
+import java.awt.Graphics;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.image.BufferedImage;
 import java.util.HashMap;
 import java.util.Map;
+
+import javax.swing.JPanel;
 
 class MyPanel extends JPanel {
 
@@ -24,36 +26,22 @@ class MyPanel extends JPanel {
         mapRound.put(Color.BLUE, Color.RED);
         color = Color.RED;
 
-        addMouseListener(new MouseAdapter() {
-            @Override
-            public void mousePressed(MouseEvent e) {
-                super.mousePressed(e);
-                if (bufferedImage == null || bufferedImage.getWidth() != getWidth() || bufferedImage.getHeight() != getHeight()) {
-                    bufferedImage = new BufferedImage(getWidth(), getHeight(), BufferedImage.TYPE_INT_RGB);
-                    graphics = bufferedImage.getGraphics();
-                    graphics.setColor(Color.WHITE);
-                    graphics.fillRect(0, 0, bufferedImage.getWidth(), bufferedImage.getHeight());
-                }
-                graphics.setColor(color);
-                graphics.fillOval(Math.max(e.getX() - 15, 0), Math.max(e.getY() - 15, 0), 30, 30);
-                getGraphics().drawImage(bufferedImage, 0, 0, null);
 
-            }
-        });
 
         MouseAdapter mouseAdapter = new MouseAdapter() {
             @Override
-            public void mouseDragged(MouseEvent e) {
-                super.mouseDragged(e);
-                if (bufferedImage == null || bufferedImage.getWidth() != getWidth() || bufferedImage.getHeight() != getHeight()) {
-                    bufferedImage = new BufferedImage(getWidth(), getHeight(), BufferedImage.TYPE_INT_RGB);
-                    graphics = bufferedImage.getGraphics();
-                    graphics.setColor(Color.WHITE);
-                    graphics.fillRect(0, 0, bufferedImage.getWidth(), bufferedImage.getHeight());
-                }
+            public void mousePressed(MouseEvent e) {
+                super.mousePressed(e);
                 graphics.setColor(color);
                 graphics.fillOval(Math.max(e.getX() - 15, 0), Math.max(e.getY() - 15, 0), 30, 30);
+                getGraphics().drawImage(bufferedImage, 0, 0, null);
+            }
 
+            @Override
+            public void mouseDragged(MouseEvent e) {
+                super.mouseDragged(e);
+                graphics.setColor(color);
+                graphics.fillOval(Math.max(e.getX() - 15, 0), Math.max(e.getY() - 15, 0), 30, 30);
                 getGraphics().drawImage(bufferedImage, 0, 0, null);
 
             }
@@ -64,6 +52,15 @@ class MyPanel extends JPanel {
 
     void setColor(Color color) {
         this.color = color;
+    }
+
+    @Override
+    protected void paintComponent(Graphics g) {
+        bufferedImage = new BufferedImage(getWidth(), getHeight(), BufferedImage.TYPE_INT_RGB);
+        graphics = bufferedImage.getGraphics();
+        graphics.setColor(Color.WHITE);
+        graphics.fillRect(0, 0, bufferedImage.getWidth(), bufferedImage.getHeight());
+        g.drawImage(bufferedImage, 0, 0, null);
     }
 
 
@@ -101,7 +98,6 @@ class MyPanel extends JPanel {
                     }
                 }
             }
-
         }
     }
 }

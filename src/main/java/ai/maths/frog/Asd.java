@@ -1,7 +1,11 @@
 package ai.maths.frog;
 
-import javax.swing.*;
-import java.awt.*;
+import java.awt.Color;
+
+import javax.swing.JButton;
+import javax.swing.JFrame;
+import javax.swing.JPanel;
+import javax.swing.JRadioButton;
 
 public class Asd {
 
@@ -34,7 +38,6 @@ public class Asd {
             } else {
                 live = false;
             }
-
         });
     }
 
