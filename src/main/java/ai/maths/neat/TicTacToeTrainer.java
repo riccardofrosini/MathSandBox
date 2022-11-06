@@ -1,14 +1,14 @@
 package ai.maths.neat;
 
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+
 import ai.maths.neat.neuralnetwork.NeuralNetworkTrainer;
 import ai.maths.neat.neuralnetwork.functions.GenomeEvaluator;
 import ai.maths.neat.utils.ConfigurationNetwork;
 import ai.maths.neat.utils.NodeFunctionsCreator;
 import ai.maths.tictactoe.TicTacToe;
-
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
 
 public class TicTacToeTrainer {
 
@@ -17,13 +17,13 @@ public class TicTacToeTrainer {
 
     private static void fillUpEvaluationsAndPositions(TicTacToe ticTacToe) {
         int eval = ticTacToe.returnEval();
-        if (ticTacToe.isCross() && !ticTacToe.getPossibleMoves().isEmpty()) {
+        List<TicTacToe> possibleMoves = ticTacToe.getPossibleBoards();
+        if (ticTacToe.isCross() && !possibleMoves.isEmpty()) {
             ticTacToeHashSet.add(ticTacToe);
         }
         ticTacToeHashMap.put(ticTacToe, eval);
-        List<Integer> possibleMoves = ticTacToe.getPossibleMoves();
-        for (Integer possibleMove : possibleMoves) {
-            fillUpEvaluationsAndPositions(ticTacToe.makeMove(possibleMove));
+        for (TicTacToe possibleMove : possibleMoves) {
+            fillUpEvaluationsAndPositions(possibleMove);
         }
     }
 
@@ -35,27 +35,28 @@ public class TicTacToeTrainer {
         fillUpEvaluationsAndPositions();
         System.out.println(ticTacToeHashMap.size());
         System.out.println(ticTacToeHashSet.size());
-        ConfigurationNetwork.MAX_POPULATION = 5000;
-        ConfigurationNetwork.MAX_POPULATION_STAGNATION_GENERATION = 50;
-        ConfigurationNetwork.MAX_SPECIES_STAGNATION_GENERATION = 40;
-        ConfigurationNetwork.SPECIES_DELTA_THRESHOLD = 2;
+        ConfigurationNetwork.MAX_POPULATION = 1000;
+        //ConfigurationNetwork.MUTATE_CONNECTION_BY_ADDING_NODE_PROBABILITY = 0.18;
+        //ConfigurationNetwork.MAX_POPULATION_STAGNATION_GENERATION = 50;
+        //ConfigurationNetwork.MAX_SPECIES_STAGNATION_GENERATION = 40;
+        //ConfigurationNetwork.SPECIES_DELTA_THRESHOLD = 2;
         GenomeEvaluator geno = NeuralNetworkTrainer.train(27, 9, 10000, NodeFunctionsCreator.linearUnit(), genomeEvaluator -> {
-                    double score = 0;
-                    for (TicTacToe ticTacToe : ticTacToeHashSet) {
-                        int move = getMoveIn27Out9(genomeEvaluator, ticTacToe.getBoard());
-                        ticTacToe = ticTacToe.makeMove(move);
-                        if (ticTacToe == null) {
-                            continue;
-                        }
-                        score += (double) (ticTacToeHashMap.get(ticTacToe) + 1) / 10;
-                        //score++;
+            double score = 0;
+            for (TicTacToe ticTacToe : ticTacToeHashSet) {
+                int move = getMoveIn27Out9(genomeEvaluator, ticTacToe.getBoard());
+                ticTacToe = ticTacToe.makeMove(move);
+                if (ticTacToe == null) {
+                    continue;
+                }
+                score += (double) (ticTacToeHashMap.get(ticTacToe) + 1) / 10;
+                //score++;
                     }
                     return score;
                 }
         );
 
         TicTacToe ticTacToe = new TicTacToe();
-        while (ticTacToe != null && !ticTacToe.getPossibleMoves().isEmpty()) {
+        while (ticTacToe != null && !ticTacToe.getPossibleBoards().isEmpty()) {
             int[] board = ticTacToe.getBoard();
             int move = getMoveIn27Out9(geno, board);
             ticTacToe = ticTacToe.makeMove(move);

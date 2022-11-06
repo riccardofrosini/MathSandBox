@@ -1,10 +1,17 @@
 package ai.maths.neat.neuralnetwork;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Objects;
+import java.util.Set;
+import java.util.SortedMap;
+import java.util.TreeMap;
+import java.util.stream.Collectors;
+
 import ai.maths.neat.utils.ConfigurationNetwork;
 import ai.maths.neat.utils.RandomUtils;
-
-import java.util.*;
-import java.util.stream.Collectors;
 
 class Genome implements Comparable<Genome> {
 
@@ -64,7 +71,7 @@ class Genome implements Comparable<Genome> {
         NodeGene inNode = nodeGenes[RandomUtils.getRandomInt(nodeGenes.length)];
         NodeGene outNode = nodeGenes[RandomUtils.getRandomInt(nodeGenes.length)];
         // max loops as this could go on forever.
-        for (int i = 0; i < 10000 && !makeNewConnection(inNode.getId(), outNode.getId(), RandomUtils.getRandomWeight()); i++) {
+        for (int i = 0; i < 10000 && !replaceOrMakeNewConnection(inNode.getId(), outNode.getId(), RandomUtils.getRandomWeight()); i++) {
             inNode = nodeGenes[RandomUtils.getRandomInt(nodeGenes.length)];
             outNode = nodeGenes[RandomUtils.getRandomInt(nodeGenes.length)];
         }
@@ -79,13 +86,6 @@ class Genome implements Comparable<Genome> {
                 connectionGene.setWeight(RandomUtils.getRandomWeight());
             }
         }
-    }
-
-    private boolean makeNewConnection(int inNodeId, int outNodeId, double weight) {
-        if (connections.containsKey(NodeAndConnectionCounter.getNewInnovationForConnection(inNodeId, outNodeId))) {
-            return false;
-        }
-        return replaceOrMakeNewConnection(inNodeId, outNodeId, weight);
     }
 
     boolean replaceOrMakeNewConnection(int inNodeId, int outNodeId, double weight) {
@@ -178,8 +178,12 @@ class Genome implements Comparable<Genome> {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof Genome)) return false;
+        if (this == o) {
+            return true;
+        }
+        if (!(o instanceof Genome)) {
+            return false;
+        }
         Genome genome = (Genome) o;
         return connections.equals(genome.connections) &&
                 nodes.equals(genome.nodes) &&
