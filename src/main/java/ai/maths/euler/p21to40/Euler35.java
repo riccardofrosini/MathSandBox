@@ -17,7 +17,7 @@ public class Euler35 {
 
     private static boolean isRotatingPrime(String candidate) {
         for (int j = 0; j < candidate.length(); j++) {
-            candidate = candidate.substring(1) + candidate.substring(0, 1);
+            candidate = candidate.substring(1) + candidate.charAt(0);
             if (!Utils.isPrime(Integer.parseInt(candidate))) {
                 return false;
             }

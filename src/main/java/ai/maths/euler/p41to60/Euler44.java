@@ -9,8 +9,8 @@ public class Euler44 {
     }
 
     private static long minimumPentagonalNumber() {
-        for (int k = 1; ; k++) {
-            for (int j = 1; j < k; j++) {
+        for (long k = 1; ; k++) {
+            for (long j = 1; j < k; j++) {
                 long Pk = (k * (3 * k - 1)) / 2;
                 long Pj = (j * (3 * j - 1)) / 2;
                 if ((Pj + Pk) % 2 == 0) {

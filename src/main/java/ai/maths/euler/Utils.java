@@ -38,7 +38,7 @@ public class Utils {
         long nCopy = n;
         long sum = 1;
 
-        for (int i = 2; i * i <= nCopy; i = i + 2) {
+        for (long i = 2; i * i <= nCopy; i = i + 2) {
             long partial = 1;
             long prime = i;
             long powPrime = prime;
@@ -48,7 +48,9 @@ public class Utils {
                 powPrime = powPrime * prime;
             }
             sum = sum * partial;
-            if (i == 2) i--;
+            if (i == 2) {
+                i--;
+            }
         }
         if (nCopy > 1) {
             sum = sum * (1 + nCopy);
