@@ -109,7 +109,7 @@ class GenomeUtils {
         if (connectionMade && (((thisConnection.isEnabled() ^ otherConnection.isEnabled()) &&
                 (RandomUtils.getRandom() <= ConfigurationNetwork.DISABLE_CONNECTION_CROSSOVER_PROBABILITY)) ||
                 (!thisConnection.isEnabled() && !otherConnection.isEnabled()))) {
-            crossover.getConnectionWithInnovationNumber(NodeAndConnectionCounter.getNewInnovationForConnection(thisConnection.getInNode(),
+            crossover.getConnectionWithInnovationNumber(NodeAndConnectionCounter.getInnovationForConnection(thisConnection.getInNode(),
                     thisConnection.getOutNode())).disable();
         }
     }
@@ -119,7 +119,7 @@ class GenomeUtils {
         boolean connectionMade = crossover.replaceOrMakeNewConnection(connection.getInNode(),
                 connection.getOutNode(), connection.getWeight());
         if (!connection.isEnabled() && connectionMade) {
-            crossover.getConnectionWithInnovationNumber(NodeAndConnectionCounter.getNewInnovationForConnection(connection.getInNode(),
+            crossover.getConnectionWithInnovationNumber(NodeAndConnectionCounter.getInnovationForConnection(connection.getInNode(),
                     connection.getOutNode())).disable();
         }
     }

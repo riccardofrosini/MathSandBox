@@ -50,11 +50,11 @@ class Genome implements Comparable<Genome> {
         if (!connections.isEmpty()) {
             ConnectionGene[] allConnections = connections.values().toArray(new ConnectionGene[0]);
             ConnectionGene connectionGene = allConnections[RandomUtils.getRandomInt(allConnections.length)];
-            int newIdForHiddenNode = NodeAndConnectionCounter.getNewIdForHiddenNode(connectionGene.getInnovation());
+            int newIdForHiddenNode = NodeAndConnectionCounter.getIdForHiddenNode(connectionGene.getInnovation());
             for (int i = 0; i < 10000 && (!connectionGene.isEnabled() ||
                     nodes.containsKey(newIdForHiddenNode)); i++) {
                 connectionGene = allConnections[RandomUtils.getRandomInt(allConnections.length)];
-                newIdForHiddenNode = NodeAndConnectionCounter.getNewIdForHiddenNode(connectionGene.getInnovation());
+                newIdForHiddenNode = NodeAndConnectionCounter.getIdForHiddenNode(connectionGene.getInnovation());
             }
             if (connectionGene.isEnabled() && !nodes.containsKey(newIdForHiddenNode)) {
                 connectionGene.disable();

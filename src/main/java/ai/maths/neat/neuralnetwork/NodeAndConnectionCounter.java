@@ -1,8 +1,8 @@
 package ai.maths.neat.neuralnetwork;
 
-import ai.maths.neat.utils.ConfigurationNetwork;
-
 import java.util.HashMap;
+
+import ai.maths.neat.utils.ConfigurationNetwork;
 
 class NodeAndConnectionCounter {
 
@@ -17,7 +17,7 @@ class NodeAndConnectionCounter {
         return idNode;
     }
 
-    static int getNewIdForHiddenNode(int innovation) {
+    static int getIdForHiddenNode(int innovation) {
         Integer id = innovationsNodeHistory.get(innovation);
         if (id != null) {
             return id;
@@ -28,7 +28,7 @@ class NodeAndConnectionCounter {
         }
     }
 
-    static int getNewInnovationForConnection(int inNode, int outNode) {
+    static int getInnovationForConnection(int inNode, int outNode) {
         int nodesConnectionId = inNode + outNode * ConfigurationNetwork.MAX_NODES;
         Integer id = innovationsConnectionHistory.get(nodesConnectionId);
         if (id != null) {
