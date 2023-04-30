@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<form xmlns="http://www.intellij.com/uidesigner/form/" version="1" bind-to-class="ai.maths.mandelbrot.Asd">
+  <grid id="27dc6" binding="panel" custom-create="true" layout-manager="BorderLayout" hgap="0" vgap="0">
+    <constraints>
+      <xy x="58" y="185" width="1000" height="1000"/>
+    </constraints>
+    <properties>
+      <foreground color="-1"/>
+      <inheritsPopupMenu value="false"/>
+      <maximumSize width="100" height="100"/>
+      <minimumSize width="100" height="100"/>
+      <preferredSize width="100" height="100"/>
+    </properties>
+    <border type="none"/>
+    <children/>
+  </grid>
+  <buttonGroups>
+    <group name="colorButtonGroup">
+      <member id="94af3"/>
+      <member id="8231"/>
+      <member id="f5610"/>
+      <member id="67b9a"/>
+      <member id="ee6ec"/>
+      <member id="a437a"/>
+      <member id="8340a"/>
+    </group>
+  </buttonGroups>
+</form>
