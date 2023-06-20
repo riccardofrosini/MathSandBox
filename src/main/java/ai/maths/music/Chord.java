@@ -61,8 +61,7 @@ public class Chord {
                 Chord chord = new Chord(note, chordType);
                 Map<Note, Set<Scale>> equivalentScales = Note.SCALE_NOTES.stream()
                         .map(noteScale -> Arrays.stream(ModeType.values()).map(modeType -> new Scale(noteScale, modeType))
-                                .filter(scale -> chord.notesByScaleType.containsKey(scale.getModeType()) &&
-                                        scale.containsEquivalentNotes(chord.notesByScaleType.get(scale.getModeType())))
+                                .filter(scale -> scale.containsEquivalentNotes(chord.notesByScaleType.entrySet().iterator().next().getValue()))
                                 .collect(Collectors.toSet())).filter(scales -> !scales.isEmpty())
                         .collect(Collectors.toMap(scales -> scales.iterator().next().getScaleNote(), scales -> scales));
                 chordScales.put(chord, equivalentScales);

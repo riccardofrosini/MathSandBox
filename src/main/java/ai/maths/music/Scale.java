@@ -4,7 +4,9 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 import ai.maths.music.NoteEnums.NaturalNote;
@@ -54,16 +56,15 @@ public class Scale {
 
     public List<Note> findCorrespondingNotesFromIntervals(List<Integer> intervals) {
         List<Note> notes = new ArrayList<>();
-        int j = 0;
-        int k = 0;
-        for (int i = 0; i < modeType.intervals.size() && j < intervals.size(); i++) {
-            Integer interval = modeType.intervals.get(i);
-            if (interval != null) {
-                if (intervals.get(j).equals(interval)) {
-                    notes.add(this.notes.get(k));
-                    j++;
+        Iterator<Integer> intervalIterator = intervals.iterator();
+        Integer interval = intervalIterator.next();
+        for (int i = 0; i < modeType.nonNullIntervals.size(); i++) {
+            if (interval.equals(modeType.nonNullIntervals.get(i))) {
+                notes.add(this.notes.get(i));
+                if (intervalIterator.hasNext()) {
+                    interval = intervalIterator.next();
                 }
-                k++;
+                ;
             }
         }
         return notes;
@@ -115,14 +116,16 @@ public class Scale {
 
         private ScaleType scaleType;
         private List<Integer> intervals;
+        private List<Integer> nonNullIntervals;
 
         ModeType(ScaleType scaleType, int modalInterval) {
             this.scaleType = scaleType;
             this.intervals = rotateScaleAndAdjust(-modalInterval);
+            this.nonNullIntervals = this.intervals.stream().filter(Objects::nonNull).collect(Collectors.toUnmodifiableList());
         }
 
         public boolean areIntervalsInTheScale(Collection<Integer> intervals) {
-            return this.intervals.containsAll(intervals);
+            return this.nonNullIntervals.containsAll(intervals);
         }
 
         private List<Integer> rotateScaleAndAdjust(int rotate) {
