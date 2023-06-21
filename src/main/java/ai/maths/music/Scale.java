@@ -1,8 +1,10 @@
 package ai.maths.music;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
@@ -17,11 +19,15 @@ public class Scale {
     private Note scaleNote;
     private ModeType modeType;
     private List<Note> notes;
+    private KeySignature keySignature;
 
-    public Scale(Note scaleNote, ModeType modeType) {
+    public Scale(Note scaleNote, ModeType modeType) throws ScaleDoesNotExist {
         this.scaleNote = scaleNote;
         this.modeType = modeType;
         this.notes = buildScaleNotes();
+        Note noteModel = (modeType.scaleType == ScaleType.PENTATONIC_MAJOR || modeType.scaleType == ScaleType.PENTATONIC_MINOR) && modeType.modalInterval > 3 ?
+                notes.get(modeType.modalInterval - 1) : notes.get(modeType.modalInterval);
+        this.keySignature = KeySignature.findKey(noteModel, modeType.scaleType);
     }
 
     public ModeType getModeType() {
@@ -104,11 +110,13 @@ public class Scale {
         BLUES_MAJOR_PENTATONIC_MAJOR(ScaleType.PENTATONIC_MAJOR, 4), MINOR_PENTATONIC(ScaleType.PENTATONIC_MAJOR, 5);
 
         private ScaleType scaleType;
+        private int modalInterval;
         private List<Integer> intervals;
         private List<Integer> nonNullIntervals;
 
         ModeType(ScaleType scaleType, int modalInterval) {
             this.scaleType = scaleType;
+            this.modalInterval = modalInterval;
             this.intervals = rotateScaleAndAdjust(-modalInterval);
             this.nonNullIntervals = this.intervals.stream().filter(Objects::nonNull).collect(Collectors.toUnmodifiableList());
         }
@@ -140,7 +148,7 @@ public class Scale {
         }
     }
 
-    public enum KeySignatures {
+    public enum KeySignature {
         CFlatMajorAFlatMinor(Note.CFlat, Note.AFlat, List.of(Note.BFlat, Note.EFlat, Note.AFlat, Note.DFlat, Note.GFlat, Note.CFlat, Note.FFlat)),
         GFlatMajorEFlatMinor(Note.GFlat, Note.EFlat, List.of(Note.BFlat, Note.EFlat, Note.AFlat, Note.DFlat, Note.GFlat, Note.CFlat)),
         DFlatMajorBFlatMinor(Note.DFlat, Note.BFlat, List.of(Note.BFlat, Note.EFlat, Note.AFlat, Note.DFlat, Note.GFlat)),
@@ -161,10 +169,24 @@ public class Scale {
         private Note scaleMinor;
         private List<Note> alterations;
 
-        KeySignatures(Note scaleMajor, Note scaleMinor, List<Note> alterations) {
+        KeySignature(Note scaleMajor, Note scaleMinor, List<Note> alterations) {
             this.scaleMajor = scaleMajor;
             this.scaleMinor = scaleMinor;
             this.alterations = alterations;
         }
+
+        public static KeySignature findKey(Note scaleNote, ScaleType modeType) throws ScaleDoesNotExist {
+            if (modeType == ScaleType.MAJOR || modeType == ScaleType.PENTATONIC_MAJOR) {
+                return Arrays.stream(values()).filter(keySignature -> keySignature.scaleMajor == scaleNote)
+                        .min(Comparator.comparing(o -> o.alterations.size())).orElseThrow(() -> new ScaleDoesNotExist());
+            }
+            return Arrays.stream(values()).filter(keySignature -> keySignature.scaleMinor == scaleNote)
+                    .min(Comparator.comparing(o -> o.alterations.size())).orElseThrow(() -> new ScaleDoesNotExist());
+
+        }
+    }
+
+    public static class ScaleDoesNotExist extends Exception {
+
     }
 }
