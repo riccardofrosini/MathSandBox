@@ -175,18 +175,21 @@ public class Scale {
             this.alterations = alterations;
         }
 
-        public static KeySignature findKey(Note scaleNote, ScaleType modeType) throws ScaleDoesNotExist {
-            if (modeType == ScaleType.MAJOR || modeType == ScaleType.PENTATONIC_MAJOR) {
+        public static KeySignature findKey(Note scaleNote, ScaleType scaleType) throws ScaleDoesNotExist {
+            if (scaleType == ScaleType.MAJOR || scaleType == ScaleType.PENTATONIC_MAJOR) {
                 return Arrays.stream(values()).filter(keySignature -> keySignature.scaleMajor == scaleNote)
-                        .min(Comparator.comparing(o -> o.alterations.size())).orElseThrow(() -> new ScaleDoesNotExist());
+                        .min(Comparator.comparing(o -> o.alterations.size())).orElseThrow(() -> new ScaleDoesNotExist(scaleNote, scaleType));
             }
             return Arrays.stream(values()).filter(keySignature -> keySignature.scaleMinor == scaleNote)
-                    .min(Comparator.comparing(o -> o.alterations.size())).orElseThrow(() -> new ScaleDoesNotExist());
+                    .min(Comparator.comparing(o -> o.alterations.size())).orElseThrow(() -> new ScaleDoesNotExist(scaleNote, scaleType));
 
         }
     }
 
     public static class ScaleDoesNotExist extends Exception {
 
+        public ScaleDoesNotExist(Note note, ScaleType scaleType) {
+            super("Scale " + note + " in " + scaleType + ", does not exist.");
+        }
     }
 }
