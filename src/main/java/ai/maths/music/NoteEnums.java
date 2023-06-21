@@ -51,11 +51,15 @@ public class NoteEnums {
             return ALL_INTERVALS.get(this).get(interval);
         }
 
+        public int findNoteInterval(Note note) {
+            return (note.alterationFromC - alterationFromC + 12) % 12;
+        }
+
         private static HashMap<Note, HashMap<Integer, HashSet<Note>>> buildAllSemitoneIntervals() {
             HashMap<Note, HashMap<Integer, HashSet<Note>>> allIntervals = new HashMap<>(35);
             for (Note note1 : values()) {
                 for (Note note2 : values()) {
-                    int interval = (note2.alterationFromC - note1.alterationFromC + 12) % 12;
+                    int interval = note1.findNoteInterval(note2);
                     allIntervals.compute(note1, (note, intervalCurrent) -> intervalCurrent == null ? new HashMap<>() : intervalCurrent)
                             .compute(interval, (integer, notes) -> notes == null ? new HashSet<>(2) : notes)
                             .add(note2);
