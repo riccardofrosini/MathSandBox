@@ -1,10 +1,11 @@
 package ai.maths.music;
 
 import java.util.Arrays;
-import java.util.HashMap;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.TreeMap;
 import java.util.stream.Collectors;
 
 import ai.maths.music.NoteEnums.Note;
@@ -14,23 +15,34 @@ public class Chord {
 
     private Note note;
     private ChordType chordType;
-    private Map<ModeType, List<Note>> notesByScaleType;
+    private Map<ModeType, Scale> scaleByModeType;
+    private Map<ModeType, List<Note>> notesByModeType;
 
     public Chord(Note note, ChordType chordType) {
         this.note = note;
         this.chordType = chordType;
-        this.notesByScaleType = buildNotesByScaleType();
+        this.scaleByModeType = buildScaleByModeTypes();
+        this.notesByModeType = buildNotesByModeType();
     }
 
-    private Map<ModeType, List<Note>> buildNotesByScaleType() {
-        return chordType.modeTypes.stream()
-                .collect(Collectors.toMap(modeType -> modeType,
-                        modeType -> new Scale(note, modeType).findCorrespondingNotesFromIntervals(chordType.intervals)));
+
+    private Map<ModeType, Scale> buildScaleByModeTypes() {
+        return Collections.unmodifiableNavigableMap(new TreeMap<>(chordType.modeTypes.stream()
+                .map(modeType -> new Scale(note, modeType))
+                .collect(Collectors.toUnmodifiableMap(Scale::getModeType, scale -> scale))));
+
+    }
+
+    private Map<ModeType, List<Note>> buildNotesByModeType() {
+        return Collections.unmodifiableNavigableMap(new TreeMap<>(scaleByModeType.values().stream()
+                .collect(Collectors.toUnmodifiableMap(Scale::getModeType,
+                        scale -> scale.findCorrespondingNotesFromIntervals(chordType.intervals)))));
     }
 
     @Override
     public String toString() {
-        return note + " " + chordType + ", " + notesByScaleType;
+        return note + " " + chordType + ", " + notesByModeType + scaleByModeType.values().stream()
+                .map(Scale::toString).collect(Collectors.joining("\n\t\t", "\n\t\t", "\n"));
     }
 
     public enum ChordType {
@@ -48,30 +60,18 @@ public class Chord {
         }
 
         private Set<ModeType> buildScaleTypes() {
-            return Arrays.stream(ModeType.values()).filter(modeType -> modeType.areIntervalsInTheScale(intervals)).collect(Collectors.toSet());
+            return Arrays.stream(ModeType.values()).filter(modeType -> modeType.areIntervalsInTheModeType(intervals)).collect(Collectors.toSet());
 
         }
     }
 
 
     public static void main(String[] args) {
-        Map<Chord, Map<Note, Set<Scale>>> chordScales = new HashMap<>();
+
         for (Note note : Note.SCALE_NOTES) {
             for (ChordType chordType : ChordType.values()) {
-                Chord chord = new Chord(note, chordType);
-                Map<Note, Set<Scale>> equivalentScales = Note.SCALE_NOTES.stream()
-                        .map(noteScale -> Arrays.stream(ModeType.values()).map(modeType -> new Scale(noteScale, modeType))
-                                .filter(scale -> scale.containsEquivalentNotes(chord.notesByScaleType.entrySet().iterator().next().getValue()))
-                                .collect(Collectors.toSet())).filter(scales -> !scales.isEmpty())
-                        .collect(Collectors.toMap(scales -> scales.iterator().next().getScaleNote(), scales -> scales));
-                chordScales.put(chord, equivalentScales);
+                System.out.println(new Chord(note, chordType));
             }
         }
-        System.out.println(chordScales.entrySet().stream().map((chordEntry) -> chordEntry.getKey() + "\n" +
-                chordEntry.getValue().entrySet().stream()
-                        .map(scalesEntry -> scalesEntry.getKey() + scalesEntry.getValue().stream()
-                                .map(Scale::toString)
-                                .collect(Collectors.joining("\n\t\t\t\t", "\n\t\t\t\t", "")))
-                        .collect(Collectors.joining("\n\t\t", "\t\t", ""))).collect(Collectors.joining("\n")));
     }
 }

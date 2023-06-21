@@ -24,10 +24,6 @@ public class Scale {
         this.notes = buildScaleNotes();
     }
 
-    public Note getScaleNote() {
-        return scaleNote;
-    }
-
     public ModeType getModeType() {
         return modeType;
     }
@@ -51,7 +47,7 @@ public class Scale {
             }
             currentNote = currentNote.next();
         }
-        return scaleNotes;
+        return Collections.unmodifiableList(scaleNotes);
     }
 
     public List<Note> findCorrespondingNotesFromIntervals(List<Integer> intervals) {
@@ -64,14 +60,9 @@ public class Scale {
                 if (intervalIterator.hasNext()) {
                     interval = intervalIterator.next();
                 }
-                ;
             }
         }
         return notes;
-    }
-
-    public boolean containsEquivalentNotes(Collection<Note> notes) {
-        return notes.stream().allMatch(note -> this.notes.stream().anyMatch(noteScale -> noteScale.areTheSame(note)));
     }
 
     public enum ScaleType {
@@ -124,12 +115,12 @@ public class Scale {
             this.nonNullIntervals = this.intervals.stream().filter(Objects::nonNull).collect(Collectors.toUnmodifiableList());
         }
 
-        public boolean areIntervalsInTheScale(Collection<Integer> intervals) {
+        public boolean areIntervalsInTheModeType(Collection<Integer> intervals) {
             return this.nonNullIntervals.containsAll(intervals);
         }
 
         private List<Integer> rotateScaleAndAdjust(int rotate) {
-            if (rotate == 0 && scaleType != ScaleType.PENTATONIC_MAJOR) {
+            if (rotate == 0) {
                 return scaleType.intervals;
             }
             if (scaleType == ScaleType.PENTATONIC_MAJOR) {
@@ -145,10 +136,9 @@ public class Scale {
                         j++;
                     }
                 }
-                return newIntervals;
-            } else {
-                return scaleType.rotateScaleIntervals(rotate);
+                return Collections.unmodifiableList(newIntervals);
             }
+            return scaleType.rotateScaleIntervals(rotate);
         }
     }
 
