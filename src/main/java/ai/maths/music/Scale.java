@@ -118,7 +118,7 @@ public class Scale {
         }
 
         private List<Integer> rotateScaleAndAdjust(int rotate) {
-            if (rotate == 0) {
+            if (rotate == 0 && scaleType != ScaleType.PENTATONIC_MAJOR) {
                 return scaleType.intervals;
             }
             if (scaleType == ScaleType.PENTATONIC_MAJOR) {

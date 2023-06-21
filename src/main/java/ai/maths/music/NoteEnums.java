@@ -61,7 +61,6 @@ public class NoteEnums {
                             .add(note2);
                 }
             }
-            System.out.println(allIntervals);
             return allIntervals;
         }
 
