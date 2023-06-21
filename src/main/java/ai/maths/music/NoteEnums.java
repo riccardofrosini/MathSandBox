@@ -7,28 +7,28 @@ import java.util.List;
 public class NoteEnums {
 
     public enum Note {
-        A(NaturalNote.A, Accident.NATURAL, 9), ASharp(NaturalNote.A, Accident.SHARP, 10), BFlat(NaturalNote.B, Accident.FLAT, 10),
-        B(NaturalNote.B, Accident.NATURAL, 11), CFlat(NaturalNote.C, Accident.FLAT, 11), BSharp(NaturalNote.B, Accident.SHARP, 0),
-        C(NaturalNote.C, Accident.NATURAL, 0), CSharp(NaturalNote.C, Accident.SHARP, 1), DFlat(NaturalNote.D, Accident.FLAT, 1),
-        D(NaturalNote.D, Accident.NATURAL, 2), DSharp(NaturalNote.D, Accident.SHARP, 3), EFlat(NaturalNote.E, Accident.FLAT, 3),
-        E(NaturalNote.E, Accident.NATURAL, 4), FFlat(NaturalNote.F, Accident.FLAT, 4), ESharp(NaturalNote.E, Accident.SHARP, 5),
-        F(NaturalNote.F, Accident.NATURAL, 5), FSharp(NaturalNote.F, Accident.SHARP, 6), GFlat(NaturalNote.G, Accident.FLAT, 6),
-        G(NaturalNote.G, Accident.NATURAL, 7), GSharp(NaturalNote.G, Accident.SHARP, 8), AFlat(NaturalNote.A, Accident.FLAT, 8),
+        A(NaturalNote.A, Accident.NATURAL), ASharp(NaturalNote.A, Accident.SHARP), BFlat(NaturalNote.B, Accident.FLAT),
+        B(NaturalNote.B, Accident.NATURAL), CFlat(NaturalNote.C, Accident.FLAT), BSharp(NaturalNote.B, Accident.SHARP),
+        C(NaturalNote.C, Accident.NATURAL), CSharp(NaturalNote.C, Accident.SHARP), DFlat(NaturalNote.D, Accident.FLAT),
+        D(NaturalNote.D, Accident.NATURAL), DSharp(NaturalNote.D, Accident.SHARP), EFlat(NaturalNote.E, Accident.FLAT),
+        E(NaturalNote.E, Accident.NATURAL), FFlat(NaturalNote.F, Accident.FLAT), ESharp(NaturalNote.E, Accident.SHARP),
+        F(NaturalNote.F, Accident.NATURAL), FSharp(NaturalNote.F, Accident.SHARP), GFlat(NaturalNote.G, Accident.FLAT),
+        G(NaturalNote.G, Accident.NATURAL), GSharp(NaturalNote.G, Accident.SHARP), AFlat(NaturalNote.A, Accident.FLAT),
 
-        ADoubleSharp(NaturalNote.A, Accident.DOUBLE_SHARP, 11),
-        BDoubleSharp(NaturalNote.B, Accident.DOUBLE_SHARP, 1),
-        CDoubleSharp(NaturalNote.C, Accident.DOUBLE_SHARP, 2),
-        DDoubleSharp(NaturalNote.D, Accident.DOUBLE_SHARP, 4),
-        EDoubleSharp(NaturalNote.E, Accident.DOUBLE_SHARP, 6),
-        FDoubleSharp(NaturalNote.F, Accident.DOUBLE_SHARP, 7),
-        GDoubleSharp(NaturalNote.G, Accident.DOUBLE_SHARP, 9),
-        ADoubleFlat(NaturalNote.A, Accident.DOUBLE_FLAT, 7),
-        BDoubleFlat(NaturalNote.B, Accident.DOUBLE_FLAT, 9),
-        CDoubleFlat(NaturalNote.C, Accident.DOUBLE_FLAT, 10),
-        DDoubleFlat(NaturalNote.D, Accident.DOUBLE_FLAT, 0),
-        EDoubleFlat(NaturalNote.E, Accident.DOUBLE_FLAT, 2),
-        FDoubleFlat(NaturalNote.F, Accident.DOUBLE_FLAT, 3),
-        GDoubleFlat(NaturalNote.G, Accident.DOUBLE_FLAT, 5);
+        ADoubleSharp(NaturalNote.A, Accident.DOUBLE_SHARP),
+        BDoubleSharp(NaturalNote.B, Accident.DOUBLE_SHARP),
+        CDoubleSharp(NaturalNote.C, Accident.DOUBLE_SHARP),
+        DDoubleSharp(NaturalNote.D, Accident.DOUBLE_SHARP),
+        EDoubleSharp(NaturalNote.E, Accident.DOUBLE_SHARP),
+        FDoubleSharp(NaturalNote.F, Accident.DOUBLE_SHARP),
+        GDoubleSharp(NaturalNote.G, Accident.DOUBLE_SHARP),
+        ADoubleFlat(NaturalNote.A, Accident.DOUBLE_FLAT),
+        BDoubleFlat(NaturalNote.B, Accident.DOUBLE_FLAT),
+        CDoubleFlat(NaturalNote.C, Accident.DOUBLE_FLAT),
+        DDoubleFlat(NaturalNote.D, Accident.DOUBLE_FLAT),
+        EDoubleFlat(NaturalNote.E, Accident.DOUBLE_FLAT),
+        FDoubleFlat(NaturalNote.F, Accident.DOUBLE_FLAT),
+        GDoubleFlat(NaturalNote.G, Accident.DOUBLE_FLAT);
 
         private NaturalNote naturalNote;
         private Accident accident;
@@ -37,22 +37,18 @@ public class NoteEnums {
         public static final List<Note> SCALE_NOTES = List.of(A, ASharp, BFlat, B, C, CSharp, DFlat,
                 D, DSharp, EFlat, E, F, FSharp, GFlat, G, GSharp, AFlat);
 
-        Note(NaturalNote naturalNote, Accident accident, int alterationFromC) {
+        Note(NaturalNote naturalNote, Accident accident) {
             this.naturalNote = naturalNote;
             this.accident = accident;
-            this.alterationFromC = alterationFromC;
+            this.alterationFromC = (naturalNote.intervalFromC + accident.interval + 12) % 12;
         }
 
         public NaturalNote getNaturalNote() {
             return naturalNote;
         }
 
-        public HashSet<Note> findNoteInterval(int interval) {
+        public HashSet<Note> findNotesWithInterval(int interval) {
             return ALL_INTERVALS.get(this).get(interval);
-        }
-
-        public boolean areTheSame(Note other) {
-            return this.alterationFromC == other.alterationFromC;
         }
 
         private static HashMap<Note, HashMap<Integer, HashSet<Note>>> buildAllSemitoneIntervals() {
@@ -65,6 +61,7 @@ public class NoteEnums {
                             .add(note2);
                 }
             }
+            System.out.println(allIntervals);
             return allIntervals;
         }
 
@@ -147,11 +144,21 @@ public class NoteEnums {
     }
 
     public enum Accident {
-        FLAT, NATURAL, SHARP, DOUBLE_FLAT, DOUBLE_SHARP
+        FLAT(-1), NATURAL(0), SHARP(1), DOUBLE_FLAT(-2), DOUBLE_SHARP(2);
+        private int interval;
+
+        Accident(int interval) {
+            this.interval = interval;
+        }
     }
 
     public enum NaturalNote {
-        A, B, C, D, E, F, G;
+        A(9), B(11), C(0), D(2), E(4), F(5), G(7);
+        private int intervalFromC;
+
+        NaturalNote(int intervalFromC) {
+            this.intervalFromC = intervalFromC;
+        }
 
         public NaturalNote next() {
             switch (this) {

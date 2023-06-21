@@ -35,7 +35,7 @@ public class Scale {
 
     private List<Note> buildScaleNotes() {
         List<HashSet<Note>> scalesVariants = modeType.intervals.stream()
-                .map(interval -> interval == null ? null : scaleNote.findNoteInterval(interval))
+                .map(interval -> interval == null ? null : scaleNote.findNotesWithInterval(interval))
                 .collect(Collectors.toList());
         NaturalNote currentNote = scaleNote.getNaturalNote();
         ArrayList<Note> scaleNotes = new ArrayList<>(scalesVariants.size());
@@ -66,16 +66,14 @@ public class Scale {
     }
 
     public enum ScaleType {
-        MAJOR(List.of(0, 2, 4, 5, 7, 9, 11), true), MINOR(List.of(0, 2, 3, 5, 7, 8, 10), false),
-        MINOR_HARMONIC(List.of(0, 2, 3, 5, 7, 8, 11), false), MINOR_MELODIC(List.of(0, 2, 3, 5, 7, 9, 11), false),
-        PENTATONIC_MAJOR(List.of(0, 2, 4, 7, 9), true), PENTATONIC_MINOR(List.of(0, 3, 5, 7, 10), false);
+        MAJOR(List.of(0, 2, 4, 5, 7, 9, 11)), MINOR(List.of(0, 2, 3, 5, 7, 8, 10)),
+        MINOR_HARMONIC(List.of(0, 2, 3, 5, 7, 8, 11)), MINOR_MELODIC(List.of(0, 2, 3, 5, 7, 9, 11)),
+        PENTATONIC_MAJOR(List.of(0, 2, 4, 7, 9)), PENTATONIC_MINOR(List.of(0, 3, 5, 7, 10));
 
         private List<Integer> intervals;
-        private boolean major;
 
-        ScaleType(List<Integer> intervals, boolean major) {
+        ScaleType(List<Integer> intervals) {
             this.intervals = intervals;
-            this.major = major;
         }
 
         public List<Integer> rotateScaleIntervals(int rotate) {
