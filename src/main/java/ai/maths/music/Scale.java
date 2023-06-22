@@ -25,7 +25,7 @@ public class Scale {
         this.scaleNote = scaleNote;
         this.modeType = modeType;
         this.notes = buildScaleNotes();
-        this.keySignature = KeySignature.findKey(notes.get((notes.size() - modeType.modalInterval) % notes.size()), modeType.scaleType);
+        this.keySignature = KeySignature.findKeySignature(notes.get((notes.size() - modeType.modalInterval) % notes.size()), modeType.scaleType);
     }
 
     public ModeType getModeType() {
@@ -165,7 +165,7 @@ public class Scale {
             this.alterations = alterations;
         }
 
-        public static KeySignature findKey(Note scaleNote, ScaleType scaleType) throws ScaleDoesNotExist {
+        public static KeySignature findKeySignature(Note scaleNote, ScaleType scaleType) throws ScaleDoesNotExist {
             if (scaleType == ScaleType.MAJOR || scaleType == ScaleType.PENTATONIC_MAJOR) {
                 return Arrays.stream(values()).filter(keySignature -> keySignature.scaleMajor == scaleNote)
                         .min(Comparator.comparing(o -> o.alterations.size())).orElseThrow(() -> new ScaleDoesNotExist(scaleNote, scaleType));
