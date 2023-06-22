@@ -32,6 +32,10 @@ public class Scale {
         return modeType;
     }
 
+    public KeySignature getKeySignature() {
+        return keySignature;
+    }
+
     @Override
     public String toString() {
         return modeType + " in " + scaleNote + " " + notes + ", " + keySignature;
@@ -185,7 +189,7 @@ public class Scale {
     public static class ScaleDoesNotExistException extends Exception {
 
         public ScaleDoesNotExistException(Note note, ModeType modeType) {
-            super("This scale does not exist:" + note + " in " + modeType);
+            super("This scale does not exist:" + modeType + " in " + note);
         }
     }
 }
