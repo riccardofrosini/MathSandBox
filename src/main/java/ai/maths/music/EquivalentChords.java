@@ -18,9 +18,9 @@ public class EquivalentChords {
         Map<Note, Map<ChordType, List<Chord>>> collect = new TreeMap<>(Note.SCALE_NOTES.stream()
                 .collect(Collectors.toMap(note -> note,
                         note -> new TreeMap<>(chords.stream()
-                                .filter(chord -> chord.getNote().isTheSame(note)
-                                        //&& chord.getScaleByModeType().values().stream().allMatch(scale -> scale.getKeySignature() != null)
-                                )
+                                .filter(chord -> chord.getNote().isTheSame(note) && !chord.getScaleByModeType().values().isEmpty() &&
+                                        (chord.getScaleByModeType().values().stream().anyMatch(scale -> scale.getKeySignature() != null) ||
+                                                chord.getScaleByModeType().values().stream().allMatch(scale -> scale.getKeySignature() != null)))
                                 .collect(Collectors.groupingBy(Chord::getChordType))))));
         collect.forEach((note, chordTypes) -> System.out.println(chordTypes.entrySet().stream()
                 .map(chordTypeListEntry -> note + " " + chordTypeListEntry.getKey() + chordTypeListEntry.getValue().stream()

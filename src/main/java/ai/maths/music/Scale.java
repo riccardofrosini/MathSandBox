@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
@@ -171,13 +170,13 @@ public class Scale {
             this.alterations = alterations;
         }
 
-        public static KeySignature findKeySignature(Note scaleNote, ScaleType scaleType) {
+        public static KeySignature findKeySignature(Note scaleNote, ScaleType scaleType) throws ScaleDoesNotExistException {
             if (scaleType == ScaleType.MAJOR || scaleType == ScaleType.PENTATONIC_MAJOR) {
-                return Arrays.stream(values()).filter(keySignature -> keySignature.scaleMajor == scaleNote)
-                        .min(Comparator.comparing(o -> o.alterations.size())).orElse(null);
+                return Arrays.stream(values()).filter(keySignature -> keySignature.scaleMajor == scaleNote).findFirst().
+                        orElseThrow(() -> new ScaleDoesNotExistException(scaleNote, scaleType));
             }
-            return Arrays.stream(values()).filter(keySignature -> keySignature.scaleMinor == scaleNote)
-                    .min(Comparator.comparing(o -> o.alterations.size())).orElse(null);
+            return Arrays.stream(values()).filter(keySignature -> keySignature.scaleMinor == scaleNote).findFirst()
+                    .orElseThrow(() -> new ScaleDoesNotExistException(scaleNote, scaleType));
         }
 
         @Override
@@ -190,6 +189,10 @@ public class Scale {
 
         public ScaleDoesNotExistException(Note note, ModeType modeType) {
             super("This scale does not exist:" + modeType + " in " + note);
+        }
+
+        public ScaleDoesNotExistException(Note note, ScaleType scaleType) {
+            super("This scale does not have keySignature:" + scaleType + " in " + note);
         }
     }
 }
