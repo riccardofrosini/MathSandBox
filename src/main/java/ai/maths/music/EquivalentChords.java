@@ -21,6 +21,7 @@ public class EquivalentChords {
                         .map(Chord::toString)
                         .collect(Collectors.joining("\t", "\n\t", "\t")))
                 .collect(Collectors.joining("\n"))));
-
     }
+
+
 }

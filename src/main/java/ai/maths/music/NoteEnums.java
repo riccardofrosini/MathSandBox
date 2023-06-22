@@ -22,20 +22,14 @@ interface NoteEnums {
         F(NaturalNote.F, Accident.NATURAL), FSharp(NaturalNote.F, Accident.SHARP), GFlat(NaturalNote.G, Accident.FLAT),
         G(NaturalNote.G, Accident.NATURAL), GSharp(NaturalNote.G, Accident.SHARP), AFlat(NaturalNote.A, Accident.FLAT),
 
-        ADoubleSharp(NaturalNote.A, Accident.DOUBLE_SHARP),
-        BDoubleSharp(NaturalNote.B, Accident.DOUBLE_SHARP),
-        CDoubleSharp(NaturalNote.C, Accident.DOUBLE_SHARP),
-        DDoubleSharp(NaturalNote.D, Accident.DOUBLE_SHARP),
-        EDoubleSharp(NaturalNote.E, Accident.DOUBLE_SHARP),
-        FDoubleSharp(NaturalNote.F, Accident.DOUBLE_SHARP),
-        GDoubleSharp(NaturalNote.G, Accident.DOUBLE_SHARP),
-        ADoubleFlat(NaturalNote.A, Accident.DOUBLE_FLAT),
-        BDoubleFlat(NaturalNote.B, Accident.DOUBLE_FLAT),
-        CDoubleFlat(NaturalNote.C, Accident.DOUBLE_FLAT),
-        DDoubleFlat(NaturalNote.D, Accident.DOUBLE_FLAT),
-        EDoubleFlat(NaturalNote.E, Accident.DOUBLE_FLAT),
-        FDoubleFlat(NaturalNote.F, Accident.DOUBLE_FLAT),
-        GDoubleFlat(NaturalNote.G, Accident.DOUBLE_FLAT);
+        ADoubleSharp(NaturalNote.A, Accident.DOUBLE_SHARP), ADoubleFlat(NaturalNote.A, Accident.DOUBLE_FLAT),
+        BDoubleSharp(NaturalNote.B, Accident.DOUBLE_SHARP), BDoubleFlat(NaturalNote.B, Accident.DOUBLE_FLAT),
+        CDoubleSharp(NaturalNote.C, Accident.DOUBLE_SHARP), CDoubleFlat(NaturalNote.C, Accident.DOUBLE_FLAT),
+        DDoubleSharp(NaturalNote.D, Accident.DOUBLE_SHARP), DDoubleFlat(NaturalNote.D, Accident.DOUBLE_FLAT),
+        EDoubleSharp(NaturalNote.E, Accident.DOUBLE_SHARP), EDoubleFlat(NaturalNote.E, Accident.DOUBLE_FLAT),
+        FDoubleSharp(NaturalNote.F, Accident.DOUBLE_SHARP), FDoubleFlat(NaturalNote.F, Accident.DOUBLE_FLAT),
+        GDoubleSharp(NaturalNote.G, Accident.DOUBLE_SHARP), GDoubleFlat(NaturalNote.G, Accident.DOUBLE_FLAT);
+
 
         private NaturalNote naturalNote;
         private Accident accident;
