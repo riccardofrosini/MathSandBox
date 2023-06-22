@@ -7,9 +7,13 @@ import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-public interface NoteEnums {
+interface NoteEnums {
 
-    public enum Note {
+    List<Note> SCALE_NOTES = List.of(Note.A, Note.ASharp, Note.BFlat, Note.B, Note.CFlat, Note.BSharp,
+            Note.C, Note.CSharp, Note.DFlat, Note.D, Note.DSharp, Note.EFlat, Note.E, Note.FFlat, Note.ESharp,
+            Note.F, Note.FSharp, Note.GFlat, Note.G, Note.GSharp, Note.AFlat);
+
+    enum Note {
         A(NaturalNote.A, Accident.NATURAL), ASharp(NaturalNote.A, Accident.SHARP), BFlat(NaturalNote.B, Accident.FLAT),
         B(NaturalNote.B, Accident.NATURAL), CFlat(NaturalNote.C, Accident.FLAT), BSharp(NaturalNote.B, Accident.SHARP),
         C(NaturalNote.C, Accident.NATURAL), CSharp(NaturalNote.C, Accident.SHARP), DFlat(NaturalNote.D, Accident.FLAT),
@@ -36,9 +40,8 @@ public interface NoteEnums {
         private NaturalNote naturalNote;
         private Accident accident;
         private int alterationFromC;
+
         private static final Map<Note, Map<Integer, Set<Note>>> ALL_INTERVALS = buildAllSemitoneIntervals();
-        public static final List<Note> SCALE_NOTES = List.of(A, ASharp, BFlat, B, CFlat, BSharp, C, CSharp,
-                DFlat, D, DSharp, EFlat, E, FFlat, ESharp, F, FSharp, GFlat, G, GSharp, AFlat);
 
         Note(NaturalNote naturalNote, Accident accident) {
             this.naturalNote = naturalNote;
@@ -54,18 +57,18 @@ public interface NoteEnums {
             return accident;
         }
 
+        private static Map<Note, Map<Integer, Set<Note>>> buildAllSemitoneIntervals() {
+            return Arrays.stream(values()).collect(Collectors.toUnmodifiableMap(note -> note, note ->
+                    Collections.unmodifiableMap(Arrays.stream(values())
+                            .collect(Collectors.groupingBy(note::findNoteInterval, Collectors.toUnmodifiableSet())))));
+        }
+
         public Set<Note> findNotesWithInterval(int interval) {
             return ALL_INTERVALS.get(this).get(interval);
         }
 
         public int findNoteInterval(Note note) {
             return (note.alterationFromC - alterationFromC + 12) % 12;
-        }
-
-        private static Map<Note, Map<Integer, Set<Note>>> buildAllSemitoneIntervals() {
-            return Arrays.stream(values()).collect(Collectors.toUnmodifiableMap(note -> note, note ->
-                    Collections.unmodifiableMap(Arrays.stream(values())
-                            .collect(Collectors.groupingBy(note::findNoteInterval, Collectors.toUnmodifiableSet())))));
         }
 
         public String toString() {
@@ -145,7 +148,7 @@ public interface NoteEnums {
         }
     }
 
-    public enum Accident {
+    enum Accident {
         FLAT(-1), NATURAL(0), SHARP(1), DOUBLE_FLAT(-2), DOUBLE_SHARP(2);
         private int interval;
 
@@ -154,8 +157,9 @@ public interface NoteEnums {
         }
     }
 
-    public enum NaturalNote {
+    enum NaturalNote {
         A(9), B(11), C(0), D(2), E(4), F(5), G(7);
+
         private int intervalFromC;
 
         NaturalNote(int intervalFromC) {
