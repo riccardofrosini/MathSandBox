@@ -21,7 +21,7 @@ public class Scale {
     private List<Note> notes;
     private KeySignature keySignature;
 
-    public Scale(Note scaleNote, ModeType modeType) throws ScaleDoesNotExist {
+    public Scale(Note scaleNote, ModeType modeType) {
         this.scaleNote = scaleNote;
         this.modeType = modeType;
         this.notes = buildScaleNotes();
@@ -165,25 +165,18 @@ public class Scale {
             this.alterations = alterations;
         }
 
-        public static KeySignature findKeySignature(Note scaleNote, ScaleType scaleType) throws ScaleDoesNotExist {
+        public static KeySignature findKeySignature(Note scaleNote, ScaleType scaleType) {
             if (scaleType == ScaleType.MAJOR || scaleType == ScaleType.PENTATONIC_MAJOR) {
                 return Arrays.stream(values()).filter(keySignature -> keySignature.scaleMajor == scaleNote)
-                        .min(Comparator.comparing(o -> o.alterations.size())).orElseThrow(() -> new ScaleDoesNotExist(scaleNote, scaleType));
+                        .min(Comparator.comparing(o -> o.alterations.size())).orElse(null);
             }
             return Arrays.stream(values()).filter(keySignature -> keySignature.scaleMinor == scaleNote)
-                    .min(Comparator.comparing(o -> o.alterations.size())).orElseThrow(() -> new ScaleDoesNotExist(scaleNote, scaleType));
+                    .min(Comparator.comparing(o -> o.alterations.size())).orElse(null);
         }
 
         @Override
         public String toString() {
             return name() + " alterations=" + alterations;
-        }
-    }
-
-    public static class ScaleDoesNotExist extends Exception {
-
-        public ScaleDoesNotExist(Note note, ScaleType scaleType) {
-            super("Scale " + note + " in " + scaleType + ", does not exist.");
         }
     }
 }
