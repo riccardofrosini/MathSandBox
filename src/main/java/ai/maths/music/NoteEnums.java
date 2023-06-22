@@ -7,7 +7,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-public class NoteEnums {
+public interface NoteEnums {
 
     public enum Note {
         A(NaturalNote.A, Accident.NATURAL), ASharp(NaturalNote.A, Accident.SHARP), BFlat(NaturalNote.B, Accident.FLAT),
@@ -66,10 +66,6 @@ public class NoteEnums {
             return Arrays.stream(values()).collect(Collectors.toUnmodifiableMap(note -> note, note ->
                     Collections.unmodifiableMap(Arrays.stream(values())
                             .collect(Collectors.groupingBy(note::findNoteInterval, Collectors.toUnmodifiableSet())))));
-        }
-
-        public boolean isTheSame(Note other) {
-            return this.alterationFromC == other.alterationFromC;
         }
 
         public String toString() {
@@ -181,9 +177,8 @@ public class NoteEnums {
                 case F:
                     return G;
                 case G:
-                    return A;
             }
-            return null;
+            return A;
         }
     }
 }

@@ -57,16 +57,8 @@ public class Chord {
                         scale -> scale.findCorrespondingNotesFromIntervals(chordType.intervals)))));
     }
 
-    public Map<ModeType, Scale> getScaleByModeType() {
-        return scaleByModeType;
-    }
-
     public ChordType getChordType() {
         return chordType;
-    }
-
-    public Note getNote() {
-        return note;
     }
 
     @Override
