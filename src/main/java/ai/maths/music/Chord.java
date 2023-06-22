@@ -39,6 +39,14 @@ public class Chord {
                         scale -> scale.findCorrespondingNotesFromIntervals(chordType.intervals)))));
     }
 
+    public ChordType getChordType() {
+        return chordType;
+    }
+
+    public Note getNote() {
+        return note;
+    }
+
     @Override
     public String toString() {
         return note + " " + chordType + ", " + notesByModeType + scaleByModeType.values().stream()
@@ -62,16 +70,6 @@ public class Chord {
         private Set<ModeType> buildScaleTypes() {
             return Arrays.stream(ModeType.values()).filter(modeType -> modeType.areIntervalsInTheModeType(intervals)).collect(Collectors.toSet());
 
-        }
-    }
-
-
-    public static void main(String[] args) {
-
-        for (Note note : Note.SCALE_NOTES) {
-            for (ChordType chordType : ChordType.values()) {
-                System.out.println(new Chord(note, chordType));
-            }
         }
     }
 }

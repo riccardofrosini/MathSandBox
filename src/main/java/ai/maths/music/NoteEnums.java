@@ -68,6 +68,10 @@ public class NoteEnums {
             return allIntervals;
         }
 
+        public boolean isTheSame(Note other) {
+            return this.alterationFromC == other.alterationFromC;
+        }
+
         public String toString() {
             switch (this) {
                 case A:
