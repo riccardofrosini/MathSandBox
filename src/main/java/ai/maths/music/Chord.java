@@ -2,9 +2,10 @@ package ai.maths.music;
 
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
+import java.util.Optional;
 import java.util.Set;
 import java.util.TreeMap;
 import java.util.stream.Collectors;
@@ -12,9 +13,8 @@ import java.util.stream.Collectors;
 import ai.maths.music.NoteEnums.Accident;
 import ai.maths.music.NoteEnums.Note;
 import ai.maths.music.Scale.ModeType;
-import ai.maths.music.Scale.ScaleDoesNotExistException;
 
-public class Chord {
+public class Chord implements Comparable<Chord> {
 
     private Note note;
     private ChordType chordType;
@@ -50,19 +50,19 @@ public class Chord {
                 .map(noteEquivalent -> new Chord(noteEquivalent, chordType))
                 .filter(chord -> !chord.scaleByModeType.isEmpty())
                 .collect(Collectors.toSet());
+    }
 
+    @Override
+    public int compareTo(Chord otherChord) {
+        return Comparator.<Chord, Note>comparing(chord -> chord.note)
+                .thenComparing(chord -> chord.chordType)
+                .compare(this, otherChord);
     }
 
     private Map<ModeType, Scale> buildScaleByModeTypes() {
         return Collections.unmodifiableNavigableMap(new TreeMap<>(chordType.modeTypes.stream()
-                .map(modeType -> {
-                    try {
-                        return new Scale(note, modeType);
-                    } catch (ScaleDoesNotExistException e) {
-                        return null;
-                    }
-                })
-                .filter(Objects::nonNull)
+                .map(modeType -> Scale.buildScale(note, modeType))
+                .filter(Optional::isPresent).map(Optional::get)
                 .collect(Collectors.toUnmodifiableMap(Scale::getModeType, scale -> scale))));
 
     }

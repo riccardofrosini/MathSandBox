@@ -4,9 +4,11 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -14,18 +16,28 @@ import ai.maths.music.Chord.ChordType;
 import ai.maths.music.NoteEnums.NaturalNote;
 import ai.maths.music.NoteEnums.Note;
 
-public class Scale {
+public class Scale implements Comparable<Scale> {
 
     private Note scaleNote;
     private ModeType modeType;
     private List<Note> notes;
     private KeySignature keySignature;
 
-    public Scale(Note scaleNote, ModeType modeType) throws ScaleDoesNotExistException {
+    private Scale(Note scaleNote, ModeType modeType) throws ScaleDoesNotExistException {
         this.scaleNote = scaleNote;
         this.modeType = modeType;
         this.notes = buildScaleNotes();
         this.keySignature = KeySignature.findKeySignature(notes.get((notes.size() - modeType.modalInterval) % notes.size()), modeType.scaleType);
+    }
+
+    public static Optional<Scale> buildScale(Note scaleNote, ModeType modeType) {
+        Scale scale;
+        try {
+            scale = new Scale(scaleNote, modeType);
+        } catch (ScaleDoesNotExistException e) {
+            scale = null;
+        }
+        return Optional.ofNullable(scale);
     }
 
     public ModeType getModeType() {
@@ -60,6 +72,14 @@ public class Scale {
             }
         }
         return Collections.unmodifiableList(notes);
+    }
+
+
+    @Override
+    public int compareTo(Scale otherScale) {
+        return Comparator.<Scale, Note>comparing(scale -> scale.scaleNote)
+                .thenComparing(scale -> scale.modeType)
+                .compare(this, otherScale);
     }
 
     private List<Note> buildScaleNotes() throws ScaleDoesNotExistException {
