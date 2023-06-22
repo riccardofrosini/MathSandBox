@@ -34,6 +34,7 @@ public class Chord {
                     try {
                         return new Scale(note, modeType);
                     } catch (ScaleDoesNotExist e) {
+                        System.out.println(e.getMessage());
                         return null;
                     }
                 }).filter(Objects::nonNull)

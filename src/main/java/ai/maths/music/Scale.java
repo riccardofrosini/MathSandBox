@@ -25,9 +25,7 @@ public class Scale {
         this.scaleNote = scaleNote;
         this.modeType = modeType;
         this.notes = buildScaleNotes();
-        Note noteModel = (modeType.scaleType == ScaleType.PENTATONIC_MAJOR || modeType.scaleType == ScaleType.PENTATONIC_MINOR) && modeType.modalInterval > 3 ?
-                notes.get(modeType.modalInterval - 1) : notes.get(modeType.modalInterval);
-        this.keySignature = KeySignature.findKey(noteModel, modeType.scaleType);
+        this.keySignature = KeySignature.findKey(notes.get((notes.size() - modeType.modalInterval) % notes.size()), modeType.scaleType);
     }
 
     public ModeType getModeType() {
@@ -36,20 +34,33 @@ public class Scale {
 
     @Override
     public String toString() {
-        return modeType + " in " + scaleNote + " " + notes.toString();
+        return modeType + " in " + scaleNote + " " + notes + ", " + keySignature;
     }
 
     private List<Note> buildScaleNotes() {
-        List<HashSet<Note>> scalesVariants = modeType.intervals.stream()
-                .map(interval -> interval == null ? null : scaleNote.findNotesWithInterval(interval))
-                .collect(Collectors.toList());
+        List<Integer> modeIntervals;
+        if (modeType.scaleType == ScaleType.PENTATONIC_MAJOR) {
+            int modalInterval = modeType.modalInterval >= 3 ? modeType.modalInterval + 1 : modeType.modalInterval;
+            modeIntervals = new ArrayList<>(ScaleType.MAJOR.rotateScaleIntervals(-modalInterval));
+            Iterator<Integer> pentatonicIntervalsIterator = modeType.intervals.iterator();
+            Integer pentatonicInterval = pentatonicIntervalsIterator.next();
+            for (int i = 0; i < modeIntervals.size(); i++) {
+                if (!Objects.equals(modeIntervals.get(i), pentatonicInterval)) {
+                    modeIntervals.set(i, null);
+                } else if (pentatonicIntervalsIterator.hasNext()) {
+                    pentatonicInterval = pentatonicIntervalsIterator.next();
+                }
+            }
+        } else {
+            modeIntervals = modeType.intervals;
+        }
+        List<HashSet<Note>> scalesVariants = modeIntervals.stream().map(interval -> interval == null ? null : scaleNote.findNotesWithInterval(interval)).collect(Collectors.toList());
         NaturalNote currentNote = scaleNote.getNaturalNote();
         ArrayList<Note> scaleNotes = new ArrayList<>(scalesVariants.size());
         for (HashSet<Note> scalesVariant : scalesVariants) {
             if (scalesVariant != null) {
                 final NaturalNote currentNoteFinal = currentNote;
-                Note noteToAdd = scalesVariant.stream().filter(note -> note.getNaturalNote() == currentNoteFinal).findFirst().get();
-                scaleNotes.add(noteToAdd);
+                scaleNotes.add(scalesVariant.stream().filter(note -> note.getNaturalNote() == currentNoteFinal).findFirst().get());
             }
             currentNote = currentNote.next();
         }
@@ -60,8 +71,8 @@ public class Scale {
         List<Note> notes = new ArrayList<>();
         Iterator<Integer> intervalIterator = intervals.iterator();
         Integer interval = intervalIterator.next();
-        for (int i = 0; i < modeType.nonNullIntervals.size(); i++) {
-            if (interval.equals(modeType.nonNullIntervals.get(i))) {
+        for (int i = 0; i < modeType.intervals.size(); i++) {
+            if (interval.equals(modeType.intervals.get(i))) {
                 notes.add(this.notes.get(i));
                 if (intervalIterator.hasNext()) {
                     interval = intervalIterator.next();
@@ -83,6 +94,9 @@ public class Scale {
         }
 
         public List<Integer> rotateScaleIntervals(int rotate) {
+            if (rotate == 0) {
+                return Collections.unmodifiableList(intervals);
+            }
             ArrayList<Integer> newIntervals = new ArrayList<>(intervals);
             Collections.rotate(newIntervals, rotate);
             Integer firstInterval = newIntervals.get(0);
@@ -107,44 +121,20 @@ public class Scale {
 
         MAJOR_PENTATONIC(ScaleType.PENTATONIC_MAJOR, 0), SUSPENDED_PENTATONIC_MAJOR(ScaleType.PENTATONIC_MAJOR, 1),
         BLUES_MINOR_PENTATONIC_MAJOR(ScaleType.PENTATONIC_MAJOR, 2),
-        BLUES_MAJOR_PENTATONIC_MAJOR(ScaleType.PENTATONIC_MAJOR, 4), MINOR_PENTATONIC(ScaleType.PENTATONIC_MAJOR, 5);
+        BLUES_MAJOR_PENTATONIC_MAJOR(ScaleType.PENTATONIC_MAJOR, 3), MINOR_PENTATONIC(ScaleType.PENTATONIC_MAJOR, 4);
 
         private ScaleType scaleType;
         private int modalInterval;
         private List<Integer> intervals;
-        private List<Integer> nonNullIntervals;
 
         ModeType(ScaleType scaleType, int modalInterval) {
             this.scaleType = scaleType;
             this.modalInterval = modalInterval;
-            this.intervals = rotateScaleAndAdjust(-modalInterval);
-            this.nonNullIntervals = this.intervals.stream().filter(Objects::nonNull).collect(Collectors.toUnmodifiableList());
+            this.intervals = scaleType.rotateScaleIntervals(-modalInterval);
         }
 
         public boolean areIntervalsInTheModeType(Collection<Integer> intervals) {
-            return this.nonNullIntervals.containsAll(intervals);
-        }
-
-        private List<Integer> rotateScaleAndAdjust(int rotate) {
-            if (rotate == 0 && scaleType != ScaleType.PENTATONIC_MAJOR) {
-                return scaleType.intervals;
-            }
-            if (scaleType == ScaleType.PENTATONIC_MAJOR) {
-                List<Integer> newIntervals = new ArrayList<>(ScaleType.MAJOR.intervals);
-                List<Integer> pentatonicIntervals = scaleType.intervals;
-                Integer initialNote = pentatonicIntervals.get(0);
-                int j = 0;
-                for (int i = 0; i < newIntervals.size(); i++) {
-                    if (j >= pentatonicIntervals.size() || !newIntervals.get(i).equals(pentatonicIntervals.get(j))) {
-                        newIntervals.set(i, null);
-                    } else {
-                        newIntervals.set(i, (newIntervals.get(i) - initialNote + 12) % 12);
-                        j++;
-                    }
-                }
-                return Collections.unmodifiableList(newIntervals);
-            }
-            return scaleType.rotateScaleIntervals(rotate);
+            return this.intervals.containsAll(intervals);
         }
     }
 
@@ -182,7 +172,11 @@ public class Scale {
             }
             return Arrays.stream(values()).filter(keySignature -> keySignature.scaleMinor == scaleNote)
                     .min(Comparator.comparing(o -> o.alterations.size())).orElseThrow(() -> new ScaleDoesNotExist(scaleNote, scaleType));
+        }
 
+        @Override
+        public String toString() {
+            return name() + " alterations=" + alterations;
         }
     }
 
