@@ -34,8 +34,8 @@ public class NoteEnums {
         private Accident accident;
         private int alterationFromC;
         private static final HashMap<Note, HashMap<Integer, HashSet<Note>>> ALL_INTERVALS = buildAllSemitoneIntervals();
-        public static final List<Note> SCALE_NOTES = List.of(A, ASharp, BFlat, B, C, CSharp, DFlat,
-                D, DSharp, EFlat, E, F, FSharp, GFlat, G, GSharp, AFlat);
+        public static final List<Note> SCALE_NOTES = List.of(A, ASharp, BFlat, B, CFlat, BSharp, C, CSharp,
+                DFlat, D, DSharp, EFlat, E, FFlat, ESharp, F, FSharp, GFlat, G, GSharp, AFlat);
 
         Note(NaturalNote naturalNote, Accident accident) {
             this.naturalNote = naturalNote;

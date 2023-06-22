@@ -21,7 +21,7 @@ public class Scale {
     private List<Note> notes;
     private KeySignature keySignature;
 
-    public Scale(Note scaleNote, ModeType modeType) {
+    public Scale(Note scaleNote, ModeType modeType) throws ScaleDoesNotExistException {
         this.scaleNote = scaleNote;
         this.modeType = modeType;
         this.notes = buildScaleNotes();
@@ -37,7 +37,7 @@ public class Scale {
         return modeType + " in " + scaleNote + " " + notes + ", " + keySignature;
     }
 
-    private List<Note> buildScaleNotes() {
+    private List<Note> buildScaleNotes() throws ScaleDoesNotExistException {
         List<Integer> modeIntervals;
         if (modeType.scaleType == ScaleType.PENTATONIC_MAJOR) {
             int modalInterval = modeType.modalInterval >= 3 ? modeType.modalInterval + 1 : modeType.modalInterval;
@@ -60,7 +60,9 @@ public class Scale {
         for (HashSet<Note> scalesVariant : scalesVariants) {
             if (scalesVariant != null) {
                 final NaturalNote currentNoteFinal = currentNote;
-                scaleNotes.add(scalesVariant.stream().filter(note -> note.getNaturalNote() == currentNoteFinal).findFirst().get());
+                scaleNotes.add(scalesVariant.stream().filter(note -> note.getNaturalNote() == currentNoteFinal).findFirst().orElseThrow(() ->
+                        new ScaleDoesNotExistException(scaleNote, modeType)
+                ));
             }
             currentNote = currentNote.next();
         }
@@ -177,6 +179,13 @@ public class Scale {
         @Override
         public String toString() {
             return name() + " alterations=" + alterations;
+        }
+    }
+
+    public static class ScaleDoesNotExistException extends Exception {
+
+        public ScaleDoesNotExistException(Note note, ModeType modeType) {
+            super("This scale does not exist:" + note + " in " + modeType);
         }
     }
 }

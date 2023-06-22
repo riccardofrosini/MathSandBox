@@ -19,8 +19,10 @@ public class EquivalentChords {
                         note -> chords.stream()
                                 .filter(chord -> chord.getNote().isTheSame(note))
                                 .collect(Collectors.groupingBy(Chord::getChordType))));
-        collect.forEach((note, chordTypes) -> System.out.println(note + " \n" + chordTypes.entrySet().stream()
-                .map(chordTypeListEntry -> chordTypeListEntry.getKey() + " \n" + chordTypeListEntry.getValue().stream().map(Chord::toString).collect(Collectors.joining()))
+        collect.forEach((note, chordTypes) -> System.out.println(chordTypes.entrySet().stream()
+                .map(chordTypeListEntry -> note + " in " + chordTypeListEntry.getKey() + chordTypeListEntry.getValue().stream()
+                        .map(Chord::toString)
+                        .collect(Collectors.joining("\t", "\n\t", "")))
                 .collect(Collectors.joining("\n"))));
 
     }
