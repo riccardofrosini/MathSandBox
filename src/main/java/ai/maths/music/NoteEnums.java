@@ -140,6 +140,10 @@ interface NoteEnums {
             }
             return null;
         }
+
+        public boolean isSameNote(Note note) {
+            return this.alterationFromC == note.alterationFromC;
+        }
     }
 
     enum Accident {

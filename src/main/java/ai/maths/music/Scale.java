@@ -10,6 +10,7 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import ai.maths.music.Chord.ChordType;
 import ai.maths.music.NoteEnums.NaturalNote;
 import ai.maths.music.NoteEnums.Note;
 
@@ -36,6 +37,31 @@ public class Scale {
         return modeType + " in " + scaleNote + " " + notes + ", " + keySignature;
     }
 
+    public List<Chord> getChords() {
+        return notes.stream().flatMap(note -> Arrays.stream(ChordType.values())
+                        .map(chordType -> new Chord(note, chordType))
+                        .filter(chord -> chord.getNotesByModeType().values().stream()
+                                .anyMatch(notesChord -> notesChord.stream()
+                                        .allMatch(noteChord -> notes.stream()
+                                                .anyMatch(noteScale -> noteScale.isSameNote(noteChord))))))
+                .collect(Collectors.toList());
+    }
+
+    public List<Note> findCorrespondingNotesFromIntervals(List<Integer> intervals) {
+        List<Note> notes = new ArrayList<>();
+        Iterator<Integer> intervalIterator = intervals.iterator();
+        Integer interval = intervalIterator.next();
+        for (int i = 0; i < modeType.intervals.size(); i++) {
+            if (interval.equals(modeType.intervals.get(i))) {
+                notes.add(this.notes.get(i));
+                if (intervalIterator.hasNext()) {
+                    interval = intervalIterator.next();
+                }
+            }
+        }
+        return Collections.unmodifiableList(notes);
+    }
+
     private List<Note> buildScaleNotes() throws ScaleDoesNotExistException {
         List<Set<Note>> scalesVariants = modeType.getHeptaScaleIntervalsWithNulls().stream()
                 .map(interval -> interval == null ? null : scaleNote.findNotesWithInterval(interval))
@@ -52,21 +78,6 @@ public class Scale {
             currentNote = currentNote.next();
         }
         return Collections.unmodifiableList(scaleNotes);
-    }
-
-    public List<Note> findCorrespondingNotesFromIntervals(List<Integer> intervals) {
-        List<Note> notes = new ArrayList<>();
-        Iterator<Integer> intervalIterator = intervals.iterator();
-        Integer interval = intervalIterator.next();
-        for (int i = 0; i < modeType.intervals.size(); i++) {
-            if (interval.equals(modeType.intervals.get(i))) {
-                notes.add(this.notes.get(i));
-                if (intervalIterator.hasNext()) {
-                    interval = intervalIterator.next();
-                }
-            }
-        }
-        return Collections.unmodifiableList(notes);
     }
 
     public enum ScaleType {

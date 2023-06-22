@@ -28,6 +28,22 @@ public class Chord {
         this.notesByModeType = buildNotesByModeType();
     }
 
+
+    public ChordType getChordType() {
+        return chordType;
+    }
+
+    public Map<ModeType, List<Note>> getNotesByModeType() {
+        return notesByModeType;
+    }
+
+    @Override
+    public String toString() {
+        return note + " " + chordType + ", " + notesByModeType + scaleByModeType.values().stream()
+                .map(Scale::toString).collect(Collectors.joining("\n\t\t", "\n\t\t", "\n"));
+    }
+
+
     public Set<Chord> getEquivalentChords() {
         return note.findNotesWithInterval(0).stream()
                 .filter(equivalentNote -> equivalentNote.getAccident() != Accident.DOUBLE_FLAT && equivalentNote.getAccident() != Accident.DOUBLE_SHARP)
@@ -55,16 +71,6 @@ public class Chord {
         return Collections.unmodifiableNavigableMap(new TreeMap<>(scaleByModeType.values().stream()
                 .collect(Collectors.toUnmodifiableMap(Scale::getModeType,
                         scale -> scale.findCorrespondingNotesFromIntervals(chordType.intervals)))));
-    }
-
-    public ChordType getChordType() {
-        return chordType;
-    }
-
-    @Override
-    public String toString() {
-        return note + " " + chordType + ", " + notesByModeType + scaleByModeType.values().stream()
-                .map(Scale::toString).collect(Collectors.joining("\n\t\t", "\n\t\t", "\n"));
     }
 
     public enum ChordType {
