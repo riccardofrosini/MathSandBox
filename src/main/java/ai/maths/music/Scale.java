@@ -31,33 +31,15 @@ public class Scale {
         return modeType;
     }
 
-    public KeySignature getKeySignature() {
-        return keySignature;
-    }
-
     @Override
     public String toString() {
         return modeType + " in " + scaleNote + " " + notes + ", " + keySignature;
     }
 
     private List<Note> buildScaleNotes() throws ScaleDoesNotExistException {
-        List<Integer> modeIntervals;
-        if (modeType.scaleType == ScaleType.PENTATONIC_MAJOR) {
-            int modalInterval = modeType.modalInterval >= 3 ? modeType.modalInterval + 1 : modeType.modalInterval;
-            modeIntervals = new ArrayList<>(ScaleType.MAJOR.rotateScaleIntervals(-modalInterval));
-            Iterator<Integer> pentatonicIntervalsIterator = modeType.intervals.iterator();
-            Integer pentatonicInterval = pentatonicIntervalsIterator.next();
-            for (int i = 0; i < modeIntervals.size(); i++) {
-                if (!Objects.equals(modeIntervals.get(i), pentatonicInterval)) {
-                    modeIntervals.set(i, null);
-                } else if (pentatonicIntervalsIterator.hasNext()) {
-                    pentatonicInterval = pentatonicIntervalsIterator.next();
-                }
-            }
-        } else {
-            modeIntervals = modeType.intervals;
-        }
-        List<Set<Note>> scalesVariants = modeIntervals.stream().map(interval -> interval == null ? null : scaleNote.findNotesWithInterval(interval)).collect(Collectors.toList());
+        List<Set<Note>> scalesVariants = modeType.getModeIntervalsWithNulls().stream()
+                .map(interval -> interval == null ? null : scaleNote.findNotesWithInterval(interval))
+                .collect(Collectors.toList());
         NaturalNote currentNote = scaleNote.getNaturalNote();
         ArrayList<Note> scaleNotes = new ArrayList<>(scalesVariants.size());
         for (Set<Note> scalesVariant : scalesVariants) {
@@ -84,7 +66,7 @@ public class Scale {
                 }
             }
         }
-        return notes;
+        return Collections.unmodifiableList(notes);
     }
 
     public enum ScaleType {
@@ -140,6 +122,24 @@ public class Scale {
 
         public boolean areIntervalsInTheModeType(Collection<Integer> intervals) {
             return this.intervals.containsAll(intervals);
+        }
+
+        private List<Integer> getModeIntervalsWithNulls() {
+            if (scaleType == ScaleType.PENTATONIC_MAJOR) {
+                int modalInterval = this.modalInterval >= 3 ? this.modalInterval + 1 : this.modalInterval;
+                List<Integer> modeIntervals = new ArrayList<>(ScaleType.MAJOR.rotateScaleIntervals(-modalInterval));
+                Iterator<Integer> pentatonicIntervalsIterator = intervals.iterator();
+                Integer pentatonicInterval = pentatonicIntervalsIterator.next();
+                for (int i = 0; i < modeIntervals.size(); i++) {
+                    if (!Objects.equals(modeIntervals.get(i), pentatonicInterval)) {
+                        modeIntervals.set(i, null);
+                    } else if (pentatonicIntervalsIterator.hasNext()) {
+                        pentatonicInterval = pentatonicIntervalsIterator.next();
+                    }
+                }
+                return Collections.unmodifiableList(modeIntervals);
+            }
+            return intervals;
         }
     }
 
