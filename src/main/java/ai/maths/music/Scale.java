@@ -37,7 +37,7 @@ public class Scale {
     }
 
     private List<Note> buildScaleNotes() throws ScaleDoesNotExistException {
-        List<Set<Note>> scalesVariants = modeType.getModeIntervalsWithNulls().stream()
+        List<Set<Note>> scalesVariants = modeType.getHeptaScaleIntervalsWithNulls().stream()
                 .map(interval -> interval == null ? null : scaleNote.findNotesWithInterval(interval))
                 .collect(Collectors.toList());
         NaturalNote currentNote = scaleNote.getNaturalNote();
@@ -124,7 +124,7 @@ public class Scale {
             return this.intervals.containsAll(intervals);
         }
 
-        private List<Integer> getModeIntervalsWithNulls() {
+        private List<Integer> getHeptaScaleIntervalsWithNulls() {
             if (scaleType == ScaleType.PENTATONIC_MAJOR) {
                 int modalInterval = this.modalInterval >= 3 ? this.modalInterval + 1 : this.modalInterval;
                 List<Integer> modeIntervals = new ArrayList<>(ScaleType.MAJOR.rotateScaleIntervals(-modalInterval));
