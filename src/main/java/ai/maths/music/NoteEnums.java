@@ -1,8 +1,11 @@
 package ai.maths.music;
 
-import java.util.HashMap;
-import java.util.HashSet;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 public class NoteEnums {
 
@@ -33,7 +36,7 @@ public class NoteEnums {
         private NaturalNote naturalNote;
         private Accident accident;
         private int alterationFromC;
-        private static final HashMap<Note, HashMap<Integer, HashSet<Note>>> ALL_INTERVALS = buildAllSemitoneIntervals();
+        private static final Map<Note, Map<Integer, Set<Note>>> ALL_INTERVALS = buildAllSemitoneIntervals();
         public static final List<Note> SCALE_NOTES = List.of(A, ASharp, BFlat, B, CFlat, BSharp, C, CSharp,
                 DFlat, D, DSharp, EFlat, E, FFlat, ESharp, F, FSharp, GFlat, G, GSharp, AFlat);
 
@@ -47,7 +50,11 @@ public class NoteEnums {
             return naturalNote;
         }
 
-        public HashSet<Note> findNotesWithInterval(int interval) {
+        public Accident getAccident() {
+            return accident;
+        }
+
+        public Set<Note> findNotesWithInterval(int interval) {
             return ALL_INTERVALS.get(this).get(interval);
         }
 
@@ -55,17 +62,10 @@ public class NoteEnums {
             return (note.alterationFromC - alterationFromC + 12) % 12;
         }
 
-        private static HashMap<Note, HashMap<Integer, HashSet<Note>>> buildAllSemitoneIntervals() {
-            HashMap<Note, HashMap<Integer, HashSet<Note>>> allIntervals = new HashMap<>(35);
-            for (Note note1 : values()) {
-                for (Note note2 : values()) {
-                    int interval = note1.findNoteInterval(note2);
-                    allIntervals.compute(note1, (note, intervalCurrent) -> intervalCurrent == null ? new HashMap<>() : intervalCurrent)
-                            .compute(interval, (integer, notes) -> notes == null ? new HashSet<>(2) : notes)
-                            .add(note2);
-                }
-            }
-            return allIntervals;
+        private static Map<Note, Map<Integer, Set<Note>>> buildAllSemitoneIntervals() {
+            return Arrays.stream(values()).collect(Collectors.toUnmodifiableMap(note -> note, note ->
+                    Collections.unmodifiableMap(Arrays.stream(values())
+                            .collect(Collectors.groupingBy(note::findNoteInterval, Collectors.toUnmodifiableSet())))));
         }
 
         public boolean isTheSame(Note other) {
@@ -147,7 +147,6 @@ public class NoteEnums {
             }
             return null;
         }
-
     }
 
     public enum Accident {

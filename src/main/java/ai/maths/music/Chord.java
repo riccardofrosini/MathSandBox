@@ -9,6 +9,7 @@ import java.util.Set;
 import java.util.TreeMap;
 import java.util.stream.Collectors;
 
+import ai.maths.music.NoteEnums.Accident;
 import ai.maths.music.NoteEnums.Note;
 import ai.maths.music.Scale.ModeType;
 import ai.maths.music.Scale.ScaleDoesNotExistException;
@@ -27,6 +28,14 @@ public class Chord {
         this.notesByModeType = buildNotesByModeType();
     }
 
+    public Set<Chord> getEquivalentChords() {
+        return note.findNotesWithInterval(0).stream()
+                .filter(equivalentNote -> equivalentNote.getAccident() != Accident.DOUBLE_FLAT && equivalentNote.getAccident() != Accident.DOUBLE_SHARP)
+                .map(noteEquivalent -> new Chord(noteEquivalent, chordType))
+                .filter(chord -> !chord.scaleByModeType.isEmpty())
+                .collect(Collectors.toSet());
+
+    }
 
     private Map<ModeType, Scale> buildScaleByModeTypes() {
         return Collections.unmodifiableNavigableMap(new TreeMap<>(chordType.modeTypes.stream()

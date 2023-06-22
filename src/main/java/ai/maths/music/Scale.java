@@ -4,10 +4,10 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Objects;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import ai.maths.music.NoteEnums.NaturalNote;
@@ -57,10 +57,10 @@ public class Scale {
         } else {
             modeIntervals = modeType.intervals;
         }
-        List<HashSet<Note>> scalesVariants = modeIntervals.stream().map(interval -> interval == null ? null : scaleNote.findNotesWithInterval(interval)).collect(Collectors.toList());
+        List<Set<Note>> scalesVariants = modeIntervals.stream().map(interval -> interval == null ? null : scaleNote.findNotesWithInterval(interval)).collect(Collectors.toList());
         NaturalNote currentNote = scaleNote.getNaturalNote();
         ArrayList<Note> scaleNotes = new ArrayList<>(scalesVariants.size());
-        for (HashSet<Note> scalesVariant : scalesVariants) {
+        for (Set<Note> scalesVariant : scalesVariants) {
             if (scalesVariant != null) {
                 final NaturalNote currentNoteFinal = currentNote;
                 scaleNotes.add(scalesVariant.stream().filter(note -> note.getNaturalNote() == currentNoteFinal).findFirst().orElseThrow(() ->
