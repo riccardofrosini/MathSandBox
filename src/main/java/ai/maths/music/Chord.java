@@ -54,7 +54,6 @@ public class Chord implements Comparable<Chord> {
                         scale -> scale.findCorrespondingNotesFromIntervals(chordType.intervals)))));
     }
 
-
     @Override
     public String toString() {
         return note + " " + chordType + ", " + notesByModeType + scaleByModeType.values().stream()
@@ -65,7 +64,8 @@ public class Chord implements Comparable<Chord> {
         MAJOR(List.of(0, 4, 7)), MAJOR_SIXTH(List.of(0, 4, 7, 9)), DOMINANT_SEVENTH(List.of(0, 4, 7, 10)), MAJOR_SEVENTH(List.of(0, 4, 7, 11)),
         AUGMENTED(List.of(0, 4, 8)), AUGMENTED_SEVENTH(List.of(0, 4, 8, 9)),
         MINOR(List.of(0, 3, 7)), MINOR_SIXTH(List.of(0, 3, 7, 9)), MINOR_SEVENTH(List.of(0, 3, 7, 10)), MINOR_MAJOR_SEVENTH(List.of(0, 3, 7, 11)),
-        DIMINISHED(List.of(0, 3, 6)), DIMINISHED_SEVENTH(List.of(0, 3, 6, 9)), HALF_DIMINISHED(List.of(0, 3, 6, 10));
+        DIMINISHED(List.of(0, 3, 6)), DIMINISHED_SEVENTH(List.of(0, 3, 6, 9)), HALF_DIMINISHED(List.of(0, 3, 6, 10)),
+        SUS4(List.of(0, 5, 7)), SUS4_SEVENTH(List.of(0, 5, 7, 10));
 
         private List<Integer> intervals;
         private Set<ModeType> modeTypes;
@@ -79,7 +79,6 @@ public class Chord implements Comparable<Chord> {
             return Arrays.stream(ModeType.values())
                     .filter(modeType -> modeType.areIntervalsInTheModeType(intervals))
                     .collect(Collectors.toUnmodifiableSet());
-
         }
     }
 }
