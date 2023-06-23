@@ -30,6 +30,10 @@ public class Chord implements Comparable<Chord> {
         return notesByModeType;
     }
 
+    public Map<Scale, Set<Note>> getScalesWithNoteDifferencesFrom(Scale scale) {
+        return scale.noteDifferencesFromScaleCollection(scaleByModeType.values());
+    }
+
     public boolean isSameChord(Chord chord) {
         return this.note.isSameNote(chord.note) && this.chordType == chord.chordType;
     }
@@ -56,8 +60,7 @@ public class Chord implements Comparable<Chord> {
 
     @Override
     public String toString() {
-        return note + " " + chordType + ", " + notesByModeType + scaleByModeType.values().stream()
-                .map(Scale::toString).collect(Collectors.joining("\n\t\t", "\n\t\t", ""));
+        return note + " " + chordType + ", " + notesByModeType;
     }
 
     public enum ChordType {

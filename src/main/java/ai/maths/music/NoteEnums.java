@@ -1,6 +1,7 @@
 package ai.maths.music;
 
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -12,6 +13,10 @@ interface NoteEnums {
     List<Note> SCALE_NOTES = List.of(Note.A, Note.ASharp, Note.BFlat, Note.B, Note.CFlat, Note.BSharp,
             Note.C, Note.CSharp, Note.DFlat, Note.D, Note.DSharp, Note.EFlat, Note.E, Note.FFlat, Note.ESharp,
             Note.F, Note.FSharp, Note.GFlat, Note.G, Note.GSharp, Note.AFlat);
+
+    static boolean areEquivalentNotes(Collection<Note> notes1, Collection<Note> notes2) {
+        return notes1.stream().allMatch(note1 -> notes2.stream().anyMatch(note1::isSameNote));
+    }
 
     enum Note {
         A(NaturalNote.A, Accident.NATURAL), ASharp(NaturalNote.A, Accident.SHARP), BFlat(NaturalNote.B, Accident.FLAT),

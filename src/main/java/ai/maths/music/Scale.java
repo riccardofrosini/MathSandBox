@@ -7,9 +7,11 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
+import java.util.TreeMap;
 import java.util.TreeSet;
 import java.util.stream.Collectors;
 
@@ -55,17 +57,28 @@ public class Scale implements Comparable<Scale> {
     }
 
     public Set<Chord> getChords() {
-        return Collections.unmodifiableNavigableSet(new TreeSet<>(notes.stream().flatMap(note -> Arrays.stream(ChordType.values())
+        return Collections.unmodifiableNavigableSet(new TreeSet<>(notes.stream()
+                .flatMap(note -> Arrays.stream(ChordType.values())
                         .map(chordType -> new Chord(note, chordType))
                         .filter(chord -> chord.getNotesByModeType().values().stream()
-                                .anyMatch(notesChord -> notesChord.stream()
-                                        .allMatch(noteChord -> notes.stream()
-                                                .anyMatch(noteScale -> noteScale.isSameNote(noteChord))))))
+                                .anyMatch(notesChord -> NoteEnums.areEquivalentNotes(notesChord, notes))))
                 .collect(Collectors.toSet())));
     }
 
     public boolean isSameScale(Scale scale) {
         return this.scaleNote.isSameNote(scale.scaleNote) && this.modeType == scale.modeType;
+    }
+
+    public Map<Scale, Set<Note>> noteDifferencesFromScaleCollection(Collection<Scale> scales) {
+        return Collections.unmodifiableNavigableMap(new TreeMap<>(scales.stream()
+                .collect(Collectors.toMap(scale -> scale, this::noteDifferencesFromScale))));
+    }
+
+    public Set<Note> noteDifferencesFromScale(Scale scale) {
+        return Collections.unmodifiableNavigableSet(new TreeSet<>(notes.stream()
+                .filter(note -> scale.notes.stream()
+                        .noneMatch(note::isSameNote))
+                .collect(Collectors.toSet())));
     }
 
     public List<Note> findCorrespondingNotesFromIntervals(List<Integer> intervals) {
