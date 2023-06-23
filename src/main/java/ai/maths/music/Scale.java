@@ -204,6 +204,14 @@ public class Scale implements Comparable<Scale> {
             }
             return intervals;
         }
+
+        @Override
+        public String toString() {
+            return Arrays.stream(name().split("_")).map(s -> s.toLowerCase().toCharArray())
+                    .peek(chars -> chars[0] = Character.toUpperCase(chars[0]))
+                    .map(String::new)
+                    .collect(Collectors.joining(" "));
+        }
     }
 
     public enum KeySignature {
@@ -244,7 +252,7 @@ public class Scale implements Comparable<Scale> {
 
         @Override
         public String toString() {
-            return name() + " alterations=" + alterations;
+            return "Alterations: " + alterations;
         }
     }
 

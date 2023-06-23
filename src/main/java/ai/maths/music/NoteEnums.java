@@ -19,31 +19,29 @@ interface NoteEnums {
     }
 
     enum Note {
-        A("A", NaturalNote.A, Accident.NATURAL), ASharp("A#", NaturalNote.A, Accident.SHARP), BFlat("Bb", NaturalNote.B, Accident.FLAT),
-        B("B", NaturalNote.B, Accident.NATURAL), CFlat("Cb", NaturalNote.C, Accident.FLAT), BSharp("B#", NaturalNote.B, Accident.SHARP),
-        C("C", NaturalNote.C, Accident.NATURAL), CSharp("C#", NaturalNote.C, Accident.SHARP), DFlat("Db", NaturalNote.D, Accident.FLAT),
-        D("D", NaturalNote.D, Accident.NATURAL), DSharp("D#", NaturalNote.D, Accident.SHARP), EFlat("Eb", NaturalNote.E, Accident.FLAT),
-        E("E", NaturalNote.E, Accident.NATURAL), FFlat("Fb", NaturalNote.F, Accident.FLAT), ESharp("E#", NaturalNote.E, Accident.SHARP),
-        F("F", NaturalNote.F, Accident.NATURAL), FSharp("F#", NaturalNote.F, Accident.SHARP), GFlat("Gb", NaturalNote.G, Accident.FLAT),
-        G("G", NaturalNote.G, Accident.NATURAL), GSharp("G#", NaturalNote.G, Accident.SHARP), AFlat("Ab", NaturalNote.A, Accident.FLAT),
+        A(NaturalNote.A, Accident.NATURAL), ASharp(NaturalNote.A, Accident.SHARP), BFlat(NaturalNote.B, Accident.FLAT),
+        B(NaturalNote.B, Accident.NATURAL), CFlat(NaturalNote.C, Accident.FLAT), BSharp(NaturalNote.B, Accident.SHARP),
+        C(NaturalNote.C, Accident.NATURAL), CSharp(NaturalNote.C, Accident.SHARP), DFlat(NaturalNote.D, Accident.FLAT),
+        D(NaturalNote.D, Accident.NATURAL), DSharp(NaturalNote.D, Accident.SHARP), EFlat(NaturalNote.E, Accident.FLAT),
+        E(NaturalNote.E, Accident.NATURAL), FFlat(NaturalNote.F, Accident.FLAT), ESharp(NaturalNote.E, Accident.SHARP),
+        F(NaturalNote.F, Accident.NATURAL), FSharp(NaturalNote.F, Accident.SHARP), GFlat(NaturalNote.G, Accident.FLAT),
+        G(NaturalNote.G, Accident.NATURAL), GSharp(NaturalNote.G, Accident.SHARP), AFlat(NaturalNote.A, Accident.FLAT),
 
-        ADoubleSharp("Abb", NaturalNote.A, Accident.DOUBLE_SHARP), ADoubleFlat("A##", NaturalNote.A, Accident.DOUBLE_FLAT),
-        BDoubleSharp("Bbb", NaturalNote.B, Accident.DOUBLE_SHARP), BDoubleFlat("B##", NaturalNote.B, Accident.DOUBLE_FLAT),
-        CDoubleSharp("Cbb", NaturalNote.C, Accident.DOUBLE_SHARP), CDoubleFlat("C##", NaturalNote.C, Accident.DOUBLE_FLAT),
-        DDoubleSharp("Dbb", NaturalNote.D, Accident.DOUBLE_SHARP), DDoubleFlat("D##", NaturalNote.D, Accident.DOUBLE_FLAT),
-        EDoubleSharp("Ebb", NaturalNote.E, Accident.DOUBLE_SHARP), EDoubleFlat("E##", NaturalNote.E, Accident.DOUBLE_FLAT),
-        FDoubleSharp("Fbb", NaturalNote.F, Accident.DOUBLE_SHARP), FDoubleFlat("F##", NaturalNote.F, Accident.DOUBLE_FLAT),
-        GDoubleSharp("Gbb", NaturalNote.G, Accident.DOUBLE_SHARP), GDoubleFlat("G##", NaturalNote.G, Accident.DOUBLE_FLAT);
+        ADoubleSharp(NaturalNote.A, Accident.DOUBLE_SHARP), ADoubleFlat(NaturalNote.A, Accident.DOUBLE_FLAT),
+        BDoubleSharp(NaturalNote.B, Accident.DOUBLE_SHARP), BDoubleFlat(NaturalNote.B, Accident.DOUBLE_FLAT),
+        CDoubleSharp(NaturalNote.C, Accident.DOUBLE_SHARP), CDoubleFlat(NaturalNote.C, Accident.DOUBLE_FLAT),
+        DDoubleSharp(NaturalNote.D, Accident.DOUBLE_SHARP), DDoubleFlat(NaturalNote.D, Accident.DOUBLE_FLAT),
+        EDoubleSharp(NaturalNote.E, Accident.DOUBLE_SHARP), EDoubleFlat(NaturalNote.E, Accident.DOUBLE_FLAT),
+        FDoubleSharp(NaturalNote.F, Accident.DOUBLE_SHARP), FDoubleFlat(NaturalNote.F, Accident.DOUBLE_FLAT),
+        GDoubleSharp(NaturalNote.G, Accident.DOUBLE_SHARP), GDoubleFlat(NaturalNote.G, Accident.DOUBLE_FLAT);
 
-        private String note;
         private NaturalNote naturalNote;
         private Accident accident;
         private int alterationFromC;
 
         private static final Map<Note, Map<Integer, Set<Note>>> ALL_INTERVALS = buildAllSemitoneIntervals();
 
-        Note(String note, NaturalNote naturalNote, Accident accident) {
-            this.note = note;
+        Note(NaturalNote naturalNote, Accident accident) {
             this.naturalNote = naturalNote;
             this.accident = accident;
             this.alterationFromC = (naturalNote.intervalFromC + accident.interval + 12) % 12;
@@ -72,7 +70,7 @@ interface NoteEnums {
         }
 
         public String toString() {
-            return note;
+            return naturalNote + "" + accident;
         }
 
         public boolean isSameNote(Note note) {
@@ -81,11 +79,19 @@ interface NoteEnums {
     }
 
     enum Accident {
-        FLAT(-1), NATURAL(0), SHARP(1), DOUBLE_FLAT(-2), DOUBLE_SHARP(2);
+        FLAT("b", -1), NATURAL("", 0), SHARP("#", 1), DOUBLE_FLAT("bb", -2), DOUBLE_SHARP("##", 2);
+
+        private String accident;
         private int interval;
 
-        Accident(int interval) {
+        Accident(String accident, int interval) {
+            this.accident = accident;
             this.interval = interval;
+        }
+
+        @Override
+        public String toString() {
+            return accident;
         }
     }
 
