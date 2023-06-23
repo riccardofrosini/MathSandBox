@@ -6,10 +6,8 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.TreeMap;
-import java.util.TreeSet;
 import java.util.stream.Collectors;
 
-import ai.maths.music.Chord.ChordType;
 import ai.maths.music.Scale.ModeType;
 
 public class EquivalentChords {
@@ -21,15 +19,9 @@ public class EquivalentChords {
                             .filter(Optional::isPresent)
                             .map(Optional::get))
                     .collect(Collectors.toMap(scale -> scale, Scale::getChords))));
-    public static final Set<Chord> ALL_SCALES_OF_CHORD =
-            Collections.unmodifiableNavigableSet(new TreeSet<>(NoteEnums.SCALE_NOTES.stream()
-                    .flatMap(note -> Arrays.stream(ChordType.values())
-                            .map(chordType -> new Chord(note, chordType)))
-                    .collect(Collectors.toSet())));
 
     public static void main(String[] args) {
         printAllChordsOfScales();
-        printAllScalesOfChords();
     }
 
     private static void printAllChordsOfScales() {
@@ -38,9 +30,5 @@ public class EquivalentChords {
                         .map(Chord::toString)
                         .collect(Collectors.joining("\n\t", "\n\t", "\n")))
                 .collect(Collectors.joining("\n")));
-    }
-
-    private static void printAllScalesOfChords() {
-        System.out.println(ALL_SCALES_OF_CHORD.stream().map(Chord::toString).collect(Collectors.joining("\n")));
     }
 }

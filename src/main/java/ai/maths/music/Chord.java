@@ -9,7 +9,6 @@ import java.util.Set;
 import java.util.TreeMap;
 import java.util.stream.Collectors;
 
-import ai.maths.music.NoteEnums.Accident;
 import ai.maths.music.NoteEnums.Note;
 import ai.maths.music.Scale.ModeType;
 
@@ -24,17 +23,11 @@ public class Chord implements Comparable<Chord> {
         this.note = note;
         this.chordType = chordType;
         this.scaleByModeType = buildScaleByModeTypes();
-        this.notesByModeType = buildNotesByModeType();
+        this.notesByModeType = buildNotesByModeTypes();
     }
 
     public Map<ModeType, List<Note>> getNotesByModeType() {
         return notesByModeType;
-    }
-
-    @Override
-    public String toString() {
-        return note + " " + chordType + ", " + notesByModeType + scaleByModeType.values().stream()
-                .map(Scale::toString).collect(Collectors.joining("\n\t\t", "\n\t\t", ""));
     }
 
     public boolean isSameChord(Chord chord) {
@@ -50,18 +43,22 @@ public class Chord implements Comparable<Chord> {
 
     private Map<ModeType, Scale> buildScaleByModeTypes() {
         return Collections.unmodifiableNavigableMap(new TreeMap<>(chordType.modeTypes.stream()
-                .map(modeType -> Scale.buildScale(note, modeType)
-                        .orElseGet(() -> note.findNotesWithInterval(0).stream()
-                                .filter(equivalentNote -> equivalentNote != note && equivalentNote.getAccident() != Accident.DOUBLE_FLAT && equivalentNote.getAccident() != Accident.DOUBLE_SHARP)
-                                .map(equivalentNote -> Scale.buildScale(equivalentNote, modeType)).findFirst().get().get()))
+                .map(modeType -> Scale.buildScaleOrEquivalent(note, modeType))
                 .collect(Collectors.toUnmodifiableMap(Scale::getModeType, scale -> scale))));
 
     }
 
-    private Map<ModeType, List<Note>> buildNotesByModeType() {
+    private Map<ModeType, List<Note>> buildNotesByModeTypes() {
         return Collections.unmodifiableNavigableMap(new TreeMap<>(scaleByModeType.values().stream()
                 .collect(Collectors.toUnmodifiableMap(Scale::getModeType,
                         scale -> scale.findCorrespondingNotesFromIntervals(chordType.intervals)))));
+    }
+
+
+    @Override
+    public String toString() {
+        return note + " " + chordType + ", " + notesByModeType + scaleByModeType.values().stream()
+                .map(Scale::toString).collect(Collectors.joining("\n\t\t", "\n\t\t", ""));
     }
 
     public enum ChordType {

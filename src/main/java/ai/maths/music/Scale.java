@@ -14,6 +14,7 @@ import java.util.TreeSet;
 import java.util.stream.Collectors;
 
 import ai.maths.music.Chord.ChordType;
+import ai.maths.music.NoteEnums.Accident;
 import ai.maths.music.NoteEnums.NaturalNote;
 import ai.maths.music.NoteEnums.Note;
 
@@ -31,6 +32,14 @@ public class Scale implements Comparable<Scale> {
         this.keySignature = KeySignature.findKeySignature(notes.get((notes.size() - modeType.modalInterval) % notes.size()), modeType.scaleType);
     }
 
+    public static Scale buildScaleOrEquivalent(Note scaleNote, ModeType modeType) {
+        return buildScale(scaleNote, modeType).orElseGet(() ->
+                scaleNote.findNotesWithInterval(0).stream()
+                        .filter(note -> note != scaleNote && note.getAccident() != Accident.DOUBLE_FLAT && note.getAccident() != Accident.DOUBLE_SHARP)
+                        .map(note -> Scale.buildScale(note, modeType).get())
+                        .findFirst().get());
+    }
+
     public static Optional<Scale> buildScale(Note scaleNote, ModeType modeType) {
         Scale scale;
         try {
@@ -43,11 +52,6 @@ public class Scale implements Comparable<Scale> {
 
     public ModeType getModeType() {
         return modeType;
-    }
-
-    @Override
-    public String toString() {
-        return modeType + " in " + scaleNote + " " + notes + ", " + keySignature;
     }
 
     public Set<Chord> getChords() {
@@ -103,6 +107,11 @@ public class Scale implements Comparable<Scale> {
             currentNote = currentNote.next();
         }
         return Collections.unmodifiableList(scaleNotes);
+    }
+
+    @Override
+    public String toString() {
+        return modeType + " in " + scaleNote + " " + notes + ", " + keySignature;
     }
 
     public enum ScaleType {
