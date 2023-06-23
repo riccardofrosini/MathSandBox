@@ -56,7 +56,7 @@ public class Scale implements Comparable<Scale> {
         return modeType;
     }
 
-    public Map<Chord, Map<Scale, Set<Note>>> getChordsWithNotesDifference() {
+    public Map<Chord, Map<Scale, Set<Note>>> getChordsScalesWithNotesDifference() {
         return Collections.unmodifiableNavigableMap(new TreeMap<>(getChords().stream()
                 .collect(Collectors.toMap(chord -> chord, chord -> chord.getScalesWithNoteDifferencesFrom(this)))));
     }
