@@ -5,7 +5,6 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.Set;
 import java.util.TreeMap;
 import java.util.stream.Collectors;
@@ -28,11 +27,6 @@ public class Chord implements Comparable<Chord> {
         this.notesByModeType = buildNotesByModeType();
     }
 
-
-    public ChordType getChordType() {
-        return chordType;
-    }
-
     public Map<ModeType, List<Note>> getNotesByModeType() {
         return notesByModeType;
     }
@@ -40,16 +34,11 @@ public class Chord implements Comparable<Chord> {
     @Override
     public String toString() {
         return note + " " + chordType + ", " + notesByModeType + scaleByModeType.values().stream()
-                .map(Scale::toString).collect(Collectors.joining("\n\t\t", "\n\t\t", "\n"));
+                .map(Scale::toString).collect(Collectors.joining("\n\t\t", "\n\t\t", ""));
     }
 
-
-    public Set<Chord> getEquivalentChords() {
-        return note.findNotesWithInterval(0).stream()
-                .filter(equivalentNote -> equivalentNote.getAccident() != Accident.DOUBLE_FLAT && equivalentNote.getAccident() != Accident.DOUBLE_SHARP)
-                .map(noteEquivalent -> new Chord(noteEquivalent, chordType))
-                .filter(chord -> !chord.scaleByModeType.isEmpty())
-                .collect(Collectors.toSet());
+    public boolean isSameChord(Chord chord) {
+        return this.note.isSameNote(chord.note) && this.chordType == chord.chordType;
     }
 
     @Override
@@ -61,8 +50,10 @@ public class Chord implements Comparable<Chord> {
 
     private Map<ModeType, Scale> buildScaleByModeTypes() {
         return Collections.unmodifiableNavigableMap(new TreeMap<>(chordType.modeTypes.stream()
-                .map(modeType -> Scale.buildScale(note, modeType))
-                .filter(Optional::isPresent).map(Optional::get)
+                .map(modeType -> Scale.buildScale(note, modeType)
+                        .orElseGet(() -> note.findNotesWithInterval(0).stream()
+                                .filter(equivalentNote -> equivalentNote != note && equivalentNote.getAccident() != Accident.DOUBLE_FLAT && equivalentNote.getAccident() != Accident.DOUBLE_SHARP)
+                                .map(equivalentNote -> Scale.buildScale(equivalentNote, modeType)).findFirst().get().get()))
                 .collect(Collectors.toUnmodifiableMap(Scale::getModeType, scale -> scale))));
 
     }
@@ -88,7 +79,9 @@ public class Chord implements Comparable<Chord> {
         }
 
         private Set<ModeType> buildScaleTypes() {
-            return Arrays.stream(ModeType.values()).filter(modeType -> modeType.areIntervalsInTheModeType(intervals)).collect(Collectors.toSet());
+            return Arrays.stream(ModeType.values())
+                    .filter(modeType -> modeType.areIntervalsInTheModeType(intervals))
+                    .collect(Collectors.toUnmodifiableSet());
 
         }
     }

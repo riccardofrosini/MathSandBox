@@ -10,6 +10,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
+import java.util.TreeSet;
 import java.util.stream.Collectors;
 
 import ai.maths.music.Chord.ChordType;
@@ -49,14 +50,18 @@ public class Scale implements Comparable<Scale> {
         return modeType + " in " + scaleNote + " " + notes + ", " + keySignature;
     }
 
-    public List<Chord> getChords() {
-        return notes.stream().flatMap(note -> Arrays.stream(ChordType.values())
+    public Set<Chord> getChords() {
+        return Collections.unmodifiableNavigableSet(new TreeSet<>(notes.stream().flatMap(note -> Arrays.stream(ChordType.values())
                         .map(chordType -> new Chord(note, chordType))
                         .filter(chord -> chord.getNotesByModeType().values().stream()
                                 .anyMatch(notesChord -> notesChord.stream()
                                         .allMatch(noteChord -> notes.stream()
                                                 .anyMatch(noteScale -> noteScale.isSameNote(noteChord))))))
-                .collect(Collectors.toList());
+                .collect(Collectors.toSet())));
+    }
+
+    public boolean isSameScale(Scale scale) {
+        return this.scaleNote.isSameNote(scale.scaleNote) && this.modeType == scale.modeType;
     }
 
     public List<Note> findCorrespondingNotesFromIntervals(List<Integer> intervals) {
@@ -111,7 +116,7 @@ public class Scale implements Comparable<Scale> {
             this.intervals = intervals;
         }
 
-        public List<Integer> rotateScaleIntervals(int rotate) {
+        private List<Integer> rotateScaleIntervals(int rotate) {
             if (rotate == 0) {
                 return Collections.unmodifiableList(intervals);
             }
