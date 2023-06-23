@@ -60,20 +60,22 @@ public class Chord implements Comparable<Chord> {
 
     @Override
     public String toString() {
-        return note + " " + chordType + ", " + notesByModeType;
+        return note + "" + chordType + ", " + notesByModeType;
     }
 
     public enum ChordType {
-        MAJOR(List.of(0, 4, 7)), MAJOR_SIXTH(List.of(0, 4, 7, 9)), DOMINANT_SEVENTH(List.of(0, 4, 7, 10)), MAJOR_SEVENTH(List.of(0, 4, 7, 11)),
-        AUGMENTED(List.of(0, 4, 8)), AUGMENTED_SEVENTH(List.of(0, 4, 8, 9)),
-        MINOR(List.of(0, 3, 7)), MINOR_SIXTH(List.of(0, 3, 7, 9)), MINOR_SEVENTH(List.of(0, 3, 7, 10)), MINOR_MAJOR_SEVENTH(List.of(0, 3, 7, 11)),
-        DIMINISHED(List.of(0, 3, 6)), DIMINISHED_SEVENTH(List.of(0, 3, 6, 9)), HALF_DIMINISHED(List.of(0, 3, 6, 10)),
-        SUS4(List.of(0, 5, 7)), SUS4_SEVENTH(List.of(0, 5, 7, 10));
+        MAJOR("", List.of(0, 4, 7)), MAJOR_SIXTH("6", List.of(0, 4, 7, 9)), DOMINANT_SEVENTH("7", List.of(0, 4, 7, 10)), MAJOR_SEVENTH("Δ", List.of(0, 4, 7, 11)),
+        AUGMENTED("+", List.of(0, 4, 8)), AUGMENTED_SEVENTH("+7", List.of(0, 4, 8, 9)),
+        MINOR("m", List.of(0, 3, 7)), MINOR_SIXTH("m6", List.of(0, 3, 7, 9)), MINOR_SEVENTH("m7", List.of(0, 3, 7, 10)), MINOR_MAJOR_SEVENTH("mM7", List.of(0, 3, 7, 11)),
+        DIMINISHED("o", List.of(0, 3, 6)), DIMINISHED_SEVENTH("o7", List.of(0, 3, 6, 9)), HALF_DIMINISHED("ø", List.of(0, 3, 6, 10)),
+        SUS4("sus4", List.of(0, 5, 7)), SUS4_SEVENTH("sus4(add7)", List.of(0, 5, 7, 10));
 
+        private String alteration;
         private List<Integer> intervals;
         private Set<ModeType> modeTypes;
 
-        ChordType(List<Integer> intervals) {
+        ChordType(String alteration, List<Integer> intervals) {
+            this.alteration = alteration;
             this.intervals = intervals;
             this.modeTypes = buildScaleTypes();
         }
@@ -82,6 +84,11 @@ public class Chord implements Comparable<Chord> {
             return Arrays.stream(ModeType.values())
                     .filter(modeType -> modeType.areIntervalsInTheModeType(intervals))
                     .collect(Collectors.toUnmodifiableSet());
+        }
+
+        @Override
+        public String toString() {
+            return alteration;
         }
     }
 }
