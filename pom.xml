@@ -52,6 +52,10 @@
             <id>nexus</id>
             <url>https://nexus.talanlabs.com/content/repositories/releases/</url>
         </repository>
+        <repository>
+            <id>java3d</id>
+            <url>https://mvnrepository.com/artifact/java3d/j3dcore</url>
+        </repository>
     </repositories>
     <build>
         <plugins>

@@ -64,7 +64,7 @@ class Genome implements Comparable<Genome> {
         NodeGene inNode = nodeGenes[RandomUtils.getRandomInt(nodeGenes.length)];
         NodeGene outNode = nodeGenes[RandomUtils.getRandomInt(nodeGenes.length)];
         // max loops as this could go on forever.
-        for (int i = 0; i < 10000 && !makeNewConnection(inNode.getId(), outNode.getId(), RandomUtils.getRandomWeight()); i++) {
+        for (int i = 0; i < 10000 && !replaceOrMakeNewConnection(inNode.getId(), outNode.getId(), RandomUtils.getRandomWeight()); i++) {
             inNode = nodeGenes[RandomUtils.getRandomInt(nodeGenes.length)];
             outNode = nodeGenes[RandomUtils.getRandomInt(nodeGenes.length)];
         }
@@ -79,13 +79,6 @@ class Genome implements Comparable<Genome> {
                 connectionGene.setWeight(RandomUtils.getRandomWeight());
             }
         }
-    }
-
-    private boolean makeNewConnection(int inNodeId, int outNodeId, double weight) {
-        if (connections.containsKey(NodeAndConnectionCounter.getNewInnovationForConnection(inNodeId, outNodeId))) {
-            return false;
-        }
-        return replaceOrMakeNewConnection(inNodeId, outNodeId, weight);
     }
 
     boolean replaceOrMakeNewConnection(int inNodeId, int outNodeId, double weight) {
