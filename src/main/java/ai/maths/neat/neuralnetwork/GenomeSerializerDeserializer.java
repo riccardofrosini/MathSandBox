@@ -1,18 +1,27 @@
 package ai.maths.neat.neuralnetwork;
 
+import java.awt.BasicStroke;
+import java.awt.Color;
+import java.awt.Font;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
+import java.awt.Point;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.List;
+import java.util.TreeMap;
+import java.util.TreeSet;
+
+import javax.imageio.ImageIO;
+
 import ai.maths.neat.neuralnetwork.functions.GenomeEvaluator;
 import ai.maths.neat.neuralnetwork.functions.NodeFunction;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
-
-import javax.imageio.ImageIO;
-import java.awt.*;
-import java.awt.image.BufferedImage;
-import java.io.File;
-import java.io.IOException;
-import java.util.List;
-import java.util.*;
 
 public class GenomeSerializerDeserializer {
 
@@ -102,8 +111,7 @@ public class GenomeSerializerDeserializer {
             positionX += width / layerToNode.size();
         }
 
-
-        ((Graphics2D) graphics).setStroke(new BasicStroke(width / 500));
+        ((Graphics2D) graphics).setStroke(new BasicStroke((float) width / 500));
         for (NodeGene node : nodes) {
             for (ConnectionGene connectionGene : node.getBackConnections()) {
                 Integer backNodeId = connectionGene.getInNode();
@@ -114,7 +122,9 @@ public class GenomeSerializerDeserializer {
                 Point point2 = nodeToPoint.get(backNodeId);
                 graphics.drawLine(point1.x + width / 200, point1.y + height / 200, point2.x + width / 200, point2.y + height / 200);
                 graphics.setColor(Color.BLACK);
-                graphics.drawString(String.format("%6.4f", connectionGene.getWeight()), Math.min(point1.x, point2.x) + width / 50 + Math.abs(point2.x - point1.x) / 2, Math.min(point1.y, point2.y) + height / 50 + Math.abs(point2.y - point1.y) / 2);
+                graphics.drawString(String.format("%6.4f", connectionGene.getWeight()),
+                        Math.min(point1.x, point2.x) + width / 50 + Math.abs(point2.x - point1.x) / 2,
+                        Math.min(point1.y, point2.y) + height / 50 + Math.abs(point2.y - point1.y) / 2);
             }
         }
     }

@@ -1,10 +1,17 @@
 package ai.maths.neat.neuralnetwork;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Objects;
+import java.util.Set;
+import java.util.SortedMap;
+import java.util.TreeMap;
+import java.util.stream.Collectors;
+
 import ai.maths.neat.utils.ConfigurationNetwork;
 import ai.maths.neat.utils.RandomUtils;
-
-import java.util.*;
-import java.util.stream.Collectors;
 
 class Genome implements Comparable<Genome> {
 
@@ -43,11 +50,11 @@ class Genome implements Comparable<Genome> {
         if (!connections.isEmpty()) {
             ConnectionGene[] allConnections = connections.values().toArray(new ConnectionGene[0]);
             ConnectionGene connectionGene = allConnections[RandomUtils.getRandomInt(allConnections.length)];
-            int newIdForHiddenNode = NodeAndConnectionCounter.getNewIdForHiddenNode(connectionGene.getInnovation());
+            int newIdForHiddenNode = NodeAndConnectionCounter.getIdForHiddenNode(connectionGene.getInnovation());
             for (int i = 0; i < 10000 && (!connectionGene.isEnabled() ||
                     nodes.containsKey(newIdForHiddenNode)); i++) {
                 connectionGene = allConnections[RandomUtils.getRandomInt(allConnections.length)];
-                newIdForHiddenNode = NodeAndConnectionCounter.getNewIdForHiddenNode(connectionGene.getInnovation());
+                newIdForHiddenNode = NodeAndConnectionCounter.getIdForHiddenNode(connectionGene.getInnovation());
             }
             if (connectionGene.isEnabled() && !nodes.containsKey(newIdForHiddenNode)) {
                 connectionGene.disable();
@@ -171,8 +178,12 @@ class Genome implements Comparable<Genome> {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof Genome)) return false;
+        if (this == o) {
+            return true;
+        }
+        if (!(o instanceof Genome)) {
+            return false;
+        }
         Genome genome = (Genome) o;
         return connections.equals(genome.connections) &&
                 nodes.equals(genome.nodes) &&

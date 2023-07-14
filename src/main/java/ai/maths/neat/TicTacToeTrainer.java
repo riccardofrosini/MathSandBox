@@ -1,14 +1,14 @@
 package ai.maths.neat;
 
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+
 import ai.maths.neat.neuralnetwork.NeuralNetworkTrainer;
 import ai.maths.neat.neuralnetwork.functions.GenomeEvaluator;
 import ai.maths.neat.utils.ConfigurationNetwork;
 import ai.maths.neat.utils.NodeFunctionsCreator;
 import ai.maths.tictactoe.TicTacToe;
-
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
 
 public class TicTacToeTrainer {
 

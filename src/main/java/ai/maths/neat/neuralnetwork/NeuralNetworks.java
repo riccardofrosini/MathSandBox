@@ -1,11 +1,18 @@
 package ai.maths.neat.neuralnetwork;
 
-import ai.maths.neat.utils.ConfigurationNetwork;
-import ai.maths.neat.utils.RandomUtils;
-
-import java.util.*;
+import java.util.Collection;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.TreeSet;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
+
+import ai.maths.neat.utils.ConfigurationNetwork;
+import ai.maths.neat.utils.RandomUtils;
 
 class NeuralNetworks {
 
@@ -72,7 +79,7 @@ class NeuralNetworks {
             }
         }
 
-        //Remove weakest genomes. Copy species with best performing genome
+        //Remove all the weakest genomes. Copy species with best performing genome
         for (Species species : speciesCollection) {
             if (species.size() != 0) {
                 neuralNetworks.copySpeciesWithRandomRepresentative(species);

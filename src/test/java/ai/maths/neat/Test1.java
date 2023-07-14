@@ -1,15 +1,17 @@
 package ai.maths.neat;
 
+import static ai.maths.neat.TicTacToeTrainer.fillUpEvaluationsAndPositions;
+import static ai.maths.neat.TicTacToeTrainer.ticTacToeHashMap;
+import static ai.maths.neat.TicTacToeTrainer.ticTacToeHashSet;
+
+import java.io.File;
+import java.io.IOException;
+
 import ai.maths.neat.neuralnetwork.GenomeSerializerDeserializer;
 import ai.maths.neat.neuralnetwork.functions.GenomeEvaluator;
 import ai.maths.neat.utils.NodeFunctionsCreator;
 import ai.maths.tictactoe.TicTacToe;
 import org.junit.Test;
-
-import java.io.File;
-import java.io.IOException;
-
-import static ai.maths.neat.TicTacToeTrainer.*;
 
 public class Test1 {
 

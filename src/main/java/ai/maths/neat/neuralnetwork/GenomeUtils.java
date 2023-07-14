@@ -1,14 +1,18 @@
 package ai.maths.neat.neuralnetwork;
 
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.function.Consumer;
+import java.util.stream.Collectors;
+
 import ai.maths.neat.neuralnetwork.functions.FitnessCalculator;
 import ai.maths.neat.neuralnetwork.functions.GenomeEvaluator;
 import ai.maths.neat.neuralnetwork.functions.NodeFunction;
 import ai.maths.neat.utils.ConfigurationNetwork;
 import ai.maths.neat.utils.RandomUtils;
-
-import java.util.*;
-import java.util.function.Consumer;
-import java.util.stream.Collectors;
 
 class GenomeUtils {
 
@@ -105,7 +109,7 @@ class GenomeUtils {
         if (connectionMade && (((thisConnection.isEnabled() ^ otherConnection.isEnabled()) &&
                 (RandomUtils.getRandom() <= ConfigurationNetwork.DISABLE_CONNECTION_CROSSOVER_PROBABILITY)) ||
                 (!thisConnection.isEnabled() && !otherConnection.isEnabled()))) {
-            crossover.getConnectionWithInnovationNumber(NodeAndConnectionCounter.getNewInnovationForConnection(thisConnection.getInNode(),
+            crossover.getConnectionWithInnovationNumber(NodeAndConnectionCounter.getInnovationForConnection(thisConnection.getInNode(),
                     thisConnection.getOutNode())).disable();
         }
     }
@@ -115,7 +119,7 @@ class GenomeUtils {
         boolean connectionMade = crossover.replaceOrMakeNewConnection(connection.getInNode(),
                 connection.getOutNode(), connection.getWeight());
         if (!connection.isEnabled() && connectionMade) {
-            crossover.getConnectionWithInnovationNumber(NodeAndConnectionCounter.getNewInnovationForConnection(connection.getInNode(),
+            crossover.getConnectionWithInnovationNumber(NodeAndConnectionCounter.getInnovationForConnection(connection.getInNode(),
                     connection.getOutNode())).disable();
         }
     }
@@ -263,8 +267,7 @@ class GenomeUtils {
         return genome.getOutputNodes().stream().map(nodeGene -> nodeToEvaluation.get(nodeGene.getId())).collect(Collectors.toList());
     }
 
-    private static void addEvaluationToMap(NodeFunction
-                                                   nodeFunction, HashMap<Integer, Double> nodeToEvaluation, NodeGene node) {
+    private static void addEvaluationToMap(NodeFunction nodeFunction, HashMap<Integer, Double> nodeToEvaluation, NodeGene node) {
         double value = 0;
         for (ConnectionGene backConnection : node.getBackConnections()) {
             if (backConnection.isEnabled()) {

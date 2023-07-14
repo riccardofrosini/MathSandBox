@@ -12,7 +12,7 @@ public class Euler24 {
         StringBuilder result = new StringBuilder();
         for (int i = 9; i >= 0; i--) {
             long factorial = factorial(i);
-            int digit = (int) Math.floor(position / factorial);
+            int digit = (int) Math.floor((double) position / factorial);
             position = position - digit * factorial;
             result.append(digits.remove(digit));
         }

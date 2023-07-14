@@ -1,5 +1,7 @@
 package ai.maths.collatz;
 
+import java.util.ArrayList;
+
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartPanel;
 import org.jfree.chart.JFreeChart;
@@ -7,8 +9,6 @@ import org.jfree.chart.plot.PlotOrientation;
 import org.jfree.chart.ui.ApplicationFrame;
 import org.jfree.data.xy.XYSeries;
 import org.jfree.data.xy.XYSeriesCollection;
-
-import java.util.ArrayList;
 
 class XYSeriesDemo extends ApplicationFrame {
 
@@ -40,12 +40,10 @@ class XYSeriesDemo extends ApplicationFrame {
         series.add(x, y, false);
     }
 
-    class MyXYSeries extends XYSeries {
+    static class MyXYSeries extends XYSeries {
         MyXYSeries(Comparable key) {
             super(key, false, true);
-            data = new ArrayList(100000000);
+            data = new ArrayList<>(100000000);
         }
     }
-
-
 }

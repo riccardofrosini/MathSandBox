@@ -8,8 +8,8 @@ public class Euler10 {
         long max = 2000000;
         long sum = 2;
         sum += 3;
-        for (int i = 1; i * 6 - 1 < max; i++) {
-            int candidatePrime = i * 6 - 1;
+        for (long i = 1; i * 6 - 1 < max; i++) {
+            long candidatePrime = i * 6 - 1;
             if (Utils.isPrime(candidatePrime)) {
                 sum += candidatePrime;
             }
