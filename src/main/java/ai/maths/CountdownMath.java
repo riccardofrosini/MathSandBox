@@ -4,7 +4,7 @@ import java.util.HashSet;
 import java.util.Stack;
 import java.util.stream.Collectors;
 
-public class CountdownMath {
+public class CountDownMath {
 
     public static void main(String[] args) {
         System.out.println(closest(572, 7, 5, 10, 9, 2, 6));
