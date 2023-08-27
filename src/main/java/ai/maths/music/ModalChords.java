@@ -20,7 +20,7 @@ public class ModalChords {
                     .collect(Collectors.toMap(scale -> scale, Scale::getChordsScalesWithNotesDifference))));
 
     public static void main(String[] args) {
-        printAllChordsOfScales();
+        //printAllChordsOfScales();
         printChordsOfScale(Scale.buildScaleOrEquivalent(Note.EFlat, ModeType.IONIAN));
     }
 
