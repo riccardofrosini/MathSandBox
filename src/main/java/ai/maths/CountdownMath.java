@@ -62,43 +62,31 @@ public class CountDownMath {
                 if (temp != closest) {
                     closest = temp;
                 }
-                if (values[i] - values[j] >= 0) {
-                    newValues[0] = values[i] - values[j];
-                    operations.push(values[i] + "-" + values[j]);
-                    temp = Math.min(closest(total, newValues), closest);
-                    operations.pop();
-                    if (temp != closest) {
-                        closest = temp;
-                    }
-                }
-                if (values[j] != 0 && values[i] % values[j] == 0) {
-                    newValues[0] = values[i] / values[j];
-                    operations.push(values[i] + "/" + values[j]);
-                    temp = Math.min(closest(total, newValues), closest);
-                    operations.pop();
-                    if (temp != closest) {
-                        closest = temp;
-                    }
-                }
+                closest = getClosest(total, closest, i, j, newValues, values);
+                closest = getClosest(total, closest, j, i, newValues, values);
+            }
+        }
+        return closest;
+    }
 
-                if (values[j] - values[i] >= 0) {
-                    newValues[0] = values[j] - values[i];
-                    operations.push(values[j] + "-" + values[i]);
-                    temp = Math.min(closest(total, newValues), closest);
-                    operations.pop();
-                    if (temp != closest) {
-                        closest = temp;
-                    }
-                }
-                if (values[i] != 0 && values[j] % values[i] == 0) {
-                    newValues[0] = values[j] / values[i];
-                    operations.push(values[j] + "/" + values[i]);
-                    temp = Math.min(closest(total, newValues), closest);
-                    operations.pop();
-                    if (temp != closest) {
-                        closest = temp;
-                    }
-                }
+    private static long getClosest(long total, long closest, int i, int j, long[] newValues, long[] values) {
+        long temp;
+        if (values[i] - values[j] >= 0) {
+            newValues[0] = values[i] - values[j];
+            operations.push(values[i] + "-" + values[j]);
+            temp = Math.min(closest(total, newValues), closest);
+            operations.pop();
+            if (temp != closest) {
+                closest = temp;
+            }
+        }
+        if (values[j] != 0 && values[i] % values[j] == 0) {
+            newValues[0] = values[i] / values[j];
+            operations.push(values[i] + "/" + values[j]);
+            temp = Math.min(closest(total, newValues), closest);
+            operations.pop();
+            if (temp != closest) {
+                closest = temp;
             }
         }
         return closest;
