@@ -11,5 +11,5 @@ public abstract class SingletonClause<T extends VariableOrBoolean> implements Cl
         return Set.of(getVariableOrBoolean());
     }
 
-    public abstract boolean isEqualNegated(SingletonClause other);
+    public abstract boolean isEqualNegated(SingletonClause<?> other);
 }

@@ -4,7 +4,7 @@ import java.util.Objects;
 
 public class NegateVariable extends SingletonClause<Variable> {
 
-    private Variable variable;
+    private final Variable variable;
 
     public NegateVariable(Variable variable) {
         this.variable = variable;
@@ -16,8 +16,8 @@ public class NegateVariable extends SingletonClause<Variable> {
     }
 
     @Override
-    public boolean isEqualNegated(SingletonClause other) {
-        return (other instanceof Variable) && variable.equals(((Variable) other).getVariableOrBoolean());
+    public boolean isEqualNegated(SingletonClause<?> other) {
+        return (other instanceof Variable) && variable.getName().equals(((Variable) other).getVariableOrBoolean().getName());
     }
 
     @Override

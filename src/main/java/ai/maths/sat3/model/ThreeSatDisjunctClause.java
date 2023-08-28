@@ -5,18 +5,18 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-public class ThreeSatDisjunctClause extends DisjunctClause<SingletonClause> {
+public class ThreeSatDisjunctClause extends DisjunctClause<SingletonClause<?>> {
 
-    public ThreeSatDisjunctClause(SingletonClause singletonClause1, SingletonClause singletonClause2, SingletonClause singletonClause3) {
+    public ThreeSatDisjunctClause(SingletonClause<?> singletonClause1, SingletonClause<?> singletonClause2, SingletonClause<?> singletonClause3) {
         super(Set.of(singletonClause1, singletonClause2, singletonClause3));
     }
 
-    public ThreeSatDisjunctClause(SingletonClause... singletonClauses) {
+    public ThreeSatDisjunctClause(SingletonClause<?>... singletonClauses) {
         super(Set.of(singletonClauses));
     }
 
     public Clause simplify() {
-        Collection<List<SingletonClause>> singletonClausesGrouped = disjuncts.stream()
+        Collection<List<SingletonClause<?>>> singletonClausesGrouped = disjuncts.stream()
                 .collect(Collectors.groupingBy(SingletonClause::getVariableOrBoolean))
                 .values();
         boolean tautology =
@@ -27,9 +27,9 @@ public class ThreeSatDisjunctClause extends DisjunctClause<SingletonClause> {
         if (tautology) {
             return BooleanConstant.TRUE_CONSTANT;
         }
-        SingletonClause[] singletonClausesArray = singletonClausesGrouped.stream()
+        SingletonClause<?>[] singletonClausesArray = singletonClausesGrouped.stream()
                 .map(singletonClauses -> singletonClauses.get(0))
-                .toArray(SingletonClause[]::new);
+                .toArray(SingletonClause<?>[]::new);
         if (singletonClausesArray.length == 1) {
             return singletonClausesArray[0];
         }

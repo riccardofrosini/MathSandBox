@@ -2,7 +2,7 @@ package ai.maths.sat3.model;
 
 import java.util.Objects;
 
-public final class BooleanConstant extends VariableOrBoolean {
+public final class BooleanConstant extends SingletonClause<BooleanConstant> implements VariableOrBoolean {
 
     public static final BooleanConstant TRUE_CONSTANT = new BooleanConstant(true);
     public static final BooleanConstant FALSE_CONSTANT = new BooleanConstant(false);
@@ -19,7 +19,7 @@ public final class BooleanConstant extends VariableOrBoolean {
     }
 
     @Override
-    public boolean isEqualNegated(SingletonClause other) {
+    public boolean isEqualNegated(SingletonClause<?> other) {
         return (other instanceof BooleanConstant) && constant != ((BooleanConstant) other).constant;
     }
 

@@ -2,12 +2,16 @@ package ai.maths.sat3.model;
 
 import java.util.Objects;
 
-public class Variable extends VariableOrBoolean {
+public class Variable extends SingletonClause<Variable> implements VariableOrBoolean {
 
     private final String name;
 
     public Variable(String name) {
         this.name = name;
+    }
+
+    public String getName() {
+        return name;
     }
 
     @Override
@@ -16,8 +20,8 @@ public class Variable extends VariableOrBoolean {
     }
 
     @Override
-    public boolean isEqualNegated(SingletonClause other) {
-        return (other instanceof NegateVariable) && equals(other.getVariableOrBoolean());
+    public boolean isEqualNegated(SingletonClause<?> other) {
+        return (other instanceof NegateVariable) && name.equals(((NegateVariable) other).getVariableOrBoolean().name);
     }
 
     @Override

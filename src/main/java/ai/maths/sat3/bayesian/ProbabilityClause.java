@@ -27,7 +27,7 @@ public class ProbabilityClause {
 
     private static double getDefaultProbability(VariableOrBoolean variableOrBoolean) {
         return (variableOrBoolean instanceof Variable) ? 0.5 :
-                (variableOrBoolean.equals(TRUE_CONSTANT) ? 1d : 0d);
+                (variableOrBoolean == TRUE_CONSTANT ? 1d : 0d);
     }
 
     public double probabilityOfDisjunction(ThreeSatDisjunctClause threeSatDisjunctClause) {
@@ -39,33 +39,33 @@ public class ProbabilityClause {
                 .reduce(0, (probabilityTotal, probability) -> probability + (1 - probability) * probabilityTotal);
     }
 
-    public double probabilityOfTwoConjunctSingletonClause(SingletonClause singletonClause1,
-            SingletonClause singletonClause2) {
+    public double probabilityOfTwoConjunctSingletonClause(SingletonClause<?> singletonClause1,
+            SingletonClause<?> singletonClause2) {
         if (singletonClause1.isEqualNegated(singletonClause2)) {
             return 0;
         }
         double probabilityClause1 = probabilityOfSingletonClause(singletonClause1);
-        double probabilityClause2 = probabilityOfSingletonClause(singletonClause2);
         if (singletonClause1.equals(singletonClause2)) {
             return probabilityClause1;
         }
+        double probabilityClause2 = probabilityOfSingletonClause(singletonClause2);
         return probabilityClause1 * probabilityClause2;
     }
 
-    public double probabilityOfTwoDisjunctSingletonClause(SingletonClause singletonClause1,
-            SingletonClause singletonClause2) {
+    public double probabilityOfTwoDisjunctSingletonClause(SingletonClause<?> singletonClause1,
+            SingletonClause<?> singletonClause2) {
         if (singletonClause1.isEqualNegated(singletonClause2)) {
             return 1;
         }
         double probabilityClause1 = probabilityOfSingletonClause(singletonClause1);
-        double probabilityClause2 = probabilityOfSingletonClause(singletonClause2);
         if (singletonClause1.equals(singletonClause2)) {
             return probabilityClause1;
         }
+        double probabilityClause2 = probabilityOfSingletonClause(singletonClause2);
         return probabilityClause1 + probabilityClause2 - probabilityClause1 * probabilityClause2;
     }
 
-    public double probabilityOfSingletonClause(SingletonClause singletonClause) {
+    public double probabilityOfSingletonClause(SingletonClause<?> singletonClause) {
         return singletonClause instanceof NegateVariable ?
                 1 - probabilities.get(singletonClause.getVariableOrBoolean()) :
                 probabilities.get(singletonClause.getVariableOrBoolean());
