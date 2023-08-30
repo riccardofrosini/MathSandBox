@@ -16,11 +16,6 @@ public class NegateVariable extends SingletonClause<Variable> {
     }
 
     @Override
-    public boolean isEqualNegated(SingletonClause<?> other) {
-        return (other instanceof Variable) && variable.getName().equals(((Variable) other).getVariableOrBoolean().getName());
-    }
-
-    @Override
     public boolean equals(Object o) {
         if (this == o) {
             return true;

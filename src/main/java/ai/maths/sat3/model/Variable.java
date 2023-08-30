@@ -20,11 +20,6 @@ public class Variable extends SingletonClause<Variable> implements VariableOrBoo
     }
 
     @Override
-    public boolean isEqualNegated(SingletonClause<?> other) {
-        return (other instanceof NegateVariable) && name.equals(((NegateVariable) other).getVariableOrBoolean().name);
-    }
-
-    @Override
     public boolean equals(Object o) {
         if (this == o) {
             return true;

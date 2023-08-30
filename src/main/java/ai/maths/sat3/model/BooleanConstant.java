@@ -19,11 +19,6 @@ public final class BooleanConstant extends SingletonClause<BooleanConstant> impl
     }
 
     @Override
-    public boolean isEqualNegated(SingletonClause<?> other) {
-        return (other instanceof BooleanConstant) && constant != ((BooleanConstant) other).constant;
-    }
-
-    @Override
     public boolean equals(Object o) {
         if (this == o) {
             return true;

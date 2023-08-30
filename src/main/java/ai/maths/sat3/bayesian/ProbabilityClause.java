@@ -1,16 +1,19 @@
 package ai.maths.sat3.bayesian;
 
-
 import static ai.maths.sat3.model.BooleanConstant.TRUE_CONSTANT;
 
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
 import ai.maths.sat3.model.Clause;
+import ai.maths.sat3.model.ConjunctClause;
+import ai.maths.sat3.model.ConjunctOfSingletons;
+import ai.maths.sat3.model.DisjunctClause;
+import ai.maths.sat3.model.DisjunctOfSingletons;
 import ai.maths.sat3.model.NegateVariable;
 import ai.maths.sat3.model.SingletonClause;
-import ai.maths.sat3.model.ThreeSatDisjunctClause;
 import ai.maths.sat3.model.Variable;
 import ai.maths.sat3.model.VariableOrBoolean;
 
@@ -30,42 +33,53 @@ public class ProbabilityClause {
                 (variableOrBoolean == TRUE_CONSTANT ? 1d : 0d);
     }
 
-    public double probabilityOfDisjunction(ThreeSatDisjunctClause threeSatDisjunctClause) {
-        if (threeSatDisjunctClause.simplify() == TRUE_CONSTANT) {
-            return 1;
+    public double probabilityOfClause(Clause clause) {
+        clause = clause.simplify();
+        if (clause instanceof SingletonClause<?>) {
+            return probabilityOfSingletonClause((SingletonClause<?>) clause);
         }
-        return threeSatDisjunctClause.getDisjuncts().stream()
+        if (clause instanceof DisjunctOfSingletons) {
+            return probabilityOfSingletonDisjunction((DisjunctOfSingletons) clause);
+        }
+        if (clause instanceof ConjunctOfSingletons) {
+            return probabilityOfSingletonConjuncts((ConjunctOfSingletons) clause);
+        }
+        if (clause instanceof DisjunctClause) {
+            return probabilityOfDisjuncts((DisjunctClause<?>) clause);
+        }
+        if (clause instanceof ConjunctClause) {
+            return probabilityOfConjuncts((ConjunctClause<?>) clause);
+        }
+        return 0;
+    }
+
+    private <X extends Clause> double probabilityOfDisjuncts(DisjunctClause<X> disjunctClause) {
+        Optional<X> disjunctOptional = disjunctClause.getDisjunctsStream().findAny();
+        if (disjunctOptional.isEmpty()) {
+            return 0;
+        }
+        X disjunct = disjunctOptional.get();
+        DisjunctClause<X> otherDisjunct = disjunctClause.getOtherDisjuncts(disjunct);
+        return probabilityOfClause(disjunct) + probabilityOfClause(otherDisjunct) - probabilityOfClause(otherDisjunct.addConjunct(disjunct));
+    }
+
+    private <X extends Clause> double probabilityOfConjuncts(ConjunctClause<X> conjunctClause) {
+        return probabilityOfClause(conjunctClause.makeAsDisjunct());
+    }
+
+    private double probabilityOfSingletonDisjunction(DisjunctOfSingletons disjunctOfSingletons) {
+        return disjunctOfSingletons.getDisjunctsStream()
                 .mapToDouble(this::probabilityOfSingletonClause)
                 .reduce(0, (probabilityTotal, probability) -> probability + (1 - probability) * probabilityTotal);
     }
 
-    public double probabilityOfTwoConjunctSingletonClause(SingletonClause<?> singletonClause1,
-            SingletonClause<?> singletonClause2) {
-        if (singletonClause1.isEqualNegated(singletonClause2)) {
-            return 0;
-        }
-        double probabilityClause1 = probabilityOfSingletonClause(singletonClause1);
-        if (singletonClause1.equals(singletonClause2)) {
-            return probabilityClause1;
-        }
-        double probabilityClause2 = probabilityOfSingletonClause(singletonClause2);
-        return probabilityClause1 * probabilityClause2;
+    private double probabilityOfSingletonConjuncts(ConjunctOfSingletons conjunctOfSingletons) {
+        return conjunctOfSingletons.getConjunctsStream()
+                .mapToDouble(this::probabilityOfSingletonClause)
+                .reduce(0, (probabilityTotal, probability) -> probability * probabilityTotal);
     }
 
-    public double probabilityOfTwoDisjunctSingletonClause(SingletonClause<?> singletonClause1,
-            SingletonClause<?> singletonClause2) {
-        if (singletonClause1.isEqualNegated(singletonClause2)) {
-            return 1;
-        }
-        double probabilityClause1 = probabilityOfSingletonClause(singletonClause1);
-        if (singletonClause1.equals(singletonClause2)) {
-            return probabilityClause1;
-        }
-        double probabilityClause2 = probabilityOfSingletonClause(singletonClause2);
-        return probabilityClause1 + probabilityClause2 - probabilityClause1 * probabilityClause2;
-    }
-
-    public double probabilityOfSingletonClause(SingletonClause<?> singletonClause) {
+    private double probabilityOfSingletonClause(SingletonClause<?> singletonClause) {
         return singletonClause instanceof NegateVariable ?
                 1 - probabilities.get(singletonClause.getVariableOrBoolean()) :
                 probabilities.get(singletonClause.getVariableOrBoolean());

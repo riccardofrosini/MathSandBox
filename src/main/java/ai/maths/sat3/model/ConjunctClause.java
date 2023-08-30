@@ -1,8 +1,13 @@
 package ai.maths.sat3.model;
 
+import static ai.maths.sat3.model.BooleanConstant.FALSE_CONSTANT;
+
+import java.util.HashSet;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class ConjunctClause<T extends Clause> implements Clause {
 
@@ -12,13 +17,60 @@ public class ConjunctClause<T extends Clause> implements Clause {
         this.conjuncts = conjuncts;
     }
 
-    public Set<T> getConjuncts() {
-        return conjuncts;
+    public Stream<T> getConjunctsStream() {
+        return conjuncts.stream();
     }
 
     @Override
     public Set<VariableOrBoolean> getAllVariablesAndConstants() {
-        return conjuncts.stream().flatMap(t -> t.getAllVariablesAndConstants().stream()).collect(Collectors.toSet());
+        return conjuncts.stream()
+                .flatMap(t -> t.getAllVariablesAndConstants().stream())
+                .collect(Collectors.toSet());
+    }
+
+    public ConjunctClause<T> getOtherConjuncts(T conjunct) {
+        HashSet<T> newConjuncts = new HashSet<>(this.conjuncts);
+        newConjuncts.remove(conjunct);
+        return new ConjunctClause<>(newConjuncts);
+    }
+
+    public Clause makeAsDisjunct() {
+        Optional<? extends T> disjunctClauseOptional = conjuncts.stream()
+                .filter(t -> t instanceof DisjunctClause).findFirst();
+        if (disjunctClauseOptional.isEmpty()) {
+            System.out.println("THE CODE SHOULD NEVER EVER ENTER HERE!");
+            return this.simplify();
+        }
+        ConjunctClause<?> otherConjuncts = getOtherConjuncts(disjunctClauseOptional.get());
+        DisjunctClause<?> disjunctClause = (DisjunctClause<?>) disjunctClauseOptional.get();
+        return disjunctClause.addConjunct(otherConjuncts);
+    }
+
+    @Override
+    public Clause simplify() {
+        if (this.conjuncts.size() == 1) {
+            return this.conjuncts.iterator().next().simplify();
+        }
+        Set<Clause> conjuncts = this.conjuncts.stream()
+                .filter(t -> !(t instanceof ConjunctClause))
+                .collect(Collectors.toSet());
+        conjuncts.addAll(this.conjuncts.stream()
+                .filter(t -> t instanceof ConjunctClause)
+                .flatMap(t -> ((ConjunctClause<?>) t).conjuncts.stream())
+                .collect(Collectors.toSet()));
+
+        Set<SingletonClause<?>> allSingletons = Clause.getAllSingletons(conjuncts);
+        if (allSingletons.contains(FALSE_CONSTANT) || Clause.areThereClashingVariables(allSingletons)) {
+            return FALSE_CONSTANT;
+        }
+        if (allSingletons.size() == conjuncts.size()) {
+            return new ConjunctOfSingletons(conjuncts.stream()
+                    .map(t -> (SingletonClause<?>) t).toArray(SingletonClause<?>[]::new));
+        }
+        if (conjuncts.size() == this.conjuncts.size()) {
+            return this;
+        }
+        return new ConjunctClause<>(conjuncts);
     }
 
     @Override

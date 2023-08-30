@@ -13,7 +13,8 @@ public class Main {
         Variable z = new Variable("z");
         NegateVariable nx = new NegateVariable(x);
         ThreeSatDisjunctClause clause = new ThreeSatDisjunctClause(x, y, z);
+        //ThreeSatConjunctClause clause = new ThreeSatConjunctClause(threeSatDisjunctClause);
         ProbabilityClause probabilityClause = new ProbabilityClause(clause);
-        System.out.println(probabilityClause.probabilityOfDisjunction(clause));
+        System.out.println(probabilityClause.probabilityOfClause(clause));
     }
 }
