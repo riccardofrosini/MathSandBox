@@ -32,7 +32,7 @@ public class ProbabilityClause {
     }
 
     private static double getDefaultProbability(VariableOrBoolean variableOrBoolean) {
-        return (variableOrBoolean instanceof Variable) ? 0.5 :
+        return (variableOrBoolean instanceof Variable) ? 0.5d :
                 (variableOrBoolean == TRUE_CONSTANT ? 1d : 0d);
     }
 
@@ -59,7 +59,7 @@ public class ProbabilityClause {
     private <X extends Clause> double probabilityOfDisjuncts(DisjunctClause<X> disjunctClause) {
         Optional<X> disjunctOptional = disjunctClause.getDisjunctsStream().findAny();
         if (disjunctOptional.isEmpty()) {
-            return 0;
+            return 0d;
         }
         X disjunct = disjunctOptional.get();
         Clause otherDisjunct = disjunctClause.getOtherDisjuncts(disjunct);
@@ -73,18 +73,18 @@ public class ProbabilityClause {
     private double probabilityOfSingletonDisjunction(DisjunctOfSingletons disjunctOfSingletons) {
         return disjunctOfSingletons.getDisjunctsStream()
                 .mapToDouble(this::probabilityOfSingletonClause)
-                .reduce(0, (probabilityTotal, probability) -> probability + (1 - probability) * probabilityTotal);
+                .reduce(0d, (probabilityTotal, probability) -> probability + (1 - probability) * probabilityTotal);
     }
 
     private double probabilityOfSingletonConjuncts(ConjunctOfSingletons conjunctOfSingletons) {
         return conjunctOfSingletons.getConjunctsStream()
                 .mapToDouble(this::probabilityOfSingletonClause)
-                .reduce(0, (probabilityTotal, probability) -> probability * probabilityTotal);
+                .reduce(1d, (probabilityTotal, probability) -> probability * probabilityTotal);
     }
 
     private double probabilityOfSingletonClause(SingletonClause<?> singletonClause) {
         return singletonClause instanceof NegateVariable ?
-                1 - probabilities.get(singletonClause.getVariableOrBoolean()) :
+                1d - probabilities.get(singletonClause.getVariableOrBoolean()) :
                 probabilities.get(singletonClause.getVariableOrBoolean());
     }
 }
