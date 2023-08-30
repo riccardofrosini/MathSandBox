@@ -48,25 +48,22 @@ public class ProbabilityClause {
 
     public double probabilityOfClause(Clause clause) {
         clause = clause.simplify();
+        double probability = 0;
         if (probabilitiesOfClauses.containsKey(clause)) {
-            return probabilitiesOfClauses.get(clause);
+            probability = probabilitiesOfClauses.get(clause);
+        } else if (clause instanceof SingletonClause<?>) {
+            probability = probabilityOfSingletonClause((SingletonClause<?>) clause);
+        } else if (clause instanceof DisjunctOfSingletons) {
+            probability = probabilityOfSingletonDisjunction((DisjunctOfSingletons) clause);
+        } else if (clause instanceof ConjunctOfSingletons) {
+            probability = probabilityOfSingletonConjuncts((ConjunctOfSingletons) clause);
+        } else if (clause instanceof DisjunctClause) {
+            probability = probabilityOfDisjuncts((DisjunctClause<?>) clause);
+        } else if (clause instanceof ConjunctClause) {
+            probability = probabilityOfConjuncts((ConjunctClause<?>) clause);
         }
-        if (clause instanceof SingletonClause<?>) {
-            return probabilityOfSingletonClause((SingletonClause<?>) clause);
-        }
-        if (clause instanceof DisjunctOfSingletons) {
-            return probabilityOfSingletonDisjunction((DisjunctOfSingletons) clause);
-        }
-        if (clause instanceof ConjunctOfSingletons) {
-            return probabilityOfSingletonConjuncts((ConjunctOfSingletons) clause);
-        }
-        if (clause instanceof DisjunctClause) {
-            probabilityOfDisjuncts((DisjunctClause<?>) clause);
-        }
-        if (clause instanceof ConjunctClause) {
-            return probabilityOfConjuncts((ConjunctClause<?>) clause);
-        }
-        return 0;
+        probabilitiesOfClauses.put(clause, probability);
+        return probability;
     }
 
     private <X extends Clause> double probabilityOfDisjuncts(DisjunctClause<X> disjunctClause) {
