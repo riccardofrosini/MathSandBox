@@ -4,7 +4,7 @@ import java.util.Set;
 
 public class ThreeSatConjunctClause extends ConjunctClause<ThreeSatDisjunctClause> {
 
-    public ThreeSatConjunctClause(ThreeSatDisjunctClause... clauses) {
-        super(Set.of(clauses));
+    public ThreeSatConjunctClause(ThreeSatDisjunctClause... conjuncts) {
+        super(Set.of(conjuncts));
     }
 }

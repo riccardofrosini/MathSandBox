@@ -10,10 +10,6 @@ public class Variable extends SingletonClause<Variable> implements VariableOrBoo
         this.name = name;
     }
 
-    public String getName() {
-        return name;
-    }
-
     @Override
     public Variable getVariableOrBoolean() {
         return this;

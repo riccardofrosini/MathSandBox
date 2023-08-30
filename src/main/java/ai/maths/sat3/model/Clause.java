@@ -10,6 +10,8 @@ public interface Clause {
 
     Clause simplify();
 
+    Clause addConjunct(Clause clause);
+
     static boolean areThereClashingVariables(Set<SingletonClause<?>> juncts) {
         return areThereClashingVariables(juncts.stream());
     }

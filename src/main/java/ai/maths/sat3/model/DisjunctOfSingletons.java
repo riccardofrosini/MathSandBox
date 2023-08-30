@@ -4,7 +4,7 @@ import java.util.Set;
 
 public class DisjunctOfSingletons extends DisjunctClause<SingletonClause<?>> {
 
-    protected DisjunctOfSingletons(SingletonClause<?>... disjuncts) {
-        super(Set.of(disjuncts));
+    public DisjunctOfSingletons(Set<SingletonClause<?>> disjuncts) {
+        super(disjuncts);
     }
 }

@@ -2,6 +2,7 @@ package ai.maths.sat3;
 
 import ai.maths.sat3.bayesian.ProbabilityClause;
 import ai.maths.sat3.model.NegateVariable;
+import ai.maths.sat3.model.ThreeSatConjunctClause;
 import ai.maths.sat3.model.ThreeSatDisjunctClause;
 import ai.maths.sat3.model.Variable;
 
@@ -12,8 +13,9 @@ public class Main {
         Variable y = new Variable("y");
         Variable z = new Variable("z");
         NegateVariable nx = new NegateVariable(x);
-        ThreeSatDisjunctClause clause = new ThreeSatDisjunctClause(x, y, z);
-        //ThreeSatConjunctClause clause = new ThreeSatConjunctClause(threeSatDisjunctClause);
+        ThreeSatDisjunctClause threeSatDisjunctClause1 = new ThreeSatDisjunctClause(x, y, z);
+        ThreeSatDisjunctClause threeSatDisjunctClause2 = new ThreeSatDisjunctClause(nx, y, z);
+        ThreeSatConjunctClause clause = new ThreeSatConjunctClause(threeSatDisjunctClause1, threeSatDisjunctClause2);
         ProbabilityClause probabilityClause = new ProbabilityClause(clause);
         System.out.println(probabilityClause.probabilityOfClause(clause));
     }

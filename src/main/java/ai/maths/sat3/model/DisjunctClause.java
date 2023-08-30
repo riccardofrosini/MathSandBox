@@ -1,7 +1,9 @@
 package ai.maths.sat3.model;
 
+import static ai.maths.sat3.model.BooleanConstant.FALSE_CONSTANT;
 import static ai.maths.sat3.model.BooleanConstant.TRUE_CONSTANT;
 
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
@@ -27,16 +29,17 @@ public class DisjunctClause<T extends Clause> implements Clause {
                 .collect(Collectors.toSet());
     }
 
-    public DisjunctClause<ConjunctClause<?>> addConjunct(Clause conjunct) {
+    @Override
+    public Clause addConjunct(Clause conjunct) {
         return new DisjunctClause<>(disjuncts.stream()
-                .map(t -> new ConjunctClause<>(Set.of(t, conjunct)))
-                .collect(Collectors.toSet()));
+                .map(t -> new ConjunctClause<>(Stream.of(t, conjunct).collect(Collectors.toUnmodifiableSet())).simplify())
+                .collect(Collectors.toUnmodifiableSet())).simplify();
     }
 
-    public DisjunctClause<T> getOtherDisjuncts(T disjunct) {
+    public Clause getOtherDisjuncts(T disjunct) {
         HashSet<T> newDisjuncts = new HashSet<>(this.disjuncts);
         newDisjuncts.remove(disjunct);
-        return new DisjunctClause<T>(newDisjuncts);
+        return new DisjunctClause<>(Collections.unmodifiableSet(newDisjuncts)).simplify();
     }
 
     @Override
@@ -45,11 +48,11 @@ public class DisjunctClause<T extends Clause> implements Clause {
             return this.disjuncts.iterator().next().simplify();
         }
         Set<Clause> disjuncts = this.disjuncts.stream()
-                .filter(t -> !(t instanceof DisjunctClause))
+                .filter(t -> !(t instanceof DisjunctClause) && !t.equals(FALSE_CONSTANT))
                 .collect(Collectors.toSet());
         disjuncts.addAll(this.disjuncts.stream()
                 .filter(t -> t instanceof DisjunctClause)
-                .flatMap(t -> ((DisjunctClause<?>) t).disjuncts.stream())
+                .flatMap(t -> ((DisjunctClause<?>) t).disjuncts.stream().filter(clause -> !clause.equals(FALSE_CONSTANT)))
                 .collect(Collectors.toSet()));
 
         Set<SingletonClause<?>> allSingletons = Clause.getAllSingletons(disjuncts);
@@ -58,12 +61,12 @@ public class DisjunctClause<T extends Clause> implements Clause {
         }
         if (allSingletons.size() == disjuncts.size()) {
             return new DisjunctOfSingletons(disjuncts.stream()
-                    .map(t -> (SingletonClause<?>) t).toArray(SingletonClause<?>[]::new));
+                    .map(t -> (SingletonClause<?>) t).collect(Collectors.toSet()));
         }
         if (disjuncts.size() == this.disjuncts.size()) {
             return this;
         }
-        return new ConjunctClause<>(disjuncts);
+        return new DisjunctClause<>(Collections.unmodifiableSet(disjuncts)).simplify();
     }
 
     @Override

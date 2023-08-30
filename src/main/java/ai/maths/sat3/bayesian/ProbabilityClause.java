@@ -1,5 +1,6 @@
 package ai.maths.sat3.bayesian;
 
+import static ai.maths.sat3.model.BooleanConstant.FALSE_CONSTANT;
 import static ai.maths.sat3.model.BooleanConstant.TRUE_CONSTANT;
 
 import java.util.Map;
@@ -19,10 +20,12 @@ import ai.maths.sat3.model.VariableOrBoolean;
 
 public class ProbabilityClause {
 
-    private Map<VariableOrBoolean, Double> probabilities;
+    private final Map<VariableOrBoolean, Double> probabilities;
 
     public ProbabilityClause(Clause clause) {
         Set<VariableOrBoolean> variableOrBooleanSet = clause.getAllVariablesAndConstants();
+        variableOrBooleanSet.add(TRUE_CONSTANT);
+        variableOrBooleanSet.add(FALSE_CONSTANT);
         probabilities = variableOrBooleanSet.stream()
                 .collect(Collectors.toMap(variableOrBoolean -> variableOrBoolean,
                         ProbabilityClause::getDefaultProbability));
@@ -59,7 +62,7 @@ public class ProbabilityClause {
             return 0;
         }
         X disjunct = disjunctOptional.get();
-        DisjunctClause<X> otherDisjunct = disjunctClause.getOtherDisjuncts(disjunct);
+        Clause otherDisjunct = disjunctClause.getOtherDisjuncts(disjunct);
         return probabilityOfClause(disjunct) + probabilityOfClause(otherDisjunct) - probabilityOfClause(otherDisjunct.addConjunct(disjunct));
     }
 
