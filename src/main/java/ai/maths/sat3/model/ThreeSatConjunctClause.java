@@ -1,10 +1,11 @@
 package ai.maths.sat3.model;
 
-import java.util.Set;
+import java.util.Arrays;
+import java.util.stream.Collectors;
 
 public class ThreeSatConjunctClause extends ConjunctClause<ThreeSatDisjunctClause> {
 
     public ThreeSatConjunctClause(ThreeSatDisjunctClause... conjuncts) {
-        super(Set.of(conjuncts));
+        super(Arrays.stream(conjuncts).collect(Collectors.toUnmodifiableSet()));
     }
 }

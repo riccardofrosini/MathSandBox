@@ -3,6 +3,7 @@ package ai.maths.sat3.bayesian;
 import static ai.maths.sat3.model.BooleanConstant.FALSE_CONSTANT;
 import static ai.maths.sat3.model.BooleanConstant.TRUE_CONSTANT;
 
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
@@ -15,12 +16,15 @@ import ai.maths.sat3.model.DisjunctClause;
 import ai.maths.sat3.model.DisjunctOfSingletons;
 import ai.maths.sat3.model.NegateVariable;
 import ai.maths.sat3.model.SingletonClause;
+import ai.maths.sat3.model.ThreeSatConjunctClause;
+import ai.maths.sat3.model.ThreeSatDisjunctClause;
 import ai.maths.sat3.model.Variable;
 import ai.maths.sat3.model.VariableOrBoolean;
 
 public class ProbabilityClause {
 
     private final Map<VariableOrBoolean, Double> probabilities;
+    private final Map<Clause, Double> probabilitiesOfClauses;
 
     public ProbabilityClause(Clause clause) {
         Set<VariableOrBoolean> variableOrBooleanSet = clause.getAllVariablesAndConstants();
@@ -29,6 +33,7 @@ public class ProbabilityClause {
         probabilities = variableOrBooleanSet.stream()
                 .collect(Collectors.toMap(variableOrBoolean -> variableOrBoolean,
                         ProbabilityClause::getDefaultProbability));
+        probabilitiesOfClauses = new HashMap<>();
     }
 
     private static double getDefaultProbability(VariableOrBoolean variableOrBoolean) {
@@ -36,8 +41,16 @@ public class ProbabilityClause {
                 (variableOrBoolean == TRUE_CONSTANT ? 1d : 0d);
     }
 
+    public double probabilityOfGiven(ThreeSatDisjunctClause threeSatDisjunctClause, ThreeSatDisjunctClause givenThreeSatDisjunctClause) {
+        return probabilityOfClause(new ThreeSatConjunctClause(threeSatDisjunctClause, givenThreeSatDisjunctClause))
+                / probabilityOfClause(givenThreeSatDisjunctClause);
+    }
+
     public double probabilityOfClause(Clause clause) {
         clause = clause.simplify();
+        if (probabilitiesOfClauses.containsKey(clause)) {
+            return probabilitiesOfClauses.get(clause);
+        }
         if (clause instanceof SingletonClause<?>) {
             return probabilityOfSingletonClause((SingletonClause<?>) clause);
         }
@@ -48,7 +61,7 @@ public class ProbabilityClause {
             return probabilityOfSingletonConjuncts((ConjunctOfSingletons) clause);
         }
         if (clause instanceof DisjunctClause) {
-            return probabilityOfDisjuncts((DisjunctClause<?>) clause);
+            probabilityOfDisjuncts((DisjunctClause<?>) clause);
         }
         if (clause instanceof ConjunctClause) {
             return probabilityOfConjuncts((ConjunctClause<?>) clause);
