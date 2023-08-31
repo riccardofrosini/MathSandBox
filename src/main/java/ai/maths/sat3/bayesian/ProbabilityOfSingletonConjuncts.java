@@ -1,10 +1,9 @@
-package ai.maths.sat3.algebraic;
+package ai.maths.sat3.bayesian;
 
 import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import ai.maths.sat3.bayesian.ProbabilityClause;
 import ai.maths.sat3.model.ConjunctOfSingletons;
 
 public class ProbabilityOfSingletonConjuncts extends ProbabilityOfClause<ConjunctOfSingletons> {

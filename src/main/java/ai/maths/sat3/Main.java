@@ -1,7 +1,7 @@
 package ai.maths.sat3;
 
-import ai.maths.sat3.algebraic.ProbabilityOfClause;
 import ai.maths.sat3.bayesian.ProbabilityClause;
+import ai.maths.sat3.bayesian.ProbabilityOfClause;
 import ai.maths.sat3.model.NegateVariable;
 import ai.maths.sat3.model.ThreeSatConjunctClause;
 import ai.maths.sat3.model.ThreeSatDisjunctClause;

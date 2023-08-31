@@ -1,8 +1,7 @@
-package ai.maths.sat3.algebraic;
+package ai.maths.sat3.bayesian;
 
 import static ai.maths.sat3.model.BooleanConstant.TRUE_CONSTANT;
 
-import ai.maths.sat3.bayesian.ProbabilityClause;
 import ai.maths.sat3.model.NegateVariable;
 import ai.maths.sat3.model.SingletonClause;
 import ai.maths.sat3.model.Variable;

@@ -1,9 +1,8 @@
-package ai.maths.sat3.algebraic;
+package ai.maths.sat3.bayesian;
 
 import java.util.Objects;
 import java.util.function.Function;
 
-import ai.maths.sat3.bayesian.ProbabilityClause;
 import ai.maths.sat3.model.Clause;
 import ai.maths.sat3.model.ConjunctClause;
 import ai.maths.sat3.model.ConjunctOfSingletons;
