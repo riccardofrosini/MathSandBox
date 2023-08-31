@@ -30,6 +30,10 @@ public class ConjunctClause<T extends Clause> implements Clause {
                 .collect(Collectors.toSet());
     }
 
+    public int size() {
+        return conjuncts.size();
+    }
+
     public Clause getOtherConjuncts(T conjunct) {
         HashSet<T> newConjuncts = new HashSet<>(this.conjuncts);
         newConjuncts.remove(conjunct);
@@ -50,15 +54,15 @@ public class ConjunctClause<T extends Clause> implements Clause {
             System.out.println("THE CODE SHOULD NEVER EVER ENTER HERE!");
             return this.simplify();
         }
-        Clause otherConjuncts = getOtherConjuncts(disjunctClauseOptional.get());
         DisjunctClause<?> disjunctClause = (DisjunctClause<?>) disjunctClauseOptional.get();
+        Clause otherConjuncts = getOtherConjuncts(disjunctClauseOptional.get());
         return disjunctClause.addConjunct(otherConjuncts);
     }
 
     @Override
     public Clause simplify() {
         if (this.conjuncts.size() == 1) {
-            return this.conjuncts.iterator().next().simplify();
+            return this.conjuncts.iterator().next();
         }
         Set<Clause> conjuncts = this.conjuncts.stream()
                 .filter(t -> !(t instanceof ConjunctClause) && !t.equals(TRUE_CONSTANT))
@@ -67,7 +71,6 @@ public class ConjunctClause<T extends Clause> implements Clause {
                 .filter(t -> t instanceof ConjunctClause)
                 .flatMap(t -> ((ConjunctClause<?>) t).conjuncts.stream().filter(clause -> !clause.equals(TRUE_CONSTANT)))
                 .collect(Collectors.toSet()));
-
         Set<SingletonClause<?>> allSingletons = Clause.getAllSingletons(conjuncts);
         if (allSingletons.contains(FALSE_CONSTANT) || Clause.areThereClashingVariables(allSingletons)) {
             return FALSE_CONSTANT;
@@ -76,7 +79,7 @@ public class ConjunctClause<T extends Clause> implements Clause {
             return new ConjunctOfSingletons(conjuncts.stream()
                     .map(t -> (SingletonClause<?>) t).collect(Collectors.toSet()));
         }
-        if (conjuncts.size() == this.conjuncts.size()) {
+        if (conjuncts.equals(this.conjuncts)) {
             return this;
         }
         return new ConjunctClause<>(Collections.unmodifiableSet(conjuncts)).simplify();
@@ -96,7 +99,7 @@ public class ConjunctClause<T extends Clause> implements Clause {
 
     @Override
     public int hashCode() {
-        return Objects.hash(conjuncts);
+        return -Objects.hash(conjuncts);
     }
 
     @Override

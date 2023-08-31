@@ -29,6 +29,10 @@ public class DisjunctClause<T extends Clause> implements Clause {
                 .collect(Collectors.toSet());
     }
 
+    public int size() {
+        return disjuncts.size();
+    }
+
     @Override
     public Clause addConjunct(Clause conjunct) {
         return new DisjunctClause<>(disjuncts.stream()
@@ -45,7 +49,7 @@ public class DisjunctClause<T extends Clause> implements Clause {
     @Override
     public Clause simplify() {
         if (this.disjuncts.size() == 1) {
-            return this.disjuncts.iterator().next().simplify();
+            return this.disjuncts.iterator().next();
         }
         Set<Clause> disjuncts = this.disjuncts.stream()
                 .filter(t -> !(t instanceof DisjunctClause) && !t.equals(FALSE_CONSTANT))
@@ -63,7 +67,7 @@ public class DisjunctClause<T extends Clause> implements Clause {
             return new DisjunctOfSingletons(disjuncts.stream()
                     .map(t -> (SingletonClause<?>) t).collect(Collectors.toSet()));
         }
-        if (disjuncts.size() == this.disjuncts.size()) {
+        if (disjuncts.equals(this.disjuncts.size())) {
             return this;
         }
         return new DisjunctClause<>(Collections.unmodifiableSet(disjuncts)).simplify();

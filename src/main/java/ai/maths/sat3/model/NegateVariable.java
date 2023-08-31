@@ -29,7 +29,7 @@ public class NegateVariable extends SingletonClause<Variable> {
 
     @Override
     public int hashCode() {
-        return Objects.hash(variable);
+        return -Objects.hash(variable);
     }
 
     @Override

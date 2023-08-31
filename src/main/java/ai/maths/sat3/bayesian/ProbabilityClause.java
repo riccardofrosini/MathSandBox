@@ -47,7 +47,6 @@ public class ProbabilityClause {
     }
 
     public double probabilityOfClause(Clause clause) {
-        clause = clause.simplify();
         double probability = 0;
         if (probabilitiesOfClauses.containsKey(clause)) {
             probability = probabilitiesOfClauses.get(clause);

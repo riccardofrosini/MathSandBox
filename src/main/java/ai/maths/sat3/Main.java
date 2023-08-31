@@ -1,5 +1,6 @@
 package ai.maths.sat3;
 
+import ai.maths.sat3.algebraic.ProbabilityOfClause;
 import ai.maths.sat3.bayesian.ProbabilityClause;
 import ai.maths.sat3.model.NegateVariable;
 import ai.maths.sat3.model.ThreeSatConjunctClause;
@@ -18,16 +19,27 @@ public class Main {
         NegateVariable nx = new NegateVariable(x);
         NegateVariable ny = new NegateVariable(y);
         NegateVariable nz = new NegateVariable(z);
-        probGiven(new ThreeSatDisjunctClause(x, y, z), new ThreeSatDisjunctClause(x, y, z));
-        probGiven(new ThreeSatDisjunctClause(x, y, z), new ThreeSatDisjunctClause(x, y, u));
-        probGiven(new ThreeSatDisjunctClause(x, y, z), new ThreeSatDisjunctClause(x, u, v));
-        probGiven(new ThreeSatDisjunctClause(x, y, z), new ThreeSatDisjunctClause(u, v, w));
-        probGiven(new ThreeSatDisjunctClause(x, y, z), new ThreeSatDisjunctClause(nx, y, z));
-        probGiven(new ThreeSatDisjunctClause(x, y, z), new ThreeSatDisjunctClause(nx, ny, z));
-        probGiven(new ThreeSatDisjunctClause(x, y, z), new ThreeSatDisjunctClause(nx, ny, nz));
-        probGiven(new ThreeSatDisjunctClause(x, y, z), new ThreeSatDisjunctClause(nx, y, u));
-        probGiven(new ThreeSatDisjunctClause(x, y, z), new ThreeSatDisjunctClause(nx, ny, u));
-        probGiven(new ThreeSatDisjunctClause(x, y, z), new ThreeSatDisjunctClause(nx, u, v));
+        //probGiven(new ThreeSatDisjunctClause(x, y, z), new ThreeSatDisjunctClause(x, y, z));
+        //probGiven(new ThreeSatDisjunctClause(x, y, z), new ThreeSatDisjunctClause(x, y, u));
+        //probGiven(new ThreeSatDisjunctClause(x, y, z), new ThreeSatDisjunctClause(x, u, v));
+        //probGiven(new ThreeSatDisjunctClause(x, y, z), new ThreeSatDisjunctClause(u, v, w));
+        //probGiven(new ThreeSatDisjunctClause(x, y, z), new ThreeSatDisjunctClause(nx, y, z));
+        //probGiven(new ThreeSatDisjunctClause(x, y, z), new ThreeSatDisjunctClause(nx, ny, z));
+        //probGiven(new ThreeSatDisjunctClause(x, y, z), new ThreeSatDisjunctClause(nx, ny, nz));
+        //probGiven(new ThreeSatDisjunctClause(x, y, z), new ThreeSatDisjunctClause(nx, y, u));
+        //probGiven(new ThreeSatDisjunctClause(x, y, z), new ThreeSatDisjunctClause(nx, ny, u));
+        //probGiven(new ThreeSatDisjunctClause(x, y, z), new ThreeSatDisjunctClause(nx, u, v));
+
+        System.out.println(ProbabilityOfClause.probabilityOfIntersection(new ThreeSatDisjunctClause(x, y, z), new ThreeSatDisjunctClause(x, y, z)));
+        //System.out.println(ProbabilityOfClause.probabilityOfIntersection(new ThreeSatDisjunctClause(x, y, z), new ThreeSatDisjunctClause(x, y, u)));
+        //System.out.println(ProbabilityOfClause.probabilityOfIntersection(new ThreeSatDisjunctClause(x, y, z), new ThreeSatDisjunctClause(x, u, v)));
+        //System.out.println(ProbabilityOfClause.probabilityOfIntersection(new ThreeSatDisjunctClause(x, y, z), new ThreeSatDisjunctClause(u, v, w)));
+        //System.out.println(ProbabilityOfClause.probabilityOfIntersection(new ThreeSatDisjunctClause(x, y, z), new ThreeSatDisjunctClause(nx, y, z)));
+        //System.out.println(ProbabilityOfClause.probabilityOfIntersection(new ThreeSatDisjunctClause(x, y, z), new ThreeSatDisjunctClause(nx, ny, z)));
+        //System.out.println(ProbabilityOfClause.probabilityOfIntersection(new ThreeSatDisjunctClause(x, y, z), new ThreeSatDisjunctClause(nx, ny, nz)));
+        //System.out.println(ProbabilityOfClause.probabilityOfIntersection(new ThreeSatDisjunctClause(x, y, z), new ThreeSatDisjunctClause(nx, y, u)));
+        //System.out.println(ProbabilityOfClause.probabilityOfIntersection(new ThreeSatDisjunctClause(x, y, z), new ThreeSatDisjunctClause(nx, ny, u)));
+        //System.out.println(ProbabilityOfClause.probabilityOfIntersection(new ThreeSatDisjunctClause(x, y, z), new ThreeSatDisjunctClause(nx, u, v)));
     }
 
     private static void probGiven(ThreeSatDisjunctClause threeSatDisjunctClause1, ThreeSatDisjunctClause threeSatDisjunctClause2) {
