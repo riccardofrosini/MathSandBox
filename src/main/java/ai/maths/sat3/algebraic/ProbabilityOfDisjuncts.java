@@ -9,9 +9,9 @@ import ai.maths.sat3.model.DisjunctClause;
 
 public class ProbabilityOfDisjuncts<T extends Clause> extends ProbabilityOfClause<DisjunctClause<T>> {
 
-    private ProbabilityOfClause<?> probabilityOfClauses1;
-    private ProbabilityOfClause<?> probabilityOfClauses2;
-    private ProbabilityOfClause<?> intersection;
+    private final ProbabilityOfClause<?> probabilityOfClauses1;
+    private final ProbabilityOfClause<?> probabilityOfClauses2;
+    private final ProbabilityOfClause<?> intersection;
 
     protected ProbabilityOfDisjuncts(DisjunctClause<T> clause) {
         super(clause);
@@ -21,6 +21,16 @@ public class ProbabilityOfDisjuncts<T extends Clause> extends ProbabilityOfClaus
         probabilityOfClauses1 = ProbabilityOfClause.buildProbabilityOfClause(disjunct);
         probabilityOfClauses2 = ProbabilityOfClause.buildProbabilityOfClause(otherDisjuncts);
         intersection = ProbabilityOfClause.probabilityOfIntersection(disjunct, otherDisjuncts);
+    }
+
+    public ProbabilityOfClause<?> simplify() {
+        if (probabilityOfClauses1.equals(intersection)) {
+            return probabilityOfClauses1;
+        }
+        if (probabilityOfClauses2.equals(intersection)) {
+            return probabilityOfClauses2;
+        }
+        return this;
     }
 
     @Override

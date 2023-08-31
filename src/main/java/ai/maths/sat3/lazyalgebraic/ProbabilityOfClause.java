@@ -1,4 +1,4 @@
-package ai.maths.sat3.algebraic;
+package ai.maths.sat3.lazyalgebraic;
 
 import java.util.Objects;
 import java.util.function.Function;
@@ -18,12 +18,12 @@ public abstract class ProbabilityOfClause<T extends Clause> implements Function<
         this.clause = clause;
     }
 
-    public T getClause() {
-        return clause;
-    }
-
     public static ProbabilityOfClause<?> probabilityOfIntersection(Clause clause1, Clause clause2) {
         return buildProbabilityOfClause(clause1.addConjunct(clause2));
+    }
+
+    public T getClause() {
+        return clause;
     }
 
     public static ProbabilityOfClause<?> buildProbabilityOfClause(Clause clause) {
@@ -31,7 +31,7 @@ public abstract class ProbabilityOfClause<T extends Clause> implements Function<
             return new ProbabilityOfSingleton((SingletonClause<?>) clause);
         }
         if (clause instanceof DisjunctClause) {
-            return new ProbabilityOfDisjuncts<>((DisjunctClause<?>) clause).simplify();
+            return new ProbabilityOfDisjuncts<>((DisjunctClause<?>) clause);
         }
         if (clause instanceof ConjunctClause) {
             if (clause instanceof ConjunctOfSingletons) {

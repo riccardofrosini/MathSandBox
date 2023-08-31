@@ -1,7 +1,7 @@
 package ai.maths.sat3;
 
-import ai.maths.sat3.algebraic.ProbabilityOfClause;
 import ai.maths.sat3.bayesian.ProbabilityClause;
+import ai.maths.sat3.lazyalgebraic.ProbabilityOfClause;
 import ai.maths.sat3.model.NegateVariable;
 import ai.maths.sat3.model.ThreeSatConjunctClause;
 import ai.maths.sat3.model.ThreeSatDisjunctClause;
@@ -40,6 +40,16 @@ public class Main {
         ProbabilityOfClause<?> probabilityOfClause8 = ProbabilityOfClause.probabilityOfIntersection(new ThreeSatDisjunctClause(x, y, z), new ThreeSatDisjunctClause(nx, y, u));
         ProbabilityOfClause<?> probabilityOfClause9 = ProbabilityOfClause.probabilityOfIntersection(new ThreeSatDisjunctClause(x, y, z), new ThreeSatDisjunctClause(nx, ny, u));
         ProbabilityOfClause<?> probabilityOfClause10 = ProbabilityOfClause.probabilityOfIntersection(new ThreeSatDisjunctClause(x, y, z), new ThreeSatDisjunctClause(nx, u, v));
+        System.out.println(probabilityOfClause1);
+        System.out.println(probabilityOfClause2);
+        System.out.println(probabilityOfClause3);
+        System.out.println(probabilityOfClause4);
+        System.out.println(probabilityOfClause5);
+        System.out.println(probabilityOfClause6);
+        System.out.println(probabilityOfClause7);
+        System.out.println(probabilityOfClause8);
+        System.out.println(probabilityOfClause9);
+        System.out.println(probabilityOfClause10);
         System.out.println(probabilityOfClause1.apply(new ProbabilityClause(probabilityOfClause1.getClause())));
         System.out.println(probabilityOfClause2.apply(new ProbabilityClause(probabilityOfClause2.getClause())));
         System.out.println(probabilityOfClause3.apply(new ProbabilityClause(probabilityOfClause3.getClause())));

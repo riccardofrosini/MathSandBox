@@ -1,4 +1,4 @@
-package ai.maths.sat3.algebraic;
+package ai.maths.sat3.lazyalgebraic;
 
 import java.util.Objects;
 import java.util.Set;
@@ -6,24 +6,27 @@ import java.util.stream.Collectors;
 
 import ai.maths.sat3.bayesian.ProbabilityClause;
 import ai.maths.sat3.model.ConjunctOfSingletons;
+import ai.maths.sat3.model.SingletonClause;
 
 public class ProbabilityOfSingletonConjuncts extends ProbabilityOfClause<ConjunctOfSingletons> {
 
-    private final Set<ProbabilityOfSingleton> probabilityOfSingletons;
+    private final Set<SingletonClause<?>> singletonClauses;
 
     protected ProbabilityOfSingletonConjuncts(ConjunctOfSingletons clause) {
         super(clause);
-        probabilityOfSingletons = clause.getConjunctsStream().map(ProbabilityOfSingleton::new).collect(Collectors.toUnmodifiableSet());
+        singletonClauses = clause.getConjunctsStream().collect(Collectors.toUnmodifiableSet());
     }
 
     @Override
     public Double apply(ProbabilityClause probabilityClause) {
-        return probabilityOfSingletons.stream().mapToDouble(value -> value.apply(probabilityClause)).reduce(1, (left, right) -> left * right);
+        return singletonClauses.stream()
+                .mapToDouble(value -> ProbabilityOfClause.buildProbabilityOfClause(value).apply(probabilityClause))
+                .reduce(1, (left, right) -> left * right);
     }
 
     @Override
     public String toString() {
-        return probabilityOfSingletons.stream().map(ProbabilityOfSingleton::toString).collect(Collectors.joining("*"));
+        return singletonClauses.stream().map(singletonClause -> "P(" + singletonClause + ")").collect(Collectors.joining("*"));
     }
 
     @Override
@@ -38,11 +41,11 @@ public class ProbabilityOfSingletonConjuncts extends ProbabilityOfClause<Conjunc
             return false;
         }
         ProbabilityOfSingletonConjuncts that = (ProbabilityOfSingletonConjuncts) o;
-        return probabilityOfSingletons.equals(that.probabilityOfSingletons);
+        return singletonClauses.equals(that.singletonClauses);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(super.hashCode(), probabilityOfSingletons);
+        return Objects.hash(super.hashCode(), singletonClauses);
     }
 }
