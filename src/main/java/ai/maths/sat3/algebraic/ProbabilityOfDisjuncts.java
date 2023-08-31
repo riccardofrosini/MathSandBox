@@ -1,5 +1,6 @@
 package ai.maths.sat3.algebraic;
 
+import java.util.Objects;
 import java.util.Optional;
 
 import ai.maths.sat3.bayesian.ProbabilityClause;
@@ -29,9 +30,28 @@ public class ProbabilityOfDisjuncts<T extends Clause> extends ProbabilityOfClaus
                 intersection.apply(probabilityClause);
     }
 
-
     @Override
     public String toString() {
         return "(" + probabilityOfClauses1 + "+" + probabilityOfClauses2 + "-" + intersection + ")";
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        if (!super.equals(o)) {
+            return false;
+        }
+        ProbabilityOfDisjuncts<?> that = (ProbabilityOfDisjuncts<?>) o;
+        return probabilityOfClauses1.equals(that.probabilityOfClauses1) && probabilityOfClauses2.equals(that.probabilityOfClauses2) && intersection.equals(that.intersection);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(super.hashCode(), probabilityOfClauses1, probabilityOfClauses2, intersection);
     }
 }

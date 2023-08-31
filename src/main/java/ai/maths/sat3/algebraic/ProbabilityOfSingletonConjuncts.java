@@ -1,5 +1,6 @@
 package ai.maths.sat3.algebraic;
 
+import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -22,6 +23,26 @@ public class ProbabilityOfSingletonConjuncts extends ProbabilityOfClause<Conjunc
 
     @Override
     public String toString() {
-        return probabilityOfSingletons.stream().map(ProbabilityOfSingleton::toString).collect(Collectors.joining("*", "(", ")"));
+        return probabilityOfSingletons.stream().map(ProbabilityOfSingleton::toString).collect(Collectors.joining("*"));
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        if (!super.equals(o)) {
+            return false;
+        }
+        ProbabilityOfSingletonConjuncts that = (ProbabilityOfSingletonConjuncts) o;
+        return probabilityOfSingletons.equals(that.probabilityOfSingletons);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(super.hashCode(), probabilityOfSingletons);
     }
 }

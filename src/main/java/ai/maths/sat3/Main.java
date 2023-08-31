@@ -30,16 +30,26 @@ public class Main {
         probGiven(new ThreeSatDisjunctClause(x, y, z), new ThreeSatDisjunctClause(nx, ny, u));
         probGiven(new ThreeSatDisjunctClause(x, y, z), new ThreeSatDisjunctClause(nx, u, v));
 
-        System.out.println(ProbabilityOfClause.probabilityOfIntersection(new ThreeSatDisjunctClause(x, y, z), new ThreeSatDisjunctClause(x, y, z)));
-        System.out.println(ProbabilityOfClause.probabilityOfIntersection(new ThreeSatDisjunctClause(x, y, z), new ThreeSatDisjunctClause(x, y, u)));
-        System.out.println(ProbabilityOfClause.probabilityOfIntersection(new ThreeSatDisjunctClause(x, y, z), new ThreeSatDisjunctClause(x, u, v)));
-        System.out.println(ProbabilityOfClause.probabilityOfIntersection(new ThreeSatDisjunctClause(x, y, z), new ThreeSatDisjunctClause(u, v, w)));
-        System.out.println(ProbabilityOfClause.probabilityOfIntersection(new ThreeSatDisjunctClause(x, y, z), new ThreeSatDisjunctClause(nx, y, z)));
-        System.out.println(ProbabilityOfClause.probabilityOfIntersection(new ThreeSatDisjunctClause(x, y, z), new ThreeSatDisjunctClause(nx, ny, z)));
-        System.out.println(ProbabilityOfClause.probabilityOfIntersection(new ThreeSatDisjunctClause(x, y, z), new ThreeSatDisjunctClause(nx, ny, nz)));
-        System.out.println(ProbabilityOfClause.probabilityOfIntersection(new ThreeSatDisjunctClause(x, y, z), new ThreeSatDisjunctClause(nx, y, u)));
-        System.out.println(ProbabilityOfClause.probabilityOfIntersection(new ThreeSatDisjunctClause(x, y, z), new ThreeSatDisjunctClause(nx, ny, u)));
-        System.out.println(ProbabilityOfClause.probabilityOfIntersection(new ThreeSatDisjunctClause(x, y, z), new ThreeSatDisjunctClause(nx, u, v)));
+        ProbabilityOfClause<?> probabilityOfClause1 = ProbabilityOfClause.probabilityOfIntersection(new ThreeSatDisjunctClause(x, y, z), new ThreeSatDisjunctClause(x, y, z));
+        ProbabilityOfClause<?> probabilityOfClause2 = ProbabilityOfClause.probabilityOfIntersection(new ThreeSatDisjunctClause(x, y, z), new ThreeSatDisjunctClause(x, y, u));
+        ProbabilityOfClause<?> probabilityOfClause3 = ProbabilityOfClause.probabilityOfIntersection(new ThreeSatDisjunctClause(x, y, z), new ThreeSatDisjunctClause(x, u, v));
+        ProbabilityOfClause<?> probabilityOfClause4 = ProbabilityOfClause.probabilityOfIntersection(new ThreeSatDisjunctClause(x, y, z), new ThreeSatDisjunctClause(u, v, w));
+        ProbabilityOfClause<?> probabilityOfClause5 = ProbabilityOfClause.probabilityOfIntersection(new ThreeSatDisjunctClause(x, y, z), new ThreeSatDisjunctClause(nx, y, z));
+        ProbabilityOfClause<?> probabilityOfClause6 = ProbabilityOfClause.probabilityOfIntersection(new ThreeSatDisjunctClause(x, y, z), new ThreeSatDisjunctClause(nx, ny, z));
+        ProbabilityOfClause<?> probabilityOfClause7 = ProbabilityOfClause.probabilityOfIntersection(new ThreeSatDisjunctClause(x, y, z), new ThreeSatDisjunctClause(nx, ny, nz));
+        ProbabilityOfClause<?> probabilityOfClause8 = ProbabilityOfClause.probabilityOfIntersection(new ThreeSatDisjunctClause(x, y, z), new ThreeSatDisjunctClause(nx, y, u));
+        ProbabilityOfClause<?> probabilityOfClause9 = ProbabilityOfClause.probabilityOfIntersection(new ThreeSatDisjunctClause(x, y, z), new ThreeSatDisjunctClause(nx, ny, u));
+        ProbabilityOfClause<?> probabilityOfClause10 = ProbabilityOfClause.probabilityOfIntersection(new ThreeSatDisjunctClause(x, y, z), new ThreeSatDisjunctClause(nx, u, v));
+        System.out.println(probabilityOfClause1.apply(new ProbabilityClause(probabilityOfClause1.getClause())));
+        System.out.println(probabilityOfClause2.apply(new ProbabilityClause(probabilityOfClause2.getClause())));
+        System.out.println(probabilityOfClause3.apply(new ProbabilityClause(probabilityOfClause3.getClause())));
+        System.out.println(probabilityOfClause4.apply(new ProbabilityClause(probabilityOfClause4.getClause())));
+        System.out.println(probabilityOfClause5.apply(new ProbabilityClause(probabilityOfClause5.getClause())));
+        System.out.println(probabilityOfClause6.apply(new ProbabilityClause(probabilityOfClause6.getClause())));
+        System.out.println(probabilityOfClause7.apply(new ProbabilityClause(probabilityOfClause7.getClause())));
+        System.out.println(probabilityOfClause8.apply(new ProbabilityClause(probabilityOfClause8.getClause())));
+        System.out.println(probabilityOfClause9.apply(new ProbabilityClause(probabilityOfClause9.getClause())));
+        System.out.println(probabilityOfClause10.apply(new ProbabilityClause(probabilityOfClause10.getClause())));
     }
 
     private static void probGiven(ThreeSatDisjunctClause threeSatDisjunctClause1, ThreeSatDisjunctClause threeSatDisjunctClause2) {

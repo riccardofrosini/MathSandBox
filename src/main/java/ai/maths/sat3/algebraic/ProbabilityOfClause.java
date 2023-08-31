@@ -1,5 +1,6 @@
 package ai.maths.sat3.algebraic;
 
+import java.util.Objects;
 import java.util.function.Function;
 
 import ai.maths.sat3.bayesian.ProbabilityClause;
@@ -15,6 +16,10 @@ public abstract class ProbabilityOfClause<T extends Clause> implements Function<
 
     protected ProbabilityOfClause(T clause) {
         this.clause = clause;
+    }
+
+    public T getClause() {
+        return clause;
     }
 
     public static ProbabilityOfClause<?> probabilityOfIntersection(Clause clause1, Clause clause2) {
@@ -41,5 +46,22 @@ public abstract class ProbabilityOfClause<T extends Clause> implements Function<
             return buildProbabilityOfClause(((ConjunctClause<?>) clause).makeAsDisjunct());
         }
         return null;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        ProbabilityOfClause<?> that = (ProbabilityOfClause<?>) o;
+        return clause.equals(that.clause);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(clause);
     }
 }
