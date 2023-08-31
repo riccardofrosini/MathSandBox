@@ -25,10 +25,10 @@ public class ProbabilityOfDisjuncts<T extends Clause> extends ProbabilityOfClaus
 
     public ProbabilityOfClause<?> simplify() {
         if (probabilityOfClauses1.equals(intersection)) {
-            return probabilityOfClauses1;
+            return probabilityOfClauses2;
         }
         if (probabilityOfClauses2.equals(intersection)) {
-            return probabilityOfClauses2;
+            return probabilityOfClauses1;
         }
         return this;
     }
