@@ -58,7 +58,6 @@ public class DisjunctClause<T extends Clause> implements Clause {
                 .filter(t -> t instanceof DisjunctClause)
                 .flatMap(t -> ((DisjunctClause<?>) t).disjuncts.stream().filter(clause -> !clause.equals(FALSE_CONSTANT)))
                 .collect(Collectors.toSet()));
-
         Set<SingletonClause<?>> allSingletons = Clause.getAllSingletons(disjuncts);
         if (allSingletons.contains(TRUE_CONSTANT) || Clause.areThereClashingVariables(allSingletons)) {
             return TRUE_CONSTANT;
@@ -67,7 +66,7 @@ public class DisjunctClause<T extends Clause> implements Clause {
             return new DisjunctOfSingletons(disjuncts.stream()
                     .map(t -> (SingletonClause<?>) t).collect(Collectors.toSet()));
         }
-        if (disjuncts.equals(this.disjuncts.size())) {
+        if (disjuncts.equals(this.disjuncts)) {
             return this;
         }
         return new DisjunctClause<>(Collections.unmodifiableSet(disjuncts)).simplify();
