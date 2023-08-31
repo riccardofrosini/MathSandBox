@@ -1,9 +1,9 @@
 package ai.maths.euler.p41to60;
 
-import ai.maths.euler.Utils;
-
 import java.util.HashMap;
 import java.util.Map;
+
+import ai.maths.euler.Utils;
 
 public class Euler41 {
 
@@ -26,7 +26,9 @@ public class Euler41 {
     private static int doAllCombinationsAndFindPrime(HashMap<Integer, Boolean> intsUsed, int minimumForPandigital, int digit) {
         int biggestPrime = 0;
         if (digit > minimumForPandigital) {
-            if (Utils.isPrime(digit)) return digit;
+            if (Utils.isPrime(digit)) {
+                return digit;
+            }
             return biggestPrime;
         }
         for (Map.Entry<Integer, Boolean> integerBooleanEntry : intsUsed.entrySet()) {

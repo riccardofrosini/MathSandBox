@@ -1,8 +1,8 @@
 package ai.maths.euler.p41to60;
 
-import ai.maths.euler.Utils;
-
 import java.util.LinkedList;
+
+import ai.maths.euler.Utils;
 
 public class Euler46 {
 

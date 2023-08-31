@@ -35,7 +35,6 @@ public class SumsTrainer {
                     return score == 0 ? 2000000000 : 1 / score;
                 });
 
-
         double[] input = {3, 4};
         System.out.println(genomeEvaluator.evaluateGenome(input).get(0));
         double[] input1 = {2, 1};
@@ -46,7 +45,6 @@ public class SumsTrainer {
         System.out.println(genomeEvaluator.evaluateGenome(input3).get(0));
         double[] input4 = {3, 1};
         System.out.println(genomeEvaluator.evaluateGenome(input4).get(0));
-
 
         double[] input5 = {35, 23};
         System.out.println(genomeEvaluator.evaluateGenome(input5).get(0));

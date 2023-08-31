@@ -1,10 +1,11 @@
 package ai.maths.euler.p1to20;
 
-import ai.maths.euler.Utils;
-
 import java.math.BigInteger;
 
+import ai.maths.euler.Utils;
+
 public class Euler16 {
+
     public static void main(String[] args) {
         BigInteger n = BigInteger.ONE;
 

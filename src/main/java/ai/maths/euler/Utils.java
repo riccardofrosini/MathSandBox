@@ -21,15 +21,29 @@ public class Utils {
     }
 
     public static boolean isPrime(long p) {
-        if (p <= 1) return false;
-        if (p == 2) return true;
-        if (p == 3) return true;
-        if (p % 2 == 0) return false;
-        if (p % 3 == 0) return false;
+        if (p <= 1) {
+            return false;
+        }
+        if (p == 2) {
+            return true;
+        }
+        if (p == 3) {
+            return true;
+        }
+        if (p % 2 == 0) {
+            return false;
+        }
+        if (p % 3 == 0) {
+            return false;
+        }
         double sqrt = Math.sqrt(p);
         for (long j = 1; j * 6 - 1 <= sqrt; j++) {
-            if (p % (j * 6 - 1) == 0) return false;
-            if (p % (j * 6 + 1) == 0) return false;
+            if (p % (j * 6 - 1) == 0) {
+                return false;
+            }
+            if (p % (j * 6 + 1) == 0) {
+                return false;
+            }
         }
         return true;
     }

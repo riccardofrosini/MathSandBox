@@ -1,6 +1,7 @@
 package ai.maths.euler.p1to20;
 
 public class Euler3 {
+
     public static void main(String[] args) {
         long n = 600851475143L;
         long maxPf = n;

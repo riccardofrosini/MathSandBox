@@ -18,12 +18,12 @@ public abstract class ProbabilityOfClauseLazy<T extends Clause> implements Funct
         this.clause = clause;
     }
 
-    public static ProbabilityOfClauseLazy<?> probabilityOfIntersection(Clause clause1, Clause clause2) {
-        return buildProbabilityOfClause(clause1.addConjunct(clause2));
-    }
-
     public T getClause() {
         return clause;
+    }
+
+    public static ProbabilityOfClauseLazy<?> probabilityOfIntersection(Clause clause1, Clause clause2) {
+        return buildProbabilityOfClause(clause1.addConjunct(clause2));
     }
 
     public static ProbabilityOfClauseLazy<?> buildProbabilityOfClause(Clause clause) {

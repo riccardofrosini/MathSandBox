@@ -41,15 +41,15 @@ public class TicTacToeTrainer {
         //ConfigurationNetwork.MAX_SPECIES_STAGNATION_GENERATION = 40;
         //ConfigurationNetwork.SPECIES_DELTA_THRESHOLD = 2;
         GenomeEvaluator geno = NeuralNetworkTrainer.train(27, 9, 10000, NodeFunctionsCreator.linearUnit(), genomeEvaluator -> {
-            double score = 0;
-            for (TicTacToe ticTacToe : ticTacToeHashSet) {
-                int move = getMoveIn27Out9(genomeEvaluator, ticTacToe.getBoard());
-                ticTacToe = ticTacToe.makeMove(move);
-                if (ticTacToe == null) {
-                    continue;
-                }
-                score += (double) (ticTacToeHashMap.get(ticTacToe) + 1) / 10;
-                //score++;
+                    double score = 0;
+                    for (TicTacToe ticTacToe : ticTacToeHashSet) {
+                        int move = getMoveIn27Out9(genomeEvaluator, ticTacToe.getBoard());
+                        ticTacToe = ticTacToe.makeMove(move);
+                        if (ticTacToe == null) {
+                            continue;
+                        }
+                        score += (double) (ticTacToeHashMap.get(ticTacToe) + 1) / 10;
+                        //score++;
                     }
                     return score;
                 }

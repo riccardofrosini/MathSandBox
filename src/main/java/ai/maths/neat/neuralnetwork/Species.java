@@ -1,9 +1,9 @@
 package ai.maths.neat.neuralnetwork;
 
-import ai.maths.neat.utils.ConfigurationNetwork;
-
 import java.util.Objects;
 import java.util.TreeSet;
+
+import ai.maths.neat.utils.ConfigurationNetwork;
 
 class Species {
 
@@ -60,8 +60,12 @@ class Species {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof Species)) return false;
+        if (this == o) {
+            return true;
+        }
+        if (!(o instanceof Species)) {
+            return false;
+        }
         Species species1 = (Species) o;
         return representative.equals(species1.representative) &&
                 genomes.equals(species1.genomes);

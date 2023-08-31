@@ -21,7 +21,9 @@ public class Euler8 {
                 product13Digits *= s.charAt(j) - 48;
             }
             max = Math.max(max, product13Digits);
-            if (s.charAt(i + 12) - 48 == 0) i = i + 13;
+            if (s.charAt(i + 12) - 48 == 0) {
+                i = i + 13;
+            }
         }
         System.out.println(max);
     }

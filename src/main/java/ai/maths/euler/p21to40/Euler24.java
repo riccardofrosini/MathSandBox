@@ -21,7 +21,9 @@ public class Euler24 {
 
     private static long factorial(long n) {
         long factorial = 1;
-        if (n == 0 || n == 1) return factorial;
+        if (n == 0 || n == 1) {
+            return factorial;
+        }
         for (int i = 2; i <= n; i++) {
             factorial *= i;
         }

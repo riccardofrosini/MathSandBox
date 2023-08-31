@@ -1,6 +1,7 @@
 package ai.maths.euler.p1to20;
 
 public class Euler14 {
+
     public static void main(String[] args) {
         int maxChain = 1;
         int startingNumber = 1;

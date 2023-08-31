@@ -15,12 +15,24 @@ public class Euler29 {
             int maxPow = (int) Math.floor(Math.log10(100) / Math.log10(num));
             for (int j = 1; j <= maxPow; j++) {
                 twoToHundred.remove((Integer) (int) Math.pow(num, j));
-                if (j == 1) count += 99;
-                if (j == 2) count += 50;
-                if (j == 3) count += 50;
-                if (j == 4) count += 41;
-                if (j == 5) count += 51;
-                if (j == 6) count += 37;
+                if (j == 1) {
+                    count += 99;
+                }
+                if (j == 2) {
+                    count += 50;
+                }
+                if (j == 3) {
+                    count += 50;
+                }
+                if (j == 4) {
+                    count += 41;
+                }
+                if (j == 5) {
+                    count += 51;
+                }
+                if (j == 6) {
+                    count += 37;
+                }
             }
         }
         System.out.println(count);

@@ -35,7 +35,9 @@ public class Euler47 {
                     n = n / j;
                 }
             }
-            if (j == 2) j--;
+            if (j == 2) {
+                j--;
+            }
         }
         return primeFactorsCount == 3;
     }

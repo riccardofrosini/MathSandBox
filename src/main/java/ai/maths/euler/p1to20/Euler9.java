@@ -1,6 +1,7 @@
 package ai.maths.euler.p1to20;
 
 public class Euler9 {
+
     public static void main(String[] args) {
         System.out.println(findProductABC());
     }

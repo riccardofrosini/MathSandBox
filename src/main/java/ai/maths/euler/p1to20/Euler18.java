@@ -3,6 +3,7 @@ package ai.maths.euler.p1to20;
 import ai.maths.euler.Utils;
 
 public class Euler18 {
+
     public static void main(String[] args) {
         int[][] pyramid = {{75},
                 {95, 64},

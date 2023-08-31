@@ -56,8 +56,12 @@ class NodeGene {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof NodeGene)) return false;
+        if (this == o) {
+            return true;
+        }
+        if (!(o instanceof NodeGene)) {
+            return false;
+        }
         NodeGene nodeGene = (NodeGene) o;
         return id == nodeGene.id;
     }

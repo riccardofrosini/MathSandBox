@@ -41,6 +41,7 @@ class XYSeriesDemo extends ApplicationFrame {
     }
 
     static class MyXYSeries extends XYSeries {
+
         MyXYSeries(Comparable key) {
             super(key, false, true);
             data = new ArrayList<>(100000000);

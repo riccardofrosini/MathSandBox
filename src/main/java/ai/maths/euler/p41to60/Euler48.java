@@ -20,9 +20,15 @@ public class Euler48 {
         BigInteger solution = BigInteger.ONE;
         String s = Long.toBinaryString(p);
         for (byte aByte : s.getBytes()) {
-            if (aByte == '1') solution = solution.multiply(solution).multiply(biX).mod(bi10000000000);
-            if (aByte == '0') solution = solution.multiply(solution).mod(bi10000000000);
-            if (solution.equals(BigInteger.ZERO)) return BigInteger.ZERO;
+            if (aByte == '1') {
+                solution = solution.multiply(solution).multiply(biX).mod(bi10000000000);
+            }
+            if (aByte == '0') {
+                solution = solution.multiply(solution).mod(bi10000000000);
+            }
+            if (solution.equals(BigInteger.ZERO)) {
+                return BigInteger.ZERO;
+            }
         }
         return solution;
     }

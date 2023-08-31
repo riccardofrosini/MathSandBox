@@ -1,11 +1,11 @@
 package ai.maths.tictactoe;
 
-import ai.maths.neat.utils.RandomUtils;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
+
+import ai.maths.neat.utils.RandomUtils;
 
 public final class TicTacToe {
 
@@ -47,7 +47,9 @@ public final class TicTacToe {
 
     public TicTacToe makeRandomMove() {
         List<TicTacToe> possibleMoves = getPossibleBoards();
-        if (possibleMoves.isEmpty()) return null;
+        if (possibleMoves.isEmpty()) {
+            return null;
+        }
         return possibleMoves.get(RandomUtils.getRandomInt(possibleMoves.size()));
     }
 
@@ -58,7 +60,9 @@ public final class TicTacToe {
 
     public Integer[] returnBestMoveAndEval() {
         Integer whoWonPosition = whoWonPosition();
-        if (whoWonPosition != null) return new Integer[]{null, whoWonPosition};
+        if (whoWonPosition != null) {
+            return new Integer[]{null, whoWonPosition};
+        }
 
         Integer bestMove = null;
         int bestEval = cross ? -1 : 1;
@@ -77,7 +81,9 @@ public final class TicTacToe {
 
     public int returnEval() {
         Integer whoWonPosition = whoWonPosition();
-        if (whoWonPosition != null) return whoWonPosition;
+        if (whoWonPosition != null) {
+            return whoWonPosition;
+        }
         List<TicTacToe> possibleMoves = getPossibleBoards();
 
         int evaluation = cross ? -1 : 1;
@@ -129,9 +135,13 @@ public final class TicTacToe {
         for (int i = 0; i < 3; i++) {
             for (int j = 0; j < 3; j++) {
                 ret.append(board[i * 3 + j] == -1 ? "O" : board[i * 3 + j] == 1 ? "X" : " ");
-                if (j != 2) ret.append("|");
+                if (j != 2) {
+                    ret.append("|");
+                }
             }
-            if (i != 2) ret.append("\n-+-+-\n");
+            if (i != 2) {
+                ret.append("\n-+-+-\n");
+            }
         }
         ret.append("\n");
         return ret.toString();
@@ -139,8 +149,12 @@ public final class TicTacToe {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof TicTacToe)) return false;
+        if (this == o) {
+            return true;
+        }
+        if (!(o instanceof TicTacToe)) {
+            return false;
+        }
         TicTacToe ticTacToe = (TicTacToe) o;
         return cross == ticTacToe.cross &&
                 Arrays.equals(board, ticTacToe.board);

@@ -34,7 +34,9 @@ public class Euler37 {
     }
 
     private static boolean isTruncateablePrimeLR(long val) {
-        if (val < 10) return false;
+        if (val < 10) {
+            return false;
+        }
         String s = Long.toString(val);
         for (int i = 1; i < s.length(); i++) {
             if (!Utils.isPrime(Long.parseLong(s.substring(i)))) {

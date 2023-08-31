@@ -8,7 +8,9 @@ public class Euler34 {
         long sumOfSumOfFactorial = 0;
         for (int i = 10; i < 2540161; i++) {
             long sumOfFactorial = getSumOfFactorial(i);
-            if (sumOfFactorial == i) sumOfSumOfFactorial = sumOfSumOfFactorial + sumOfFactorial;
+            if (sumOfFactorial == i) {
+                sumOfSumOfFactorial = sumOfSumOfFactorial + sumOfFactorial;
+            }
         }
         System.out.println(sumOfSumOfFactorial);
     }

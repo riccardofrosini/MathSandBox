@@ -1,8 +1,8 @@
 package ai.maths.euler.p21to40;
 
-import ai.maths.euler.Utils;
-
 import java.util.HashSet;
+
+import ai.maths.euler.Utils;
 
 public class Euler32 {
 

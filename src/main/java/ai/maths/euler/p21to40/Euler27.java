@@ -3,6 +3,7 @@ package ai.maths.euler.p21to40;
 import ai.maths.euler.Utils;
 
 public class Euler27 {
+
     public static void main(String[] args) {
         int result = 0;
         int maxChainPrimes = 0;
@@ -24,8 +25,9 @@ public class Euler27 {
         int currentChain = 0;
         for (; currentChain < i; currentChain++) {
             int polynomial = currentChain * currentChain + currentChain * j + i;
-            if (polynomial < 0 || !Utils.isPrime(polynomial))
+            if (polynomial < 0 || !Utils.isPrime(polynomial)) {
                 return currentChain;
+            }
         }
         return currentChain;
     }

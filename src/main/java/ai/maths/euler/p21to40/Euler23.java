@@ -1,8 +1,8 @@
 package ai.maths.euler.p21to40;
 
-import ai.maths.euler.Utils;
-
 import java.util.LinkedHashSet;
+
+import ai.maths.euler.Utils;
 
 public class Euler23 {
 
@@ -21,7 +21,9 @@ public class Euler23 {
                     sum += i;
                     break;
                 }
-                if (abundantNumbers.contains(i - abundantNumber)) break;
+                if (abundantNumbers.contains(i - abundantNumber)) {
+                    break;
+                }
             }
         }
         System.out.println(sum);

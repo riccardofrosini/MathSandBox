@@ -48,8 +48,12 @@ class ConnectionGene implements Comparable<ConnectionGene> {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof ConnectionGene)) return false;
+        if (this == o) {
+            return true;
+        }
+        if (!(o instanceof ConnectionGene)) {
+            return false;
+        }
         ConnectionGene that = (ConnectionGene) o;
         return Double.compare(that.weight, weight) == 0 &&
                 innovation == that.innovation &&

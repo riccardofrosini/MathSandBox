@@ -10,10 +10,10 @@ public class Euler39 {
         for (int i = 2; i < 1000; i += 2) {
             int prod = i / 2;
             int countSol = 0;
-            for (int mk = 1; mk <= prod; mk++)
+            for (int mk = 1; mk <= prod; mk++) {
                 if (prod % mk == 0) {
                     int nPm = prod / mk;
-                    for (int k = 1; k <= mk; k++)
+                    for (int k = 1; k <= mk; k++) {
                         if (mk % k == 0) {
                             int m = mk / k;
                             int n = nPm - m;
@@ -22,7 +22,9 @@ public class Euler39 {
                                 countSol++;
                             }
                         }
+                    }
                 }
+            }
             if (countSol > countSolutions) {
                 perimeter = i;
                 countSolutions = countSol;

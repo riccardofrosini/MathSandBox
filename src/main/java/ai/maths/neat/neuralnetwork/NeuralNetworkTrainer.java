@@ -1,17 +1,20 @@
 package ai.maths.neat.neuralnetwork;
 
+import java.awt.Dimension;
+import java.awt.Graphics;
+import java.awt.Panel;
+import java.util.function.Consumer;
+
+import javax.swing.JFrame;
+
 import ai.maths.neat.neuralnetwork.functions.FitnessCalculator;
 import ai.maths.neat.neuralnetwork.functions.GenomeEvaluator;
 import ai.maths.neat.neuralnetwork.functions.NodeFunction;
 
-import javax.swing.*;
-import java.awt.*;
-import java.util.function.Consumer;
-
 public class NeuralNetworkTrainer {
 
     public static GenomeEvaluator train(int inputs, int outputs, int generations,
-                                        NodeFunction nodeFunction, FitnessCalculator fitnessCalculator) {
+            NodeFunction nodeFunction, FitnessCalculator fitnessCalculator) {
         Consumer<Genome> updateGenomeFunctionWithFitness = GenomeUtils.makeGenomeFunctionToUpdateFitness(fitnessCalculator, nodeFunction);
         NeuralNetworks neuralNetworks = new NeuralNetworks(GenomeUtils.makeRandomTopologyGenomes(inputs, outputs, updateGenomeFunctionWithFitness));
         Genome bestGenome = neuralNetworks.getBestPerformingFromPopulation();
@@ -37,6 +40,7 @@ public class NeuralNetworkTrainer {
 }
 
 class GenomeGraphics extends JFrame {
+
     private Panel panel;
     private Genome genome;
 
