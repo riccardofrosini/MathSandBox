@@ -1,7 +1,7 @@
 package ai.maths.sat3;
 
 import ai.maths.sat3.bayesian.ProbabilityClause;
-import ai.maths.sat3.lazyalgebraic.ProbabilityOfClause;
+import ai.maths.sat3.lazyalgebraic.ProbabilityOfClauseLazy;
 import ai.maths.sat3.model.NegateVariable;
 import ai.maths.sat3.model.ThreeSatConjunctClause;
 import ai.maths.sat3.model.ThreeSatDisjunctClause;
@@ -30,16 +30,16 @@ public class Main {
         probGiven(new ThreeSatDisjunctClause(x, y, z), new ThreeSatDisjunctClause(nx, ny, u));
         probGiven(new ThreeSatDisjunctClause(x, y, z), new ThreeSatDisjunctClause(nx, u, v));
 
-        ProbabilityOfClause<?> probabilityOfClause1 = ProbabilityOfClause.probabilityOfIntersection(new ThreeSatDisjunctClause(x, y, z), new ThreeSatDisjunctClause(x, y, z));
-        ProbabilityOfClause<?> probabilityOfClause2 = ProbabilityOfClause.probabilityOfIntersection(new ThreeSatDisjunctClause(x, y, z), new ThreeSatDisjunctClause(x, y, u));
-        ProbabilityOfClause<?> probabilityOfClause3 = ProbabilityOfClause.probabilityOfIntersection(new ThreeSatDisjunctClause(x, y, z), new ThreeSatDisjunctClause(x, u, v));
-        ProbabilityOfClause<?> probabilityOfClause4 = ProbabilityOfClause.probabilityOfIntersection(new ThreeSatDisjunctClause(x, y, z), new ThreeSatDisjunctClause(u, v, w));
-        ProbabilityOfClause<?> probabilityOfClause5 = ProbabilityOfClause.probabilityOfIntersection(new ThreeSatDisjunctClause(x, y, z), new ThreeSatDisjunctClause(nx, y, z));
-        ProbabilityOfClause<?> probabilityOfClause6 = ProbabilityOfClause.probabilityOfIntersection(new ThreeSatDisjunctClause(x, y, z), new ThreeSatDisjunctClause(nx, ny, z));
-        ProbabilityOfClause<?> probabilityOfClause7 = ProbabilityOfClause.probabilityOfIntersection(new ThreeSatDisjunctClause(x, y, z), new ThreeSatDisjunctClause(nx, ny, nz));
-        ProbabilityOfClause<?> probabilityOfClause8 = ProbabilityOfClause.probabilityOfIntersection(new ThreeSatDisjunctClause(x, y, z), new ThreeSatDisjunctClause(nx, y, u));
-        ProbabilityOfClause<?> probabilityOfClause9 = ProbabilityOfClause.probabilityOfIntersection(new ThreeSatDisjunctClause(x, y, z), new ThreeSatDisjunctClause(nx, ny, u));
-        ProbabilityOfClause<?> probabilityOfClause10 = ProbabilityOfClause.probabilityOfIntersection(new ThreeSatDisjunctClause(x, y, z), new ThreeSatDisjunctClause(nx, u, v));
+        ProbabilityOfClauseLazy<?> probabilityOfClause1 = ProbabilityOfClauseLazy.probabilityOfIntersection(new ThreeSatDisjunctClause(x, y, z), new ThreeSatDisjunctClause(x, y, z));
+        ProbabilityOfClauseLazy<?> probabilityOfClause2 = ProbabilityOfClauseLazy.probabilityOfIntersection(new ThreeSatDisjunctClause(x, y, z), new ThreeSatDisjunctClause(x, y, u));
+        ProbabilityOfClauseLazy<?> probabilityOfClause3 = ProbabilityOfClauseLazy.probabilityOfIntersection(new ThreeSatDisjunctClause(x, y, z), new ThreeSatDisjunctClause(x, u, v));
+        ProbabilityOfClauseLazy<?> probabilityOfClause4 = ProbabilityOfClauseLazy.probabilityOfIntersection(new ThreeSatDisjunctClause(x, y, z), new ThreeSatDisjunctClause(u, v, w));
+        ProbabilityOfClauseLazy<?> probabilityOfClause5 = ProbabilityOfClauseLazy.probabilityOfIntersection(new ThreeSatDisjunctClause(x, y, z), new ThreeSatDisjunctClause(nx, y, z));
+        ProbabilityOfClauseLazy<?> probabilityOfClause6 = ProbabilityOfClauseLazy.probabilityOfIntersection(new ThreeSatDisjunctClause(x, y, z), new ThreeSatDisjunctClause(nx, ny, z));
+        ProbabilityOfClauseLazy<?> probabilityOfClause7 = ProbabilityOfClauseLazy.probabilityOfIntersection(new ThreeSatDisjunctClause(x, y, z), new ThreeSatDisjunctClause(nx, ny, nz));
+        ProbabilityOfClauseLazy<?> probabilityOfClause8 = ProbabilityOfClauseLazy.probabilityOfIntersection(new ThreeSatDisjunctClause(x, y, z), new ThreeSatDisjunctClause(nx, y, u));
+        ProbabilityOfClauseLazy<?> probabilityOfClause9 = ProbabilityOfClauseLazy.probabilityOfIntersection(new ThreeSatDisjunctClause(x, y, z), new ThreeSatDisjunctClause(nx, ny, u));
+        ProbabilityOfClauseLazy<?> probabilityOfClause10 = ProbabilityOfClauseLazy.probabilityOfIntersection(new ThreeSatDisjunctClause(x, y, z), new ThreeSatDisjunctClause(nx, u, v));
         System.out.println(probabilityOfClause1);
         System.out.println(probabilityOfClause2);
         System.out.println(probabilityOfClause3);

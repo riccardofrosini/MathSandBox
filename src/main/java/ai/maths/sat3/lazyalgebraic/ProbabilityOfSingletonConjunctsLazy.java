@@ -8,11 +8,11 @@ import ai.maths.sat3.bayesian.ProbabilityClause;
 import ai.maths.sat3.model.ConjunctOfSingletons;
 import ai.maths.sat3.model.SingletonClause;
 
-public class ProbabilityOfSingletonConjuncts extends ProbabilityOfClause<ConjunctOfSingletons> {
+public class ProbabilityOfSingletonConjunctsLazy extends ProbabilityOfClauseLazy<ConjunctOfSingletons> {
 
     private final Set<SingletonClause<?>> singletonClauses;
 
-    protected ProbabilityOfSingletonConjuncts(ConjunctOfSingletons clause) {
+    protected ProbabilityOfSingletonConjunctsLazy(ConjunctOfSingletons clause) {
         super(clause);
         singletonClauses = clause.getConjunctsStream().collect(Collectors.toUnmodifiableSet());
     }
@@ -20,7 +20,7 @@ public class ProbabilityOfSingletonConjuncts extends ProbabilityOfClause<Conjunc
     @Override
     public Double apply(ProbabilityClause probabilityClause) {
         return singletonClauses.stream()
-                .mapToDouble(value -> ProbabilityOfClause.buildProbabilityOfClause(value).apply(probabilityClause))
+                .mapToDouble(value -> ProbabilityOfClauseLazy.buildProbabilityOfClause(value).apply(probabilityClause))
                 .reduce(1, (left, right) -> left * right);
     }
 
@@ -40,7 +40,7 @@ public class ProbabilityOfSingletonConjuncts extends ProbabilityOfClause<Conjunc
         if (!super.equals(o)) {
             return false;
         }
-        ProbabilityOfSingletonConjuncts that = (ProbabilityOfSingletonConjuncts) o;
+        ProbabilityOfSingletonConjunctsLazy that = (ProbabilityOfSingletonConjunctsLazy) o;
         return singletonClauses.equals(that.singletonClauses);
     }
 

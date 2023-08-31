@@ -3,9 +3,9 @@ package ai.maths.sat3.lazyalgebraic;
 import ai.maths.sat3.bayesian.ProbabilityClause;
 import ai.maths.sat3.model.SingletonClause;
 
-public class ProbabilityOfSingleton extends ProbabilityOfClause<SingletonClause<?>> {
+public class ProbabilityOfSingletonLazy extends ProbabilityOfClauseLazy<SingletonClause<?>> {
 
-    protected ProbabilityOfSingleton(SingletonClause<?> clause) {
+    protected ProbabilityOfSingletonLazy(SingletonClause<?> clause) {
         super(clause);
     }
 

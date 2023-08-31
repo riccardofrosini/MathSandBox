@@ -7,13 +7,13 @@ import ai.maths.sat3.bayesian.ProbabilityClause;
 import ai.maths.sat3.model.Clause;
 import ai.maths.sat3.model.DisjunctClause;
 
-public class ProbabilityOfDisjuncts<T extends Clause> extends ProbabilityOfClause<DisjunctClause<T>> {
+public class ProbabilityOfDisjunctsLazy<T extends Clause> extends ProbabilityOfClauseLazy<DisjunctClause<T>> {
 
     private final T disjunct1;
     private final Clause disjunct2;
     private final Clause intersection;
 
-    protected ProbabilityOfDisjuncts(DisjunctClause<T> clause) {
+    protected ProbabilityOfDisjunctsLazy(DisjunctClause<T> clause) {
         super(clause);
         Optional<T> any = clause.getDisjunctsStream().findAny();
         disjunct1 = any.get();
@@ -23,9 +23,9 @@ public class ProbabilityOfDisjuncts<T extends Clause> extends ProbabilityOfClaus
 
     @Override
     public Double apply(ProbabilityClause probabilityClause) {
-        return ProbabilityOfClause.buildProbabilityOfClause(disjunct1).apply(probabilityClause) +
-                ProbabilityOfClause.buildProbabilityOfClause(disjunct2).apply(probabilityClause) -
-                ProbabilityOfClause.buildProbabilityOfClause(intersection).apply(probabilityClause);
+        return ProbabilityOfClauseLazy.buildProbabilityOfClause(disjunct1).apply(probabilityClause) +
+                ProbabilityOfClauseLazy.buildProbabilityOfClause(disjunct2).apply(probabilityClause) -
+                ProbabilityOfClauseLazy.buildProbabilityOfClause(intersection).apply(probabilityClause);
     }
 
     @Override
@@ -44,7 +44,7 @@ public class ProbabilityOfDisjuncts<T extends Clause> extends ProbabilityOfClaus
         if (!super.equals(o)) {
             return false;
         }
-        ProbabilityOfDisjuncts<?> that = (ProbabilityOfDisjuncts<?>) o;
+        ProbabilityOfDisjunctsLazy<?> that = (ProbabilityOfDisjunctsLazy<?>) o;
         return disjunct1.equals(that.disjunct1) && disjunct2.equals(that.disjunct2) && intersection.equals(that.intersection);
     }
 
