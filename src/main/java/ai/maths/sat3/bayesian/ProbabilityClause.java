@@ -72,7 +72,7 @@ public class ProbabilityClause {
         }
         X disjunct = disjunctOptional.get();
         Clause otherDisjunct = disjunctClause.getOtherDisjuncts(disjunct);
-        return probabilityOfClause(disjunct) + probabilityOfClause(otherDisjunct) - probabilityOfClause(otherDisjunct.addConjunct(disjunct));
+        return probabilityOfClause(disjunct) + probabilityOfClause(otherDisjunct) - probabilityOfClause(disjunct.addConjunct(otherDisjunct));
     }
 
     private <X extends Clause> double probabilityOfConjuncts(ConjunctClause<X> conjunctClause) {
