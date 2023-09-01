@@ -60,6 +60,16 @@ public class Main {
         System.out.println(probabilityOfClause8.apply(new ProbabilityClause(probabilityOfClause8.getClause())));
         System.out.println(probabilityOfClause9.apply(new ProbabilityClause(probabilityOfClause9.getClause())));
         System.out.println(probabilityOfClause10.apply(new ProbabilityClause(probabilityOfClause10.getClause())));
+        System.out.println(probabilityOfClause1.convertToFormula());
+        System.out.println(probabilityOfClause2.convertToFormula());
+        System.out.println(probabilityOfClause3.convertToFormula());
+        System.out.println(probabilityOfClause4.convertToFormula());
+        System.out.println(probabilityOfClause5.convertToFormula());
+        System.out.println(probabilityOfClause6.convertToFormula());
+        System.out.println(probabilityOfClause7.convertToFormula());
+        System.out.println(probabilityOfClause8.convertToFormula());
+        System.out.println(probabilityOfClause9.convertToFormula());
+        System.out.println(probabilityOfClause10.convertToFormula());
     }
 
     private static void probGiven(ThreeSatDisjunctClause threeSatDisjunctClause1, ThreeSatDisjunctClause threeSatDisjunctClause2) {

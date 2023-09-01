@@ -4,6 +4,8 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import ai.maths.sat3.algebraic.Formula;
+import ai.maths.sat3.algebraic.Products;
 import ai.maths.sat3.model.ConjunctOfSingletons;
 
 public class ProbabilityOfSingletonConjuncts extends ProbabilityOfClause<ConjunctOfSingletons> {
@@ -18,6 +20,11 @@ public class ProbabilityOfSingletonConjuncts extends ProbabilityOfClause<Conjunc
     @Override
     public Double apply(ProbabilityClause probabilityClause) {
         return probabilityOfSingletons.stream().mapToDouble(value -> value.apply(probabilityClause)).reduce(1, (left, right) -> left * right);
+    }
+
+    @Override
+    public Formula convertToFormula() {
+        return new Products(probabilityOfSingletons.stream().map(ProbabilityOfSingleton::convertToFormula).collect(Collectors.toUnmodifiableSet()));
     }
 
     @Override

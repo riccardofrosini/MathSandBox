@@ -3,6 +3,7 @@ package ai.maths.sat3.bayesian;
 import java.util.Objects;
 import java.util.function.Function;
 
+import ai.maths.sat3.algebraic.Formula;
 import ai.maths.sat3.model.Clause;
 import ai.maths.sat3.model.ConjunctClause;
 import ai.maths.sat3.model.ConjunctOfSingletons;
@@ -20,6 +21,8 @@ public abstract class ProbabilityOfClause<T extends Clause> implements Function<
     public T getClause() {
         return clause;
     }
+
+    public abstract Formula convertToFormula();
 
     public static ProbabilityOfClause<?> probabilityOfIntersection(Clause clause1, Clause clause2) {
         return buildProbabilityOfClause(clause1.addConjunct(clause2));

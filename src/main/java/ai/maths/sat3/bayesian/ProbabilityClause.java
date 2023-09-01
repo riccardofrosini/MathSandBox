@@ -91,7 +91,7 @@ public class ProbabilityClause {
                 .reduce(1d, (probabilityTotal, probability) -> probability * probabilityTotal);
     }
 
-    private double probabilityOfSingletonClause(SingletonClause<?> singletonClause) {
+    public double probabilityOfSingletonClause(SingletonClause<?> singletonClause) {
         return singletonClause instanceof NegateVariable ?
                 1d - probabilities.get(singletonClause.getVariableOrBoolean()) :
                 probabilities.get(singletonClause.getVariableOrBoolean());
