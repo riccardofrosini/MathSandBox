@@ -29,10 +29,6 @@ public class DisjunctClause<T extends Clause> implements Clause {
                 .collect(Collectors.toSet());
     }
 
-    public int size() {
-        return disjuncts.size();
-    }
-
     @Override
     public Clause addConjunct(Clause conjunct) {
         return new DisjunctClause<>(disjuncts.stream()

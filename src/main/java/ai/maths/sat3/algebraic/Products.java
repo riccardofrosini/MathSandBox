@@ -17,6 +17,7 @@ public class Products extends Formula {
         this.factors = factors;
     }
 
+    @Override
     public Formula simplify() {
         if (factors.contains(CONSTANT_0)) {
             return CONSTANT_0;
@@ -38,7 +39,8 @@ public class Products extends Formula {
         if (newFactors.equals(factors)) {
             return this;
         }
-        Set<Formula> finalFactors = Stream.concat(productsSet.stream().flatMap(factor -> factor.factors.stream()), newFactors.stream()).collect(Collectors.toUnmodifiableSet());
+        Set<Formula> finalFactors = Stream.concat(productsSet.stream().flatMap(factor -> factor.factors.stream()), newFactors.stream())
+                .collect(Collectors.toUnmodifiableSet());
         return new Products(finalFactors).simplify();
     }
 

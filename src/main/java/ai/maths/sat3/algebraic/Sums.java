@@ -18,6 +18,7 @@ public class Sums extends Formula {
         this.addends = addends;
     }
 
+    @Override
     public Formula simplify() {
         HashMap<Formula, Integer> newAddends = new HashMap<>(addends);
         newAddends.entrySet().removeIf(formulaIntegerEntry -> formulaIntegerEntry.getValue().equals(0));

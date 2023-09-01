@@ -30,10 +30,6 @@ public class ConjunctClause<T extends Clause> implements Clause {
                 .collect(Collectors.toSet());
     }
 
-    public int size() {
-        return conjuncts.size();
-    }
-
     public Clause getOtherConjuncts(T conjunct) {
         HashSet<T> newConjuncts = new HashSet<>(this.conjuncts);
         newConjuncts.remove(conjunct);

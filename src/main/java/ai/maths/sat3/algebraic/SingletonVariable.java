@@ -10,6 +10,7 @@ public class SingletonVariable extends Formula {
         this.variable = variable;
     }
 
+    @Override
     public Formula simplify() {
         return this;
     }
