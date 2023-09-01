@@ -6,7 +6,7 @@ import static ai.maths.sat3.algebraic.Constant.CONSTANT_1;
 import java.util.List;
 import java.util.Map;
 
-public abstract class Formula implements Comparable<Formula> {
+public abstract class Formula {
 
     public abstract Formula simplify();
 
@@ -40,10 +40,5 @@ public abstract class Formula implements Comparable<Formula> {
             return CONSTANT_0;
         }
         return new Constant(constant);
-    }
-
-    @Override
-    public int compareTo(Formula o) {
-        return toString().compareTo(o.toString());
     }
 }
