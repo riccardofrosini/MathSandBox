@@ -6,8 +6,12 @@ public class SingletonVariable extends Formula {
 
     private final String variable;
 
-    public SingletonVariable(String variable) {
+    protected SingletonVariable(String variable) {
         this.variable = variable;
+    }
+
+    public Formula simplify() {
+        return this;
     }
 
     @Override

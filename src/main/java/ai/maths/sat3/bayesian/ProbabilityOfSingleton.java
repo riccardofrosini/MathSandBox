@@ -2,12 +2,7 @@ package ai.maths.sat3.bayesian;
 
 import static ai.maths.sat3.model.BooleanConstant.TRUE_CONSTANT;
 
-import java.util.Map;
-
-import ai.maths.sat3.algebraic.Constant;
 import ai.maths.sat3.algebraic.Formula;
-import ai.maths.sat3.algebraic.SingletonVariable;
-import ai.maths.sat3.algebraic.Sums;
 import ai.maths.sat3.model.NegateVariable;
 import ai.maths.sat3.model.SingletonClause;
 import ai.maths.sat3.model.Variable;
@@ -23,17 +18,18 @@ public class ProbabilityOfSingleton extends ProbabilityOfClause<SingletonClause<
         return probabilityClause.probabilityOfSingletonClause(clause);
     }
 
+    @Override
     public Formula convertToFormula() {
         if (clause instanceof Variable) {
-            return new SingletonVariable("P(" + clause + ")");
+            return Formula.buildSingletonVariable("P(" + clause + ")");
         }
         if (clause instanceof NegateVariable) {
-            return new Sums(Map.of(new Constant(1), 1, new SingletonVariable("P(" + clause.getVariableOrBoolean() + ")"), -1));
+            return Formula.buildSumsForNegation(Formula.buildSingletonVariable("P(" + clause.getVariableOrBoolean() + ")"));
         }
         if (clause == TRUE_CONSTANT) {
-            return new Constant(1);
+            return Formula.buildConstant(1);
         }
-        return new Constant(0);
+        return Formula.buildConstant(0);
     }
 
     @Override

@@ -1,11 +1,9 @@
 package ai.maths.sat3.bayesian;
 
-import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 
 import ai.maths.sat3.algebraic.Formula;
-import ai.maths.sat3.algebraic.Sums;
 import ai.maths.sat3.model.Clause;
 import ai.maths.sat3.model.DisjunctClause;
 
@@ -44,20 +42,10 @@ public class ProbabilityOfDisjuncts<T extends Clause> extends ProbabilityOfClaus
 
     @Override
     public Formula convertToFormula() {
-        ProbabilityOfClause<?> simplify = simplify();
-        if (simplify.equals(this)) {
-            Formula formula1 = probabilityOfClauses1.convertToFormula();
-            Formula formula2 = probabilityOfClauses2.convertToFormula();
-            Formula intersectionFormula = intersection.convertToFormula();
-            if (formula1.equals(intersectionFormula)) {
-                return formula2;
-            }
-            if (formula2.equals(intersectionFormula)) {
-                return formula1;
-            }
-            return new Sums(Map.of(formula1, 1, formula2, 1, intersectionFormula, -1));
-        }
-        return simplify.convertToFormula();
+        return Formula.buildSumsForIntersection(probabilityOfClauses1.convertToFormula(),
+                probabilityOfClauses2.convertToFormula(),
+                intersection.convertToFormula());
+
     }
 
     @Override

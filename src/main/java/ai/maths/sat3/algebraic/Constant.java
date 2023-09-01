@@ -6,8 +6,15 @@ public class Constant extends Formula {
 
     private final Integer constant;
 
-    public Constant(Integer constant) {
+    public static final Constant CONSTANT_0 = new Constant(0);
+    public static final Constant CONSTANT_1 = new Constant(1);
+
+    protected Constant(Integer constant) {
         this.constant = constant;
+    }
+
+    public Formula simplify() {
+        return this;
     }
 
     @Override
