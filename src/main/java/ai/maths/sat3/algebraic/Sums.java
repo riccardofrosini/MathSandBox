@@ -18,6 +18,10 @@ public class Sums extends Formula {
         this.addends = addends;
     }
 
+    public Stream<Entry<Formula, Integer>> getStreamOfAddends() {
+        return addends.entrySet().stream();
+    }
+
     @Override
     public Formula simplify() {
         HashMap<Formula, Integer> newAddends = new HashMap<>(addends);
@@ -25,13 +29,9 @@ public class Sums extends Formula {
         if (newAddends.isEmpty()) {
             return CONSTANT_0;
         }
-        if (newAddends.size() == 1) {
-            Entry<Formula, Integer> next = newAddends.entrySet().iterator().next();
-            return new Products(Set.of(next.getKey(), new Constant(next.getValue()))).simplify();
-        }
         Set<Sums> sumsSet = newAddends.keySet().stream()
-                .filter(integer -> integer instanceof Sums)
-                .map(integer -> (Sums) integer)
+                .filter(addon -> addon instanceof Sums)
+                .map(addon -> (Sums) addon)
                 .collect(Collectors.toUnmodifiableSet());
         newAddends.keySet().removeAll(sumsSet);
         if (newAddends.equals(addends)) {

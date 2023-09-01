@@ -23,7 +23,7 @@ public class ProbabilityOfSingletonConjuncts extends ProbabilityOfClause<Conjunc
 
     @Override
     public Formula convertToFormula() {
-        return Formula.buildProducts(probabilityOfSingletons.stream().map(ProbabilityOfSingleton::convertToFormula).collect(Collectors.toUnmodifiableSet()));
+        return Formula.buildProducts(probabilityOfSingletons.stream().map(ProbabilityOfSingleton::convertToFormula).collect(Collectors.toUnmodifiableList()));
     }
 
     @Override

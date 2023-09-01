@@ -13,6 +13,10 @@ public class Constant extends Formula {
         this.constant = constant;
     }
 
+    public Integer getConstant() {
+        return constant;
+    }
+
     @Override
     public Formula simplify() {
         return this;

@@ -4,8 +4,8 @@ import static ai.maths.sat3.algebraic.Constant.CONSTANT_0;
 import static ai.maths.sat3.algebraic.Constant.CONSTANT_1;
 
 import java.util.Collections;
+import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 public abstract class Formula {
 
@@ -25,8 +25,8 @@ public abstract class Formula {
         return new Sums(Map.of(CONSTANT_1, 1, formula, -1)).simplify();
     }
 
-    public static Formula buildProducts(Set<Formula> factors) {
-        return new Products(Collections.unmodifiableSet(factors)).simplify();
+    public static Formula buildProducts(List<Formula> factors) {
+        return new Products(Collections.unmodifiableList(factors)).simplify();
     }
 
     public static Formula buildSingletonVariable(String name) {
