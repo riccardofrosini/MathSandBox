@@ -2,6 +2,7 @@ package ai.maths.sat3.algebraic;
 
 import static ai.maths.sat3.algebraic.Constant.CONSTANT_0;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -15,7 +16,7 @@ public class Sums extends Formula {
     private final Map<Formula, Integer> addends;
 
     protected Sums(Map<Formula, Integer> addends) {
-        this.addends = addends;
+        this.addends = Collections.unmodifiableMap(addends);
     }
 
     public Stream<Entry<Formula, Integer>> getStreamOfAddends() {
@@ -25,7 +26,7 @@ public class Sums extends Formula {
     @Override
     public Formula simplify() {
         HashMap<Formula, Integer> newAddends = new HashMap<>(addends);
-        newAddends.entrySet().removeIf(formulaIntegerEntry -> formulaIntegerEntry.getValue().equals(0));
+        newAddends.entrySet().removeIf(formulaIntegerEntry -> formulaIntegerEntry.getValue().equals(0) || formulaIntegerEntry.getKey().equals(CONSTANT_0));
         if (newAddends.isEmpty()) {
             return CONSTANT_0;
         }
@@ -38,11 +39,10 @@ public class Sums extends Formula {
             return this;
         }
         return new Sums(Stream.concat(sumsSet.stream()
-                                .flatMap(sums -> sums.addends.entrySet()
-                                        .stream()
+                                .flatMap(sums -> sums.addends.entrySet().stream()
                                         .collect(Collectors.toMap(Entry::getKey, formulaIntegerEntry -> formulaIntegerEntry.getValue() * addends.get(sums))).entrySet().stream()),
                         newAddends.entrySet().stream())
-                .collect(Collectors.toUnmodifiableMap(Entry::getKey, Entry::getValue, Integer::sum))).simplify();
+                .collect(Collectors.toMap(Entry::getKey, Entry::getValue, Integer::sum))).simplify();
     }
 
     @Override

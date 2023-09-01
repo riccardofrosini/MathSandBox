@@ -16,7 +16,8 @@ public class Products extends Formula {
     private final List<Formula> factors;
 
     protected Products(List<Formula> factors) {
-        this.factors = factors;
+        factors.sort(Formula::compareTo);
+        this.factors = Collections.unmodifiableList(factors);
     }
 
     @Override
@@ -45,7 +46,7 @@ public class Products extends Formula {
                 .collect(Collectors.groupingBy(formula -> formula)).values().stream()
                 .map(formulas -> formulas.stream()
                         .reduce(CONSTANT_1, (formula, formula2) -> new Products(List.of(formula, formula2)).simplify()))
-                .collect(Collectors.toUnmodifiableList()));
+                .collect(Collectors.toList()));
         Optional<Sums> sumsOptional = newFactors.stream()
                 .filter(integer -> integer instanceof Sums).findFirst()
                 .map(integer -> (Sums) integer);
@@ -56,14 +57,14 @@ public class Products extends Formula {
             Sums sums = sumsOptional.get();
             newFactors.remove(sums);
             return new Sums(sums.getStreamOfAddends()
-                    .collect(Collectors.toUnmodifiableMap(formulaIntegerEntry -> {
+                    .collect(Collectors.toMap(formulaIntegerEntry -> {
                         List<Formula> product = new ArrayList<>(newFactors);
                         product.add(formulaIntegerEntry.getKey());
                         return new Products(product).simplify();
                     }, Entry::getValue, Integer::sum))).simplify();
         }
 
-        return new Products(Collections.unmodifiableList(newFactors)).simplify();
+        return new Products(newFactors).simplify();
     }
 
     @Override

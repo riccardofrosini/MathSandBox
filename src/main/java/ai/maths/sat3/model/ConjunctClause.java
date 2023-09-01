@@ -16,7 +16,7 @@ public class ConjunctClause<T extends Clause> implements Clause {
     protected final Set<T> conjuncts;
 
     protected ConjunctClause(Set<T> conjuncts) {
-        this.conjuncts = conjuncts;
+        this.conjuncts = Collections.unmodifiableSet(conjuncts);
     }
 
     public Stream<T> getConjunctsStream() {
@@ -33,14 +33,14 @@ public class ConjunctClause<T extends Clause> implements Clause {
     public Clause getOtherConjuncts(T conjunct) {
         HashSet<T> newConjuncts = new HashSet<>(this.conjuncts);
         newConjuncts.remove(conjunct);
-        return new ConjunctClause<>(Collections.unmodifiableSet(newConjuncts)).simplify();
+        return new ConjunctClause<>(newConjuncts).simplify();
     }
 
     @Override
     public Clause addConjunct(Clause conjunct) {
         HashSet<Clause> conjuncts = new HashSet<>(this.conjuncts);
         conjuncts.add(conjunct);
-        return new ConjunctClause<>(Collections.unmodifiableSet(conjuncts)).simplify();
+        return new ConjunctClause<>(conjuncts).simplify();
     }
 
     public Clause makeAsDisjunct() {
@@ -78,7 +78,7 @@ public class ConjunctClause<T extends Clause> implements Clause {
         if (conjuncts.equals(this.conjuncts)) {
             return this;
         }
-        return new ConjunctClause<>(Collections.unmodifiableSet(conjuncts)).simplify();
+        return new ConjunctClause<>(conjuncts).simplify();
     }
 
     @Override

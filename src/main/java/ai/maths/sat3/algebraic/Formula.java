@@ -3,11 +3,10 @@ package ai.maths.sat3.algebraic;
 import static ai.maths.sat3.algebraic.Constant.CONSTANT_0;
 import static ai.maths.sat3.algebraic.Constant.CONSTANT_1;
 
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
-public abstract class Formula {
+public abstract class Formula implements Comparable<Formula> {
 
     public abstract Formula simplify();
 
@@ -26,7 +25,7 @@ public abstract class Formula {
     }
 
     public static Formula buildProducts(List<Formula> factors) {
-        return new Products(Collections.unmodifiableList(factors)).simplify();
+        return new Products(factors).simplify();
     }
 
     public static Formula buildSingletonVariable(String name) {
@@ -41,5 +40,10 @@ public abstract class Formula {
             return CONSTANT_0;
         }
         return new Constant(constant);
+    }
+
+    @Override
+    public int compareTo(Formula o) {
+        return toString().compareTo(o.toString());
     }
 }

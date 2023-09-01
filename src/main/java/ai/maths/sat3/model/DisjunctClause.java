@@ -15,7 +15,7 @@ public class DisjunctClause<T extends Clause> implements Clause {
     protected final Set<T> disjuncts;
 
     protected DisjunctClause(Set<T> disjuncts) {
-        this.disjuncts = disjuncts;
+        this.disjuncts = Collections.unmodifiableSet(disjuncts);
     }
 
     public Stream<T> getDisjunctsStream() {
@@ -32,14 +32,14 @@ public class DisjunctClause<T extends Clause> implements Clause {
     @Override
     public Clause addConjunct(Clause conjunct) {
         return new DisjunctClause<>(disjuncts.stream()
-                .map(t -> new ConjunctClause<>(Stream.of(t, conjunct).collect(Collectors.toUnmodifiableSet())).simplify())
-                .collect(Collectors.toUnmodifiableSet())).simplify();
+                .map(t -> new ConjunctClause<>(Stream.of(t, conjunct).collect(Collectors.toSet())).simplify())
+                .collect(Collectors.toSet())).simplify();
     }
 
     public Clause getOtherDisjuncts(T disjunct) {
         HashSet<T> newDisjuncts = new HashSet<>(this.disjuncts);
         newDisjuncts.remove(disjunct);
-        return new DisjunctClause<>(Collections.unmodifiableSet(newDisjuncts)).simplify();
+        return new DisjunctClause<>(newDisjuncts).simplify();
     }
 
     @Override
@@ -65,7 +65,7 @@ public class DisjunctClause<T extends Clause> implements Clause {
         if (disjuncts.equals(this.disjuncts)) {
             return this;
         }
-        return new DisjunctClause<>(Collections.unmodifiableSet(disjuncts)).simplify();
+        return new DisjunctClause<>(disjuncts).simplify();
     }
 
     @Override

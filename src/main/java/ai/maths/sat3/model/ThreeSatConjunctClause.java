@@ -6,6 +6,6 @@ import java.util.stream.Collectors;
 public class ThreeSatConjunctClause extends ConjunctClause<ThreeSatDisjunctClause> {
 
     public ThreeSatConjunctClause(ThreeSatDisjunctClause... conjuncts) {
-        super(Arrays.stream(conjuncts).collect(Collectors.toUnmodifiableSet()));
+        super(Arrays.stream(conjuncts).collect(Collectors.toSet()));
     }
 }
