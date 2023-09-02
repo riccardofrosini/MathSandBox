@@ -33,11 +33,11 @@ public class Products extends Formula {
 
     @Override
     public Formula simplify() {
-        if (factors.contains(CONSTANT_0)) {
-            return CONSTANT_0;
-        }
         if (factors.isEmpty()) {
             return CONSTANT_1;
+        }
+        if (factors.contains(CONSTANT_0)) {
+            return CONSTANT_0;
         }
         if (factors.size() == 1) {
             return factors.iterator().next();

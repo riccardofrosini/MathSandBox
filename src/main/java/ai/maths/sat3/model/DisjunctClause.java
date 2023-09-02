@@ -52,7 +52,7 @@ public class DisjunctClause<T extends Clause> implements Clause {
                 .collect(Collectors.toSet());
         disjuncts.addAll(this.disjuncts.stream()
                 .filter(t -> t instanceof DisjunctClause)
-                .flatMap(t -> ((DisjunctClause<?>) t).disjuncts.stream().filter(clause -> !clause.equals(FALSE_CONSTANT)))
+                .flatMap(t -> ((DisjunctClause<?>) t).disjuncts.stream())
                 .collect(Collectors.toSet()));
         Set<SingletonClause<?>> allSingletons = Clause.getAllSingletons(disjuncts);
         if (allSingletons.contains(TRUE_CONSTANT) || Clause.areThereClashingVariables(allSingletons)) {

@@ -65,7 +65,7 @@ public class ConjunctClause<T extends Clause> implements Clause {
                 .collect(Collectors.toSet());
         conjuncts.addAll(this.conjuncts.stream()
                 .filter(t -> t instanceof ConjunctClause)
-                .flatMap(t -> ((ConjunctClause<?>) t).conjuncts.stream().filter(clause -> !clause.equals(TRUE_CONSTANT)))
+                .flatMap(t -> ((ConjunctClause<?>) t).conjuncts.stream())
                 .collect(Collectors.toSet()));
         Set<SingletonClause<?>> allSingletons = Clause.getAllSingletons(conjuncts);
         if (allSingletons.contains(FALSE_CONSTANT) || Clause.areThereClashingVariables(allSingletons)) {
