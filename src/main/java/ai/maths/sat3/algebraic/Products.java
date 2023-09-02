@@ -46,7 +46,7 @@ public class Products extends Formula {
         List<Products> productsSet = newFactors.stream()
                 .filter(addend -> addend instanceof Products)
                 .map(addend -> (Products) addend)
-                .collect(Collectors.toUnmodifiableList());
+                .collect(Collectors.toList());
         newFactors.removeAll(productsSet);
         newFactors.addAll(productsSet.stream().flatMap(factor -> factor.factors.stream()).collect(Collectors.toList()));
         Optional<Sums> sumsOptional = newFactors.stream()

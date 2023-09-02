@@ -33,7 +33,7 @@ public class Sums extends Formula {
         Set<Sums> sumsSet = newAddends.keySet().stream()
                 .filter(addon -> addon instanceof Sums)
                 .map(addon -> (Sums) addon)
-                .collect(Collectors.toUnmodifiableSet());
+                .collect(Collectors.toSet());
         newAddends.keySet().removeAll(sumsSet);
         if (newAddends.equals(addends)) {
             return this;
@@ -65,7 +65,7 @@ public class Sums extends Formula {
     @Override
     public String toString() {
         Set<Entry<Formula, Integer>> collect = addends.entrySet().stream()
-                .filter(formulaIntegerEntry -> !formulaIntegerEntry.getValue().equals(0)).collect(Collectors.toUnmodifiableSet());
+                .filter(formulaIntegerEntry -> !formulaIntegerEntry.getValue().equals(0)).collect(Collectors.toSet());
         return "(" + collect.stream().filter(formulaIntegerEntry -> formulaIntegerEntry.getValue() > 0).map(formulaIntegerEntry ->
                         (formulaIntegerEntry.getValue().equals(1) ? "" : formulaIntegerEntry.getValue().toString())
                                 + formulaIntegerEntry.getKey())
