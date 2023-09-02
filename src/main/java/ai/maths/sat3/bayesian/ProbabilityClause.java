@@ -1,8 +1,5 @@
 package ai.maths.sat3.bayesian;
 
-import static ai.maths.sat3.model.BooleanConstant.FALSE_CONSTANT;
-import static ai.maths.sat3.model.BooleanConstant.TRUE_CONSTANT;
-
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
@@ -15,31 +12,24 @@ import ai.maths.sat3.model.ConjunctOfSingletons;
 import ai.maths.sat3.model.DisjunctClause;
 import ai.maths.sat3.model.DisjunctOfSingletons;
 import ai.maths.sat3.model.NegateVariable;
-import ai.maths.sat3.model.SingletonClause;
+import ai.maths.sat3.model.NonBoolean;
 import ai.maths.sat3.model.ThreeSatConjunctClause;
 import ai.maths.sat3.model.ThreeSatDisjunctClause;
 import ai.maths.sat3.model.Variable;
-import ai.maths.sat3.model.VariableOrBoolean;
+
 
 public class ProbabilityClause {
 
-    private final Map<VariableOrBoolean, Double> probabilities;
+    private final Map<Variable, Double> probabilities;
     private final Map<Clause, Double> probabilitiesOfClauses;
 
     public ProbabilityClause(Clause clause) {
-        Set<VariableOrBoolean> variableOrBooleanSet = clause.getAllVariablesAndConstants();
-        variableOrBooleanSet.add(TRUE_CONSTANT);
-        variableOrBooleanSet.add(FALSE_CONSTANT);
+        Set<Variable> variableOrBooleanSet = clause.getAllVariables();
         probabilities = variableOrBooleanSet.stream()
-                .collect(Collectors.toMap(variableOrBoolean -> variableOrBoolean,
-                        ProbabilityClause::getDefaultProbability));
+                .collect(Collectors.toMap(variableOrBoolean -> variableOrBoolean, variableOrBoolean -> 0.5));
         probabilitiesOfClauses = new HashMap<>();
     }
 
-    private static double getDefaultProbability(VariableOrBoolean variableOrBoolean) {
-        return (variableOrBoolean instanceof Variable) ? 0.5d :
-                (variableOrBoolean == TRUE_CONSTANT ? 1d : 0d);
-    }
 
     public double probabilityOfGiven(ThreeSatDisjunctClause threeSatDisjunctClause, ThreeSatDisjunctClause givenThreeSatDisjunctClause) {
         return probabilityOfClause(new ThreeSatConjunctClause(threeSatDisjunctClause, givenThreeSatDisjunctClause))
@@ -50,8 +40,8 @@ public class ProbabilityClause {
         double probability = 0;
         if (probabilitiesOfClauses.containsKey(clause)) {
             probability = probabilitiesOfClauses.get(clause);
-        } else if (clause instanceof SingletonClause<?>) {
-            probability = probabilityOfSingletonClause((SingletonClause<?>) clause);
+        } else if (clause instanceof NonBoolean) {
+            probability = probabilityOfSingletonClause((NonBoolean) clause);
         } else if (clause instanceof DisjunctOfSingletons) {
             probability = probabilityOfSingletonDisjunction((DisjunctOfSingletons) clause);
         } else if (clause instanceof ConjunctOfSingletons) {
@@ -91,9 +81,9 @@ public class ProbabilityClause {
                 .reduce(1d, (probabilityTotal, probability) -> probability * probabilityTotal);
     }
 
-    public double probabilityOfSingletonClause(SingletonClause<?> singletonClause) {
+    public double probabilityOfSingletonClause(NonBoolean singletonClause) {
         return singletonClause instanceof NegateVariable ?
-                1d - probabilities.get(singletonClause.getVariableOrBoolean()) :
-                probabilities.get(singletonClause.getVariableOrBoolean());
+                1d - probabilities.get((singletonClause).getVariable()) :
+                probabilities.get(singletonClause.getVariable());
     }
 }

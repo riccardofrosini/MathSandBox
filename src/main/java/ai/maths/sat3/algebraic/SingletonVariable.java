@@ -2,7 +2,7 @@ package ai.maths.sat3.algebraic;
 
 import java.util.Objects;
 
-public class SingletonVariable extends Formula {
+public class SingletonVariable extends NotAProduct {
 
     private final String variable;
 

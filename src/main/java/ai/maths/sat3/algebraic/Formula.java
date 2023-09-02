@@ -20,19 +20,19 @@ public abstract class Formula {
         return new Sums(Map.of(formula1, 1, formula2, 1, intersectionFormula, -1)).simplify();
     }
 
-    public static Formula buildSumsForNegation(Formula formula) {
+    public static NotAProduct buildSumsForNegation(Formula formula) {
         return new Sums(Map.of(CONSTANT_1, 1, formula, -1)).simplify();
     }
 
-    public static Formula buildProducts(List<Formula> factors) {
+    public static Formula buildProducts(List<NotAProduct> factors) {
         return new Products(factors).simplify();
     }
 
-    public static Formula buildSingletonVariable(String name) {
+    public static SingletonVariable buildSingletonVariable(String name) {
         return new SingletonVariable(name);
     }
 
-    public static Formula buildConstant(Integer constant) {
+    public static NotAProduct buildConstant(Integer constant) {
         if (constant == 1) {
             return CONSTANT_1;
         }

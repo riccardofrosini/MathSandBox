@@ -24,9 +24,9 @@ public class ConjunctClause<T extends Clause> implements Clause {
     }
 
     @Override
-    public Set<VariableOrBoolean> getAllVariablesAndConstants() {
+    public Set<Variable> getAllVariables() {
         return conjuncts.stream()
-                .flatMap(t -> t.getAllVariablesAndConstants().stream())
+                .flatMap(t -> t.getAllVariables().stream())
                 .collect(Collectors.toSet());
     }
 
@@ -67,13 +67,13 @@ public class ConjunctClause<T extends Clause> implements Clause {
                 .filter(t -> t instanceof ConjunctClause)
                 .flatMap(t -> ((ConjunctClause<?>) t).conjuncts.stream())
                 .collect(Collectors.toSet()));
-        Set<SingletonClause<?>> allSingletons = Clause.getAllSingletons(conjuncts);
-        if (allSingletons.contains(FALSE_CONSTANT) || Clause.areThereClashingVariables(allSingletons)) {
+        Set<NonBoolean> allSingletons = Clause.getAllSingletons(conjuncts);
+        if (conjuncts.contains(FALSE_CONSTANT) || Clause.areThereClashingVariables(allSingletons)) {
             return FALSE_CONSTANT;
         }
         if (allSingletons.size() == conjuncts.size()) {
             return new ConjunctOfSingletons(conjuncts.stream()
-                    .map(t -> (SingletonClause<?>) t).collect(Collectors.toSet()));
+                    .map(t -> (NonBoolean) t).collect(Collectors.toSet()));
         }
         if (conjuncts.equals(this.conjuncts)) {
             return this;

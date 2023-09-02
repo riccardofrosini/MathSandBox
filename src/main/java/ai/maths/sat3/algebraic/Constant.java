@@ -2,7 +2,7 @@ package ai.maths.sat3.algebraic;
 
 import java.util.Objects;
 
-public class Constant extends Formula {
+public class Constant extends NotAProduct {
 
     private final Integer constant;
 

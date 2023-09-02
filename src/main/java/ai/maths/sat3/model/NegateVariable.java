@@ -1,8 +1,9 @@
 package ai.maths.sat3.model;
 
 import java.util.Objects;
+import java.util.Set;
 
-public class NegateVariable extends SingletonClause<Variable> {
+public class NegateVariable extends NonBoolean {
 
     private final Variable variable;
 
@@ -11,8 +12,13 @@ public class NegateVariable extends SingletonClause<Variable> {
     }
 
     @Override
-    public Variable getVariableOrBoolean() {
+    public Variable getVariable() {
         return variable;
+    }
+
+    @Override
+    public Set<Variable> getAllVariables() {
+        return Set.of(variable);
     }
 
     @Override

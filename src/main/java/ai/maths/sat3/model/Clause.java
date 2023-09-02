@@ -2,23 +2,18 @@ package ai.maths.sat3.model;
 
 import java.util.Set;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 public interface Clause {
 
-    Set<VariableOrBoolean> getAllVariablesAndConstants();
+    Set<Variable> getAllVariables();
 
     Clause simplify();
 
     Clause addConjunct(Clause clause);
 
-    static boolean areThereClashingVariables(Set<SingletonClause<?>> juncts) {
-        return areThereClashingVariables(juncts.stream());
-    }
-
-    static boolean areThereClashingVariables(Stream<SingletonClause<?>> juncts) {
-        return juncts
-                .collect(Collectors.groupingBy(SingletonClause::getVariableOrBoolean))
+    static boolean areThereClashingVariables(Set<NonBoolean> juncts) {
+        return juncts.stream()
+                .collect(Collectors.groupingBy(NonBoolean::getVariable))
                 .values()
                 .stream()
                 .map(variableListEntry -> variableListEntry.stream()
@@ -27,14 +22,10 @@ public interface Clause {
                 .anyMatch(booleans -> booleans.size() > 1);
     }
 
-    static <T extends Clause> Set<SingletonClause<?>> getAllSingletons(Set<T> juncts) {
-        return getAllSingletons(juncts.stream());
-    }
-
-    static <T extends Clause> Set<SingletonClause<?>> getAllSingletons(Stream<T> juncts) {
-        return juncts
-                .filter(t -> t instanceof SingletonClause)
-                .map(t -> (SingletonClause<?>) t)
+    static <T extends Clause> Set<NonBoolean> getAllSingletons(Set<T> juncts) {
+        return juncts.stream()
+                .filter(t -> t instanceof NonBoolean)
+                .map(t -> (NonBoolean) t)
                 .collect(Collectors.toSet());
     }
 }

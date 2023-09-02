@@ -1,15 +1,13 @@
 package ai.maths.sat3.bayesian;
 
-import static ai.maths.sat3.model.BooleanConstant.TRUE_CONSTANT;
-
 import ai.maths.sat3.algebraic.Formula;
-import ai.maths.sat3.model.NegateVariable;
-import ai.maths.sat3.model.SingletonClause;
+import ai.maths.sat3.algebraic.NotAProduct;
+import ai.maths.sat3.model.NonBoolean;
 import ai.maths.sat3.model.Variable;
 
-public class ProbabilityOfSingleton extends ProbabilityOfClause<SingletonClause<?>> {
+public class ProbabilityOfSingleton extends ProbabilityOfClause<NonBoolean> {
 
-    protected ProbabilityOfSingleton(SingletonClause<?> clause) {
+    protected ProbabilityOfSingleton(NonBoolean clause) {
         super(clause);
     }
 
@@ -19,17 +17,11 @@ public class ProbabilityOfSingleton extends ProbabilityOfClause<SingletonClause<
     }
 
     @Override
-    public Formula convertToFormula() {
+    public NotAProduct convertToFormula() {
         if (clause instanceof Variable) {
             return Formula.buildSingletonVariable("P(" + clause + ")");
         }
-        if (clause instanceof NegateVariable) {
-            return Formula.buildSumsForNegation(Formula.buildSingletonVariable("P(" + clause.getVariableOrBoolean() + ")"));
-        }
-        if (clause == TRUE_CONSTANT) {
-            return Formula.buildConstant(1);
-        }
-        return Formula.buildConstant(0);
+        return Formula.buildSumsForNegation(Formula.buildSingletonVariable("P(" + clause.getVariable() + ")"));
     }
 
     @Override
@@ -37,12 +29,6 @@ public class ProbabilityOfSingleton extends ProbabilityOfClause<SingletonClause<
         if (clause instanceof Variable) {
             return "P(" + clause + ")";
         }
-        if (clause instanceof NegateVariable) {
-            return "(1-P(" + clause.getVariableOrBoolean() + "))";
-        }
-        if (clause == TRUE_CONSTANT) {
-            return "1";
-        }
-        return "0";
+        return "(1-P(" + clause.getVariable() + "))";
     }
 }

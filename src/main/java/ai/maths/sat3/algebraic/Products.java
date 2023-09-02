@@ -13,9 +13,9 @@ import java.util.stream.Collectors;
 
 public class Products extends Formula {
 
-    private final Set<Formula> factors;
+    private final Set<NotAProduct> factors;
 
-    protected Products(List<Formula> factors) {
+    protected Products(List<NotAProduct> factors) {
         List<Constant> constants = factors.stream()
                 .filter(formula -> formula instanceof Constant)
                 .map(formula -> (Constant) formula)
@@ -24,7 +24,7 @@ public class Products extends Formula {
         Constant constant = constants.stream().reduce(CONSTANT_1, (constant1, constant2) -> new Constant(constant1.getConstant() * constant2.getConstant()));
         factors.add(constant);
         factors.removeIf(factor -> factor.equals(CONSTANT_1));
-        Set<Formula> formulas = Set.copyOf(factors);
+        Set<NotAProduct> formulas = Set.copyOf(factors);
         if (formulas.size() != factors.size()) {
             System.out.println("THE CODE SHOULD NEVER EVER ENTER HERE!");
         }
@@ -42,13 +42,8 @@ public class Products extends Formula {
         if (factors.size() == 1) {
             return factors.iterator().next();
         }
-        List<Formula> newFactors = new ArrayList<>(factors);
-        List<Products> productsSet = newFactors.stream()
-                .filter(addend -> addend instanceof Products)
-                .map(addend -> (Products) addend)
-                .collect(Collectors.toList());
-        newFactors.removeAll(productsSet);
-        newFactors.addAll(productsSet.stream().flatMap(factor -> factor.factors.stream()).collect(Collectors.toList()));
+        List<NotAProduct> newFactors = new ArrayList<>(factors);
+
         Optional<Sums> sumsOptional = newFactors.stream()
                 .filter(addend -> addend instanceof Sums).findFirst()
                 .map(integer -> (Sums) integer);
@@ -60,8 +55,13 @@ public class Products extends Formula {
             newFactors.remove(sums);
             return new Sums(sums.getStreamOfAddends()
                     .collect(Collectors.toMap(formulaIntegerEntry -> {
-                        List<Formula> product = new ArrayList<>(newFactors);
-                        product.add(formulaIntegerEntry.getKey());
+                        List<NotAProduct> product = new ArrayList<>(newFactors);
+                        Formula key = formulaIntegerEntry.getKey();
+                        if (key instanceof Products) {
+                            product.addAll(((Products) key).factors);
+                        } else {
+                            product.add((NotAProduct) key);
+                        }
                         return new Products(product).simplify();
                     }, Entry::getValue, Integer::sum))).simplify();
         }

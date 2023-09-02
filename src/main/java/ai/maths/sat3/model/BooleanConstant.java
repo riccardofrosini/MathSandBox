@@ -1,8 +1,9 @@
 package ai.maths.sat3.model;
 
 import java.util.Objects;
+import java.util.Set;
 
-public final class BooleanConstant extends SingletonClause<BooleanConstant> implements VariableOrBoolean {
+public final class BooleanConstant extends SingletonClause {
 
     public static final BooleanConstant TRUE_CONSTANT = new BooleanConstant(true);
     public static final BooleanConstant FALSE_CONSTANT = new BooleanConstant(false);
@@ -14,8 +15,8 @@ public final class BooleanConstant extends SingletonClause<BooleanConstant> impl
     }
 
     @Override
-    public BooleanConstant getVariableOrBoolean() {
-        return this;
+    public Set<Variable> getAllVariables() {
+        return Set.of();
     }
 
     @Override

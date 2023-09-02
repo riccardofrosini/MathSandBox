@@ -11,7 +11,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-public class Sums extends Formula {
+public class Sums extends NotAProduct {
 
     private final Map<Formula, Integer> addends;
 
@@ -24,7 +24,7 @@ public class Sums extends Formula {
     }
 
     @Override
-    public Formula simplify() {
+    public NotAProduct simplify() {
         HashMap<Formula, Integer> newAddends = new HashMap<>(addends);
         newAddends.entrySet().removeIf(formulaIntegerEntry -> formulaIntegerEntry.getValue().equals(0) || formulaIntegerEntry.getKey().equals(CONSTANT_0));
         if (newAddends.isEmpty()) {

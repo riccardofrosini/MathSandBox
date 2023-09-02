@@ -4,11 +4,12 @@ import java.util.Objects;
 import java.util.function.Function;
 
 import ai.maths.sat3.algebraic.Formula;
+import ai.maths.sat3.model.BooleanConstant;
 import ai.maths.sat3.model.Clause;
 import ai.maths.sat3.model.ConjunctClause;
 import ai.maths.sat3.model.ConjunctOfSingletons;
 import ai.maths.sat3.model.DisjunctClause;
-import ai.maths.sat3.model.SingletonClause;
+import ai.maths.sat3.model.NonBoolean;
 
 public abstract class ProbabilityOfClause<T extends Clause> implements Function<ProbabilityClause, Double> {
 
@@ -29,8 +30,11 @@ public abstract class ProbabilityOfClause<T extends Clause> implements Function<
     }
 
     public static ProbabilityOfClause<?> buildProbabilityOfClause(Clause clause) {
-        if (clause instanceof SingletonClause) {
-            return new ProbabilityOfSingleton((SingletonClause<?>) clause);
+        if (clause instanceof BooleanConstant) {
+            return new ProbabilityOfBoolean((BooleanConstant) clause);
+        }
+        if (clause instanceof NonBoolean) {
+            return new ProbabilityOfSingleton((NonBoolean) clause);
         }
         if (clause instanceof DisjunctClause) {
             return new ProbabilityOfDisjuncts<>((DisjunctClause<?>) clause).simplify();
