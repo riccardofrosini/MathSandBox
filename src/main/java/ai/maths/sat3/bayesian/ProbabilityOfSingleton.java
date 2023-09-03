@@ -2,12 +2,12 @@ package ai.maths.sat3.bayesian;
 
 import ai.maths.sat3.algebraic.Formula;
 import ai.maths.sat3.algebraic.NotAProduct;
-import ai.maths.sat3.model.NonBoolean;
+import ai.maths.sat3.model.SingletonVariable;
 import ai.maths.sat3.model.Variable;
 
-public class ProbabilityOfSingleton extends ProbabilityOfClause<NonBoolean> {
+public class ProbabilityOfSingleton extends ProbabilityOfClause<SingletonVariable> {
 
-    protected ProbabilityOfSingleton(NonBoolean clause) {
+    protected ProbabilityOfSingleton(SingletonVariable clause) {
         super(clause);
     }
 

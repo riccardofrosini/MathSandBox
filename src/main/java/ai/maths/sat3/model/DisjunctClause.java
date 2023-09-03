@@ -10,7 +10,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-public class DisjunctClause<T extends Clause> implements Clause {
+public class DisjunctClause<T extends Clause> extends Clause {
 
     protected final Set<T> disjuncts;
 
@@ -54,13 +54,13 @@ public class DisjunctClause<T extends Clause> implements Clause {
                 .filter(t -> t instanceof DisjunctClause)
                 .flatMap(t -> ((DisjunctClause<?>) t).disjuncts.stream())
                 .collect(Collectors.toSet()));
-        Set<NonBoolean> allSingletons = Clause.getAllSingletons(disjuncts);
+        Set<SingletonVariable> allSingletons = Clause.getAllSingletons(disjuncts);
         if (disjuncts.contains(TRUE_CONSTANT) || Clause.areThereClashingVariables(allSingletons)) {
             return TRUE_CONSTANT;
         }
         if (allSingletons.size() == disjuncts.size()) {
             return new DisjunctOfSingletons(disjuncts.stream()
-                    .map(t -> (NonBoolean) t).collect(Collectors.toSet()));
+                    .map(t -> (SingletonVariable) t).collect(Collectors.toSet()));
         }
         if (disjuncts.equals(this.disjuncts)) {
             return this;

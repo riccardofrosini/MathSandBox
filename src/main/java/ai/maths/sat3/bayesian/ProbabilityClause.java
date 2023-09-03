@@ -6,13 +6,14 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import ai.maths.sat3.model.BooleanConstant;
 import ai.maths.sat3.model.Clause;
 import ai.maths.sat3.model.ConjunctClause;
 import ai.maths.sat3.model.ConjunctOfSingletons;
 import ai.maths.sat3.model.DisjunctClause;
 import ai.maths.sat3.model.DisjunctOfSingletons;
 import ai.maths.sat3.model.NegateVariable;
-import ai.maths.sat3.model.NonBoolean;
+import ai.maths.sat3.model.SingletonVariable;
 import ai.maths.sat3.model.ThreeSatConjunctClause;
 import ai.maths.sat3.model.ThreeSatDisjunctClause;
 import ai.maths.sat3.model.Variable;
@@ -30,7 +31,6 @@ public class ProbabilityClause {
         probabilitiesOfClauses = new HashMap<>();
     }
 
-
     public double probabilityOfGiven(ThreeSatDisjunctClause threeSatDisjunctClause, ThreeSatDisjunctClause givenThreeSatDisjunctClause) {
         return probabilityOfClause(new ThreeSatConjunctClause(threeSatDisjunctClause, givenThreeSatDisjunctClause))
                 / probabilityOfClause(givenThreeSatDisjunctClause);
@@ -40,8 +40,10 @@ public class ProbabilityClause {
         double probability = 0;
         if (probabilitiesOfClauses.containsKey(clause)) {
             probability = probabilitiesOfClauses.get(clause);
-        } else if (clause instanceof NonBoolean) {
-            probability = probabilityOfSingletonClause((NonBoolean) clause);
+        } else if (clause instanceof BooleanConstant) {
+            probability = probabilityOfBoolean((BooleanConstant) clause);
+        } else if (clause instanceof SingletonVariable) {
+            probability = probabilityOfSingletonClause((SingletonVariable) clause);
         } else if (clause instanceof DisjunctOfSingletons) {
             probability = probabilityOfSingletonDisjunction((DisjunctOfSingletons) clause);
         } else if (clause instanceof ConjunctOfSingletons) {
@@ -81,9 +83,13 @@ public class ProbabilityClause {
                 .reduce(1d, (probabilityTotal, probability) -> probability * probabilityTotal);
     }
 
-    public double probabilityOfSingletonClause(NonBoolean singletonClause) {
+    public double probabilityOfSingletonClause(SingletonVariable singletonClause) {
         return singletonClause instanceof NegateVariable ?
                 1d - probabilities.get((singletonClause).getVariable()) :
                 probabilities.get(singletonClause.getVariable());
+    }
+
+    public double probabilityOfBoolean(BooleanConstant clause) {
+        return clause == BooleanConstant.TRUE_CONSTANT ? 1 : 0;
     }
 }

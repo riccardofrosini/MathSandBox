@@ -3,7 +3,7 @@ package ai.maths.sat3.model;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-public abstract class SingletonClause implements Clause {
+public abstract class SingletonClause extends Clause {
 
     @Override
     public Clause addConjunct(Clause conjunct) {

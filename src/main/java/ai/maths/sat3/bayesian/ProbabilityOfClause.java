@@ -9,7 +9,7 @@ import ai.maths.sat3.model.Clause;
 import ai.maths.sat3.model.ConjunctClause;
 import ai.maths.sat3.model.ConjunctOfSingletons;
 import ai.maths.sat3.model.DisjunctClause;
-import ai.maths.sat3.model.NonBoolean;
+import ai.maths.sat3.model.SingletonVariable;
 
 public abstract class ProbabilityOfClause<T extends Clause> implements Function<ProbabilityClause, Double> {
 
@@ -33,8 +33,8 @@ public abstract class ProbabilityOfClause<T extends Clause> implements Function<
         if (clause instanceof BooleanConstant) {
             return new ProbabilityOfBoolean((BooleanConstant) clause);
         }
-        if (clause instanceof NonBoolean) {
-            return new ProbabilityOfSingleton((NonBoolean) clause);
+        if (clause instanceof SingletonVariable) {
+            return new ProbabilityOfSingleton((SingletonVariable) clause);
         }
         if (clause instanceof DisjunctClause) {
             return new ProbabilityOfDisjuncts<>((DisjunctClause<?>) clause).simplify();

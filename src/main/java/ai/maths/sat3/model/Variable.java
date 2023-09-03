@@ -3,7 +3,7 @@ package ai.maths.sat3.model;
 import java.util.Objects;
 import java.util.Set;
 
-public class Variable extends NonBoolean {
+public class Variable extends SingletonVariable {
 
     private final String name;
 

@@ -3,17 +3,17 @@ package ai.maths.sat3.model;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-public interface Clause {
+public abstract class Clause {
 
-    Set<Variable> getAllVariables();
+    public abstract Set<Variable> getAllVariables();
 
-    Clause simplify();
+    public abstract Clause simplify();
 
-    Clause addConjunct(Clause clause);
+    public abstract Clause addConjunct(Clause clause);
 
-    static boolean areThereClashingVariables(Set<NonBoolean> juncts) {
+    public static boolean areThereClashingVariables(Set<SingletonVariable> juncts) {
         return juncts.stream()
-                .collect(Collectors.groupingBy(NonBoolean::getVariable))
+                .collect(Collectors.groupingBy(SingletonVariable::getVariable))
                 .values()
                 .stream()
                 .map(variableListEntry -> variableListEntry.stream()
@@ -22,10 +22,10 @@ public interface Clause {
                 .anyMatch(booleans -> booleans.size() > 1);
     }
 
-    static <T extends Clause> Set<NonBoolean> getAllSingletons(Set<T> juncts) {
+    static <T extends Clause> Set<SingletonVariable> getAllSingletons(Set<T> juncts) {
         return juncts.stream()
-                .filter(t -> t instanceof NonBoolean)
-                .map(t -> (NonBoolean) t)
+                .filter(t -> t instanceof SingletonVariable)
+                .map(t -> (SingletonVariable) t)
                 .collect(Collectors.toSet());
     }
 }

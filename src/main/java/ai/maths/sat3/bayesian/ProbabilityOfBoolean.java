@@ -13,10 +13,7 @@ public class ProbabilityOfBoolean extends ProbabilityOfClause<BooleanConstant> {
 
     @Override
     public Double apply(ProbabilityClause probabilityClause) {
-        if (clause == TRUE_CONSTANT) {
-            return 1d;
-        }
-        return 0d;
+        return probabilityClause.probabilityOfBoolean(clause);
     }
 
     @Override

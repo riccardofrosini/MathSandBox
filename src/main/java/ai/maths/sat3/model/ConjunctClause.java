@@ -11,7 +11,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-public class ConjunctClause<T extends Clause> implements Clause {
+public class ConjunctClause<T extends Clause> extends Clause {
 
     protected final Set<T> conjuncts;
 
@@ -67,13 +67,13 @@ public class ConjunctClause<T extends Clause> implements Clause {
                 .filter(t -> t instanceof ConjunctClause)
                 .flatMap(t -> ((ConjunctClause<?>) t).conjuncts.stream())
                 .collect(Collectors.toSet()));
-        Set<NonBoolean> allSingletons = Clause.getAllSingletons(conjuncts);
+        Set<SingletonVariable> allSingletons = Clause.getAllSingletons(conjuncts);
         if (conjuncts.contains(FALSE_CONSTANT) || Clause.areThereClashingVariables(allSingletons)) {
             return FALSE_CONSTANT;
         }
         if (allSingletons.size() == conjuncts.size()) {
             return new ConjunctOfSingletons(conjuncts.stream()
-                    .map(t -> (NonBoolean) t).collect(Collectors.toSet()));
+                    .map(t -> (SingletonVariable) t).collect(Collectors.toSet()));
         }
         if (conjuncts.equals(this.conjuncts)) {
             return this;
