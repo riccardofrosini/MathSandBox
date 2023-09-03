@@ -38,9 +38,9 @@ public class ConjunctClause<T extends Clause> extends Clause {
 
     @Override
     public Clause addConjunct(Clause conjunct) {
-        HashSet<Clause> conjuncts = new HashSet<>(this.conjuncts);
-        conjuncts.add(conjunct);
-        return new ConjunctClause<>(conjuncts).simplify();
+        HashSet<Clause> newConjuncts = new HashSet<>(this.conjuncts);
+        newConjuncts.add(conjunct);
+        return new ConjunctClause<>(newConjuncts).simplify();
     }
 
     public Clause makeAsDisjunct() {
@@ -48,7 +48,7 @@ public class ConjunctClause<T extends Clause> extends Clause {
                 .filter(t -> t instanceof DisjunctClause).findFirst();
         if (disjunctClauseOptional.isEmpty()) {
             System.out.println("THE CODE SHOULD NEVER EVER ENTER HERE!");
-            return this.simplify();
+            return this;
         }
         DisjunctClause<?> disjunctClause = (DisjunctClause<?>) disjunctClauseOptional.get();
         Clause otherConjuncts = getOtherConjuncts(disjunctClauseOptional.get());

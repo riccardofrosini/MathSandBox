@@ -20,6 +20,11 @@ public final class BooleanConstant extends SingletonClause {
     }
 
     @Override
+    public Clause addConjunct(Clause conjunct) {
+        return this == FALSE_CONSTANT ? FALSE_CONSTANT : conjunct;
+    }
+
+    @Override
     public boolean equals(Object o) {
         if (this == o) {
             return true;
