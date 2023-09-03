@@ -9,6 +9,7 @@ import ai.maths.sat3.model.Clause;
 import ai.maths.sat3.model.ConjunctClause;
 import ai.maths.sat3.model.ConjunctOfSingletons;
 import ai.maths.sat3.model.DisjunctClause;
+import ai.maths.sat3.model.DisjunctsConjunctsOfNonConstantAndSingletons;
 import ai.maths.sat3.model.SingletonVariable;
 
 public abstract class ProbabilityOfClause<T extends Clause> implements Function<ProbabilityClause, Double> {
@@ -25,7 +26,7 @@ public abstract class ProbabilityOfClause<T extends Clause> implements Function<
 
     public abstract Formula convertToFormula();
 
-    public static ProbabilityOfClause<?> probabilityOfIntersection(Clause clause1, Clause clause2) {
+    public static ProbabilityOfClause<?> probabilityOfIntersection(Clause clause1, DisjunctsConjunctsOfNonConstantAndSingletons clause2) {
         return buildProbabilityOfClause(clause1.addConjunct(clause2));
     }
 

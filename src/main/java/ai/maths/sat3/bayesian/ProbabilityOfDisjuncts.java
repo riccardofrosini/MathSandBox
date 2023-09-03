@@ -4,10 +4,10 @@ import java.util.Objects;
 import java.util.Optional;
 
 import ai.maths.sat3.algebraic.Formula;
-import ai.maths.sat3.model.Clause;
 import ai.maths.sat3.model.DisjunctClause;
+import ai.maths.sat3.model.DisjunctsConjunctsOfNonConstantAndSingletons;
 
-public class ProbabilityOfDisjuncts<T extends Clause> extends ProbabilityOfClause<DisjunctClause<T>> {
+public class ProbabilityOfDisjuncts<T extends DisjunctsConjunctsOfNonConstantAndSingletons> extends ProbabilityOfClause<DisjunctClause<T>> {
 
     private final ProbabilityOfClause<?> probabilityOfClauses1;
     private final ProbabilityOfClause<?> probabilityOfClauses2;
@@ -21,7 +21,7 @@ public class ProbabilityOfDisjuncts<T extends Clause> extends ProbabilityOfClaus
             throw new RuntimeException();
         }
         T disjunct = any.get();
-        Clause otherDisjuncts = clause.getOtherDisjuncts(disjunct);
+        DisjunctsConjunctsOfNonConstantAndSingletons otherDisjuncts = clause.getOtherDisjuncts(disjunct);
         probabilityOfClauses1 = ProbabilityOfClause.buildProbabilityOfClause(disjunct);
         probabilityOfClauses2 = ProbabilityOfClause.buildProbabilityOfClause(otherDisjuncts);
         intersection = ProbabilityOfClause.probabilityOfIntersection(disjunct, otherDisjuncts);

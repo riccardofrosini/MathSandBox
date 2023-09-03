@@ -1,7 +1,6 @@
 package ai.maths.sat3.model;
 
 import static ai.maths.sat3.model.BooleanConstant.FALSE_CONSTANT;
-import static ai.maths.sat3.model.BooleanConstant.TRUE_CONSTANT;
 
 import java.util.Collections;
 import java.util.HashSet;
@@ -11,7 +10,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-public class ConjunctClause<T extends Clause> extends Clause {
+public class ConjunctClause<T extends DisjunctsConjunctsOfNonConstantAndSingletons> implements Clause {
 
     protected final Set<T> conjuncts;
 
@@ -30,56 +29,55 @@ public class ConjunctClause<T extends Clause> extends Clause {
                 .collect(Collectors.toSet());
     }
 
-    public Clause getOtherConjuncts(T conjunct) {
+    public DisjunctsConjunctsOfNonConstantAndSingletons getOtherConjuncts(T conjunct) {
         HashSet<T> newConjuncts = new HashSet<>(this.conjuncts);
         newConjuncts.remove(conjunct);
         return new ConjunctClause<>(newConjuncts).simplify();
     }
 
     @Override
-    public Clause addConjunct(Clause conjunct) {
-        HashSet<Clause> newConjuncts = new HashSet<>(this.conjuncts);
+    public DisjunctsConjunctsOfNonConstantAndSingletons addConjunct(DisjunctsConjunctsOfNonConstantAndSingletons conjunct) {
+        HashSet<DisjunctsConjunctsOfNonConstantAndSingletons> newConjuncts = new HashSet<>(this.conjuncts);
         newConjuncts.add(conjunct);
         return new ConjunctClause<>(newConjuncts).simplify();
     }
 
-    public Clause makeAsDisjunct() {
+    public DisjunctsConjunctsOfNonConstantAndSingletons makeAsDisjunct() {
         Optional<T> disjunctClauseOptional = conjuncts.stream()
-                .filter(t -> t instanceof DisjunctClause)
+                .filter(clause -> clause instanceof DisjunctClause)
                 .findFirst();
         if (disjunctClauseOptional.isEmpty()) {
             System.out.println("THE CODE SHOULD NEVER EVER ENTER HERE!");
             throw new RuntimeException();
         }
         DisjunctClause<?> disjunctClause = (DisjunctClause<?>) disjunctClauseOptional.get();
-        Clause otherConjuncts = getOtherConjuncts(disjunctClauseOptional.get());
+        DisjunctsConjunctsOfNonConstantAndSingletons otherConjuncts = getOtherConjuncts(disjunctClauseOptional.get());
         return disjunctClause.addConjunct(otherConjuncts);
     }
 
     @Override
-    public Clause simplify() {
-        if (this.conjuncts.size() == 1) {
-            return this.conjuncts.iterator().next();
+    public DisjunctsConjunctsOfNonConstantAndSingletons simplify() {
+        if (conjuncts.size() == 1) {
+            return conjuncts.iterator().next();
         }
-        Set<Clause> conjuncts = this.conjuncts.stream()
-                .filter(t -> !(t instanceof ConjunctClause) && !t.equals(TRUE_CONSTANT))
+        Set<SingletonVariableOrDisjunctsOfNonConstants> singletonOrDisjunctsSet = conjuncts.stream()
+                .filter(clause -> clause instanceof SingletonVariableOrDisjunctsOfNonConstants)
+                .map(clause -> (SingletonVariableOrDisjunctsOfNonConstants) clause)
                 .collect(Collectors.toSet());
-        conjuncts.addAll(this.conjuncts.stream()
-                .filter(t -> t instanceof ConjunctClause)
-                .flatMap(t -> ((ConjunctClause<?>) t).conjuncts.stream())
+        singletonOrDisjunctsSet.addAll(conjuncts.stream()
+                .filter(clause -> clause instanceof ConjunctClause)
+                .flatMap(clause -> ((ConjunctClause<?>) clause).conjuncts.stream())
+                .map(clause -> (SingletonVariableOrDisjunctsOfNonConstants) clause)
                 .collect(Collectors.toSet()));
-        Set<SingletonVariable> allSingletons = Clause.getAllSingletons(conjuncts);
+        Set<SingletonVariable> allSingletons = Clause.getAllSingletons(singletonOrDisjunctsSet);
         if (conjuncts.contains(FALSE_CONSTANT) || Clause.areThereClashingVariables(allSingletons)) {
             return FALSE_CONSTANT;
         }
-        if (allSingletons.size() == conjuncts.size()) {
-            return new ConjunctOfSingletons(conjuncts.stream()
+        if (allSingletons.size() == singletonOrDisjunctsSet.size()) {
+            return new ConjunctOfSingletons(singletonOrDisjunctsSet.stream()
                     .map(t -> (SingletonVariable) t).collect(Collectors.toSet()));
         }
-        if (conjuncts.equals(this.conjuncts)) {
-            return this;
-        }
-        return new ConjunctClause<>(conjuncts).simplify();
+        return new ConjunctOfNonConstants<>(singletonOrDisjunctsSet).simplify();
     }
 
     @Override

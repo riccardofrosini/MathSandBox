@@ -3,15 +3,15 @@ package ai.maths.sat3.model;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-public abstract class Clause {
+public interface Clause {
 
-    public abstract Set<Variable> getAllVariables();
+    Set<Variable> getAllVariables();
 
-    public abstract Clause simplify();
+    DisjunctsConjunctsOfNonConstantAndSingletons simplify();
 
-    public abstract Clause addConjunct(Clause clause);
+    DisjunctsConjunctsOfNonConstantAndSingletons addConjunct(DisjunctsConjunctsOfNonConstantAndSingletons clause);
 
-    public static boolean areThereClashingVariables(Set<SingletonVariable> juncts) {
+    static boolean areThereClashingVariables(Set<SingletonVariable> juncts) {
         return juncts.stream()
                 .collect(Collectors.groupingBy(SingletonVariable::getVariable))
                 .values()

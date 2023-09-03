@@ -3,7 +3,7 @@ package ai.maths.sat3.model;
 import java.util.Objects;
 import java.util.Set;
 
-public final class BooleanConstant extends SingletonClause {
+public final class BooleanConstant implements DisjunctsConjunctsOfNonConstantAndSingletons {
 
     public static final BooleanConstant TRUE_CONSTANT = new BooleanConstant(true);
     public static final BooleanConstant FALSE_CONSTANT = new BooleanConstant(false);
@@ -20,7 +20,12 @@ public final class BooleanConstant extends SingletonClause {
     }
 
     @Override
-    public Clause addConjunct(Clause conjunct) {
+    public DisjunctsConjunctsOfNonConstantAndSingletons simplify() {
+        return this;
+    }
+
+    @Override
+    public DisjunctsConjunctsOfNonConstantAndSingletons addConjunct(DisjunctsConjunctsOfNonConstantAndSingletons conjunct) {
         return this == FALSE_CONSTANT ? FALSE_CONSTANT : conjunct;
     }
 

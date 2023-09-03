@@ -12,6 +12,7 @@ import ai.maths.sat3.model.ConjunctClause;
 import ai.maths.sat3.model.ConjunctOfSingletons;
 import ai.maths.sat3.model.DisjunctClause;
 import ai.maths.sat3.model.DisjunctOfSingletons;
+import ai.maths.sat3.model.DisjunctsConjunctsOfNonConstantAndSingletons;
 import ai.maths.sat3.model.NegateVariable;
 import ai.maths.sat3.model.SingletonVariable;
 import ai.maths.sat3.model.ThreeSatConjunctClause;
@@ -36,7 +37,7 @@ public class ProbabilityClause {
                 / probabilityOfClause(givenThreeSatDisjunctClause);
     }
 
-    public double probabilityOfClause(Clause clause) {
+    public double probabilityOfClause(DisjunctsConjunctsOfNonConstantAndSingletons clause) {
         double probability = 0;
         if (probabilitiesOfClauses.containsKey(clause)) {
             probability = probabilitiesOfClauses.get(clause);
@@ -57,17 +58,17 @@ public class ProbabilityClause {
         return probability;
     }
 
-    private <X extends Clause> double probabilityOfDisjuncts(DisjunctClause<X> disjunctClause) {
+    private <X extends DisjunctsConjunctsOfNonConstantAndSingletons> double probabilityOfDisjuncts(DisjunctClause<X> disjunctClause) {
         Optional<X> disjunctOptional = disjunctClause.getDisjunctsStream().findAny();
         if (disjunctOptional.isEmpty()) {
             return 0d;
         }
         X disjunct = disjunctOptional.get();
-        Clause otherDisjunct = disjunctClause.getOtherDisjuncts(disjunct);
+        DisjunctsConjunctsOfNonConstantAndSingletons otherDisjunct = disjunctClause.getOtherDisjuncts(disjunct);
         return probabilityOfClause(disjunct) + probabilityOfClause(otherDisjunct) - probabilityOfClause(disjunct.addConjunct(otherDisjunct));
     }
 
-    private <X extends Clause> double probabilityOfConjuncts(ConjunctClause<X> conjunctClause) {
+    private <X extends DisjunctsConjunctsOfNonConstantAndSingletons> double probabilityOfConjuncts(ConjunctClause<X> conjunctClause) {
         return probabilityOfClause(conjunctClause.makeAsDisjunct());
     }
 
