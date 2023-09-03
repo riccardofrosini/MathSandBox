@@ -44,8 +44,9 @@ public class ConjunctClause<T extends Clause> extends Clause {
     }
 
     public Clause makeAsDisjunct() {
-        Optional<? extends T> disjunctClauseOptional = conjuncts.stream()
-                .filter(t -> t instanceof DisjunctClause).findFirst();
+        Optional<T> disjunctClauseOptional = conjuncts.stream()
+                .filter(t -> t instanceof DisjunctClause)
+                .findFirst();
         if (disjunctClauseOptional.isEmpty()) {
             System.out.println("THE CODE SHOULD NEVER EVER ENTER HERE!");
             return this;
