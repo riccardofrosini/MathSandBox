@@ -16,6 +16,10 @@ public class ProbabilityOfDisjuncts<T extends Clause> extends ProbabilityOfClaus
     protected ProbabilityOfDisjuncts(DisjunctClause<T> clause) {
         super(clause);
         Optional<T> any = clause.getDisjunctsStream().findAny();
+        if (any.isEmpty()) {
+            System.out.println("THE CODE SHOULD NEVER EVER ENTER HERE!");
+            throw new RuntimeException();
+        }
         T disjunct = any.get();
         Clause otherDisjuncts = clause.getOtherDisjuncts(disjunct);
         probabilityOfClauses1 = ProbabilityOfClause.buildProbabilityOfClause(disjunct);

@@ -27,6 +27,7 @@ public class Products extends Formula {
         Set<NotAProduct> formulas = Set.copyOf(factors);
         if (formulas.size() != factors.size()) {
             System.out.println("THE CODE SHOULD NEVER EVER ENTER HERE!");
+            throw new RuntimeException();
         }
         this.factors = formulas;
     }

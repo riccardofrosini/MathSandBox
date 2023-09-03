@@ -49,7 +49,7 @@ public class ConjunctClause<T extends Clause> extends Clause {
                 .findFirst();
         if (disjunctClauseOptional.isEmpty()) {
             System.out.println("THE CODE SHOULD NEVER EVER ENTER HERE!");
-            return this;
+            throw new RuntimeException();
         }
         DisjunctClause<?> disjunctClause = (DisjunctClause<?>) disjunctClauseOptional.get();
         Clause otherConjuncts = getOtherConjuncts(disjunctClauseOptional.get());
