@@ -1,5 +1,5 @@
 package ai.maths.sat3.model;
 
-public interface SingletonVariableOrDisjunctsOfNonConstants extends DisjunctsConjunctsOfNonConstantAndSingletons {
+public interface SingletonVariableOrDisjunctsOfNonConstants extends SingletonVariableOrDisjunctsConjunctsOfNonConstant {
 
 }

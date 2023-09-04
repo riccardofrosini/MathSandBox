@@ -4,16 +4,17 @@ import java.util.Objects;
 import java.util.Optional;
 
 import ai.maths.sat3.algebraic.Formula;
-import ai.maths.sat3.model.DisjunctClause;
-import ai.maths.sat3.model.DisjunctsConjunctsOfNonConstantAndSingletons;
+import ai.maths.sat3.model.DisjunctOfNonConstants;
+import ai.maths.sat3.model.SingletonVariableOrConjunctsOfNonConstants;
+import ai.maths.sat3.model.SingletonVariableOrDisjunctsConjunctsOfNonConstant;
 
-public class ProbabilityOfDisjuncts<T extends DisjunctsConjunctsOfNonConstantAndSingletons> extends ProbabilityOfClause<DisjunctClause<T>> {
+public class ProbabilityOfDisjuncts<T extends SingletonVariableOrConjunctsOfNonConstants> extends ProbabilityOfClause<DisjunctOfNonConstants<T>> {
 
     private final ProbabilityOfClause<?> probabilityOfClauses1;
     private final ProbabilityOfClause<?> probabilityOfClauses2;
     private final ProbabilityOfClause<?> intersection;
 
-    protected ProbabilityOfDisjuncts(DisjunctClause<T> clause) {
+    protected ProbabilityOfDisjuncts(DisjunctOfNonConstants<T> clause) {
         super(clause);
         Optional<T> any = clause.getDisjunctsStream().findAny();
         if (any.isEmpty()) {
@@ -21,7 +22,7 @@ public class ProbabilityOfDisjuncts<T extends DisjunctsConjunctsOfNonConstantAnd
             throw new RuntimeException();
         }
         T disjunct = any.get();
-        DisjunctsConjunctsOfNonConstantAndSingletons otherDisjuncts = clause.getOtherDisjuncts(disjunct);
+        SingletonVariableOrDisjunctsConjunctsOfNonConstant otherDisjuncts = clause.getOtherDisjuncts(disjunct);
         probabilityOfClauses1 = ProbabilityOfClause.buildProbabilityOfClause(disjunct);
         probabilityOfClauses2 = ProbabilityOfClause.buildProbabilityOfClause(otherDisjuncts);
         intersection = ProbabilityOfClause.probabilityOfIntersection(disjunct, otherDisjuncts);

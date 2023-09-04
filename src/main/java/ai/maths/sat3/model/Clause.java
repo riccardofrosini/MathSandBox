@@ -7,9 +7,7 @@ public interface Clause {
 
     Set<Variable> getAllVariables();
 
-    DisjunctsConjunctsOfNonConstantAndSingletons simplify();
-
-    DisjunctsConjunctsOfNonConstantAndSingletons addConjunct(DisjunctsConjunctsOfNonConstantAndSingletons clause);
+    SingletonOrDisjunctsConjunctsOfNonConstant simplify();
 
     static boolean areThereClashingVariables(Set<SingletonVariable> juncts) {
         return juncts.stream()

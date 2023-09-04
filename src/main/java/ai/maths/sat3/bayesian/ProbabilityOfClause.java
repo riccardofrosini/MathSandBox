@@ -5,14 +5,13 @@ import java.util.function.Function;
 
 import ai.maths.sat3.algebraic.Formula;
 import ai.maths.sat3.model.BooleanConstant;
-import ai.maths.sat3.model.Clause;
-import ai.maths.sat3.model.ConjunctClause;
+import ai.maths.sat3.model.ConjunctOfNonConstants;
 import ai.maths.sat3.model.ConjunctOfSingletons;
-import ai.maths.sat3.model.DisjunctClause;
-import ai.maths.sat3.model.DisjunctsConjunctsOfNonConstantAndSingletons;
+import ai.maths.sat3.model.DisjunctOfNonConstants;
+import ai.maths.sat3.model.SingletonOrDisjunctsConjunctsOfNonConstant;
 import ai.maths.sat3.model.SingletonVariable;
 
-public abstract class ProbabilityOfClause<T extends Clause> implements Function<ProbabilityClause, Double> {
+public abstract class ProbabilityOfClause<T extends SingletonOrDisjunctsConjunctsOfNonConstant> implements Function<ProbabilityClause, Double> {
 
     protected final T clause;
 
@@ -26,25 +25,25 @@ public abstract class ProbabilityOfClause<T extends Clause> implements Function<
 
     public abstract Formula convertToFormula();
 
-    public static ProbabilityOfClause<?> probabilityOfIntersection(Clause clause1, DisjunctsConjunctsOfNonConstantAndSingletons clause2) {
+    public static ProbabilityOfClause<?> probabilityOfIntersection(SingletonOrDisjunctsConjunctsOfNonConstant clause1, SingletonOrDisjunctsConjunctsOfNonConstant clause2) {
         return buildProbabilityOfClause(clause1.addConjunct(clause2));
     }
 
-    public static ProbabilityOfClause<?> buildProbabilityOfClause(Clause clause) {
+    public static ProbabilityOfClause<?> buildProbabilityOfClause(SingletonOrDisjunctsConjunctsOfNonConstant clause) {
         if (clause instanceof BooleanConstant) {
             return new ProbabilityOfBoolean((BooleanConstant) clause);
         }
         if (clause instanceof SingletonVariable) {
             return new ProbabilityOfSingleton((SingletonVariable) clause);
         }
-        if (clause instanceof DisjunctClause) {
-            return new ProbabilityOfDisjuncts<>((DisjunctClause<?>) clause).simplify();
+        if (clause instanceof DisjunctOfNonConstants) {
+            return new ProbabilityOfDisjuncts<>((DisjunctOfNonConstants<?>) clause).simplify();
         }
-        if (clause instanceof ConjunctClause) {
+        if (clause instanceof ConjunctOfNonConstants) {
             if (clause instanceof ConjunctOfSingletons) {
                 return new ProbabilityOfSingletonConjuncts((ConjunctOfSingletons) clause);
             }
-            return buildProbabilityOfClause(((ConjunctClause<?>) clause).makeAsDisjunct());
+            return buildProbabilityOfClause(((ConjunctOfNonConstants<?>) clause).makeAsDisjunct());
         }
         return null;
     }

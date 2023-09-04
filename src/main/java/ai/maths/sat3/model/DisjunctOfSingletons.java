@@ -9,7 +9,10 @@ public class DisjunctOfSingletons extends DisjunctOfNonConstants<SingletonVariab
     }
 
     @Override
-    public DisjunctsConjunctsOfNonConstantAndSingletons simplify() {
+    public SingletonVariableOrDisjunctsOfNonConstants simplify() {
+        if (disjuncts.size() == 1) {
+            return disjuncts.stream().findFirst().get();
+        }
         return this;
     }
 }

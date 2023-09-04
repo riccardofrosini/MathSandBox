@@ -3,14 +3,12 @@ package ai.maths.sat3.model;
 import static ai.maths.sat3.model.BooleanConstant.FALSE_CONSTANT;
 
 import java.util.Collections;
-import java.util.HashSet;
 import java.util.Objects;
-import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-public class ConjunctClause<T extends DisjunctsConjunctsOfNonConstantAndSingletons> implements Clause {
+public class ConjunctClause<T extends SingletonOrDisjunctsConjunctsOfNonConstant> implements Clause {
 
     protected final Set<T> conjuncts;
 
@@ -29,44 +27,21 @@ public class ConjunctClause<T extends DisjunctsConjunctsOfNonConstantAndSingleto
                 .collect(Collectors.toSet());
     }
 
-    public DisjunctsConjunctsOfNonConstantAndSingletons getOtherConjuncts(T conjunct) {
-        HashSet<T> newConjuncts = new HashSet<>(this.conjuncts);
-        newConjuncts.remove(conjunct);
-        return new ConjunctClause<>(newConjuncts).simplify();
-    }
-
     @Override
-    public DisjunctsConjunctsOfNonConstantAndSingletons addConjunct(DisjunctsConjunctsOfNonConstantAndSingletons conjunct) {
-        HashSet<DisjunctsConjunctsOfNonConstantAndSingletons> newConjuncts = new HashSet<>(this.conjuncts);
-        newConjuncts.add(conjunct);
-        return new ConjunctClause<>(newConjuncts).simplify();
-    }
-
-    public DisjunctsConjunctsOfNonConstantAndSingletons makeAsDisjunct() {
-        Optional<T> disjunctClauseOptional = conjuncts.stream()
-                .filter(clause -> clause instanceof DisjunctClause)
-                .findFirst();
-        if (disjunctClauseOptional.isEmpty()) {
-            System.out.println("THE CODE SHOULD NEVER EVER ENTER HERE!");
-            throw new RuntimeException();
-        }
-        DisjunctClause<?> disjunctClause = (DisjunctClause<?>) disjunctClauseOptional.get();
-        DisjunctsConjunctsOfNonConstantAndSingletons otherConjuncts = getOtherConjuncts(disjunctClauseOptional.get());
-        return disjunctClause.addConjunct(otherConjuncts);
-    }
-
-    @Override
-    public DisjunctsConjunctsOfNonConstantAndSingletons simplify() {
+    public SingletonOrDisjunctsConjunctsOfNonConstant simplify() {
         if (conjuncts.size() == 1) {
-            return conjuncts.iterator().next();
+            T t = conjuncts.stream().findFirst().get();
+            if (t instanceof BooleanConstant) {
+                return t;
+            }
         }
         Set<SingletonVariableOrDisjunctsOfNonConstants> singletonOrDisjunctsSet = conjuncts.stream()
                 .filter(clause -> clause instanceof SingletonVariableOrDisjunctsOfNonConstants)
                 .map(clause -> (SingletonVariableOrDisjunctsOfNonConstants) clause)
                 .collect(Collectors.toSet());
         singletonOrDisjunctsSet.addAll(conjuncts.stream()
-                .filter(clause -> clause instanceof ConjunctClause)
-                .flatMap(clause -> ((ConjunctClause<?>) clause).conjuncts.stream())
+                .filter(clause -> clause instanceof ConjunctOfNonConstants)
+                .flatMap(clause -> ((ConjunctOfNonConstants<?>) clause).conjuncts.stream())
                 .map(clause -> (SingletonVariableOrDisjunctsOfNonConstants) clause)
                 .collect(Collectors.toSet()));
         Set<SingletonVariable> allSingletons = Clause.getAllSingletons(singletonOrDisjunctsSet);
@@ -75,7 +50,7 @@ public class ConjunctClause<T extends DisjunctsConjunctsOfNonConstantAndSingleto
         }
         if (allSingletons.size() == singletonOrDisjunctsSet.size()) {
             return new ConjunctOfSingletons(singletonOrDisjunctsSet.stream()
-                    .map(t -> (SingletonVariable) t).collect(Collectors.toSet()));
+                    .map(t -> (SingletonVariable) t).collect(Collectors.toSet())).simplify();
         }
         return new ConjunctOfNonConstants<>(singletonOrDisjunctsSet).simplify();
     }

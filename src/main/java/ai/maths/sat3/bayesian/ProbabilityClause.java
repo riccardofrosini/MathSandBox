@@ -8,13 +8,16 @@ import java.util.stream.Collectors;
 
 import ai.maths.sat3.model.BooleanConstant;
 import ai.maths.sat3.model.Clause;
-import ai.maths.sat3.model.ConjunctClause;
+import ai.maths.sat3.model.ConjunctOfNonConstants;
 import ai.maths.sat3.model.ConjunctOfSingletons;
-import ai.maths.sat3.model.DisjunctClause;
+import ai.maths.sat3.model.DisjunctOfNonConstants;
 import ai.maths.sat3.model.DisjunctOfSingletons;
-import ai.maths.sat3.model.DisjunctsConjunctsOfNonConstantAndSingletons;
 import ai.maths.sat3.model.NegateVariable;
+import ai.maths.sat3.model.SingletonOrDisjunctsConjunctsOfNonConstant;
 import ai.maths.sat3.model.SingletonVariable;
+import ai.maths.sat3.model.SingletonVariableOrConjunctsOfNonConstants;
+import ai.maths.sat3.model.SingletonVariableOrDisjunctsConjunctsOfNonConstant;
+import ai.maths.sat3.model.SingletonVariableOrDisjunctsOfNonConstants;
 import ai.maths.sat3.model.ThreeSatConjunctClause;
 import ai.maths.sat3.model.ThreeSatDisjunctClause;
 import ai.maths.sat3.model.Variable;
@@ -37,7 +40,7 @@ public class ProbabilityClause {
                 / probabilityOfClause(givenThreeSatDisjunctClause);
     }
 
-    public double probabilityOfClause(DisjunctsConjunctsOfNonConstantAndSingletons clause) {
+    public double probabilityOfClause(SingletonOrDisjunctsConjunctsOfNonConstant clause) {
         double probability = 0;
         if (probabilitiesOfClauses.containsKey(clause)) {
             probability = probabilitiesOfClauses.get(clause);
@@ -49,26 +52,26 @@ public class ProbabilityClause {
             probability = probabilityOfSingletonDisjunction((DisjunctOfSingletons) clause);
         } else if (clause instanceof ConjunctOfSingletons) {
             probability = probabilityOfSingletonConjuncts((ConjunctOfSingletons) clause);
-        } else if (clause instanceof DisjunctClause) {
-            probability = probabilityOfDisjuncts((DisjunctClause<?>) clause);
-        } else if (clause instanceof ConjunctClause) {
-            probability = probabilityOfConjuncts((ConjunctClause<?>) clause);
+        } else if (clause instanceof DisjunctOfNonConstants) {
+            probability = probabilityOfDisjuncts((DisjunctOfNonConstants<?>) clause);
+        } else if (clause instanceof ConjunctOfNonConstants) {
+            probability = probabilityOfConjuncts((ConjunctOfNonConstants<?>) clause);
         }
         probabilitiesOfClauses.put(clause, probability);
         return probability;
     }
 
-    private <X extends DisjunctsConjunctsOfNonConstantAndSingletons> double probabilityOfDisjuncts(DisjunctClause<X> disjunctClause) {
+    private <X extends SingletonVariableOrConjunctsOfNonConstants> double probabilityOfDisjuncts(DisjunctOfNonConstants<X> disjunctClause) {
         Optional<X> disjunctOptional = disjunctClause.getDisjunctsStream().findAny();
         if (disjunctOptional.isEmpty()) {
             return 0d;
         }
         X disjunct = disjunctOptional.get();
-        DisjunctsConjunctsOfNonConstantAndSingletons otherDisjunct = disjunctClause.getOtherDisjuncts(disjunct);
+        SingletonVariableOrDisjunctsConjunctsOfNonConstant otherDisjunct = disjunctClause.getOtherDisjuncts(disjunct);
         return probabilityOfClause(disjunct) + probabilityOfClause(otherDisjunct) - probabilityOfClause(disjunct.addConjunct(otherDisjunct));
     }
 
-    private <X extends DisjunctsConjunctsOfNonConstantAndSingletons> double probabilityOfConjuncts(ConjunctClause<X> conjunctClause) {
+    private <X extends SingletonVariableOrDisjunctsOfNonConstants> double probabilityOfConjuncts(ConjunctOfNonConstants<X> conjunctClause) {
         return probabilityOfClause(conjunctClause.makeAsDisjunct());
     }
 

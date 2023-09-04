@@ -8,12 +8,12 @@ public abstract class SingletonVariable implements SingletonVariableOrDisjunctsO
     public abstract Variable getVariable();
 
     @Override
-    public DisjunctsConjunctsOfNonConstantAndSingletons simplify() {
+    public SingletonVariable simplify() {
         return this;
     }
 
     @Override
-    public DisjunctsConjunctsOfNonConstantAndSingletons addConjunct(DisjunctsConjunctsOfNonConstantAndSingletons conjunct) {
+    public SingletonOrDisjunctsConjunctsOfNonConstant addConjunct(SingletonOrDisjunctsConjunctsOfNonConstant conjunct) {
         return new ConjunctClause<>(Stream.of(this, conjunct).collect(Collectors.toSet())).simplify();
     }
 
