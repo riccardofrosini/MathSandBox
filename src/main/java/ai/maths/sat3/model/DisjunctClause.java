@@ -41,7 +41,7 @@ public class DisjunctClause<T extends SingletonOrDisjunctsConjunctsOfNonConstant
                 .flatMap(clause -> ((DisjunctOfNonConstants<?>) clause).disjuncts.stream())
                 .map(clause -> (SingletonVariableOrConjunctsOfNonConstants) clause)
                 .collect(Collectors.toSet()));
-        Set<SingletonVariable> allSingletons = Clause.getAllSingletons(singletonOrConjunctsSet);
+        Set<SingletonVariable> allSingletons = Clause.getAllSingletonVariables(singletonOrConjunctsSet);
         if (disjuncts.contains(TRUE_CONSTANT) || Clause.areThereClashingVariables(allSingletons)) {
             return TRUE_CONSTANT;
         }

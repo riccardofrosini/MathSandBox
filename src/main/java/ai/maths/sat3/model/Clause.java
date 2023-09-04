@@ -20,7 +20,7 @@ public interface Clause {
                 .anyMatch(booleans -> booleans.size() > 1);
     }
 
-    static <T extends Clause> Set<SingletonVariable> getAllSingletons(Set<T> juncts) {
+    static <T extends Clause> Set<SingletonVariable> getAllSingletonVariables(Set<T> juncts) {
         return juncts.stream()
                 .filter(t -> t instanceof SingletonVariable)
                 .map(t -> (SingletonVariable) t)

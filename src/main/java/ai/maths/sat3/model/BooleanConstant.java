@@ -3,7 +3,7 @@ package ai.maths.sat3.model;
 import java.util.Objects;
 import java.util.Set;
 
-public final class BooleanConstant implements SingletonOrDisjunctsConjunctsOfNonConstant {
+public final class BooleanConstant extends Singleton {
 
     public static final BooleanConstant TRUE_CONSTANT = new BooleanConstant(true);
     public static final BooleanConstant FALSE_CONSTANT = new BooleanConstant(false);
@@ -17,11 +17,6 @@ public final class BooleanConstant implements SingletonOrDisjunctsConjunctsOfNon
     @Override
     public Set<Variable> getAllVariables() {
         return Set.of();
-    }
-
-    @Override
-    public BooleanConstant simplify() {
-        return this;
     }
 
     @Override
