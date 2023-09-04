@@ -31,7 +31,6 @@ public class ConjunctClause<T extends SingletonOrDisjunctsConjunctsOfNonConstant
     public SingletonOrDisjunctsConjunctsOfNonConstant simplify() {
         if (conjuncts.size() == 1) {
             return conjuncts.stream().findFirst().get();
-
         }
         Set<SingletonVariableOrDisjunctsOfNonConstants> singletonOrDisjunctsSet = conjuncts.stream()
                 .filter(clause -> clause instanceof SingletonVariableOrDisjunctsOfNonConstants)
