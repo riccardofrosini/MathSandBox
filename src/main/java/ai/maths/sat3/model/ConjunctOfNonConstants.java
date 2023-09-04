@@ -20,10 +20,6 @@ public class ConjunctOfNonConstants<T extends SingletonVariableOrDisjunctsOfNonC
         Optional<T> disjunctClauseOptional = conjuncts.stream()
                 .filter(clause -> clause instanceof DisjunctOfNonConstants)
                 .findFirst();
-        if (disjunctClauseOptional.isEmpty()) {
-            System.out.println("THE CODE SHOULD NEVER EVER ENTER HERE!");
-            throw new RuntimeException();
-        }
         DisjunctOfNonConstants<?> disjunctClause = (DisjunctOfNonConstants<?>) disjunctClauseOptional.get();
         SingletonOrDisjunctsConjunctsOfNonConstant otherConjuncts = getOtherConjuncts(disjunctClauseOptional.get());
         return disjunctClause.addConjunct(otherConjuncts);

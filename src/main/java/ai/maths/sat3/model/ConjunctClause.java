@@ -30,10 +30,8 @@ public class ConjunctClause<T extends SingletonOrDisjunctsConjunctsOfNonConstant
     @Override
     public SingletonOrDisjunctsConjunctsOfNonConstant simplify() {
         if (conjuncts.size() == 1) {
-            T t = conjuncts.stream().findFirst().get();
-            if (t instanceof BooleanConstant) {
-                return t;
-            }
+            return conjuncts.stream().findFirst().get();
+
         }
         Set<SingletonVariableOrDisjunctsOfNonConstants> singletonOrDisjunctsSet = conjuncts.stream()
                 .filter(clause -> clause instanceof SingletonVariableOrDisjunctsOfNonConstants)

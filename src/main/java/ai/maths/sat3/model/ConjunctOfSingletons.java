@@ -15,4 +15,10 @@ public class ConjunctOfSingletons extends ConjunctOfNonConstants<SingletonVariab
         }
         return this;
     }
+
+    public SingletonOrDisjunctsConjunctsOfNonConstant makeAsDisjunct() {
+        System.out.println("THE CODE SHOULD NEVER EVER ENTER HERE!");
+        throw new RuntimeException();
+
+    }
 }
