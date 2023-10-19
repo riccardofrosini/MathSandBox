@@ -45,8 +45,8 @@ public class ClauseUtils {
         if (clauses.size() == 1) {
             return clauses.iterator().next();
         }
-        if (clauses.stream().allMatch(clause -> clause instanceof Disjuncts3)) {
-            return new Conjuncts3(clauses.stream().map(clause -> (Disjuncts3) clause).collect(Collectors.toSet()));
+        if (clauses.stream().allMatch(clause -> clause instanceof DisjunctsOfSingletons)) {
+            return new ThreeSatConjuncts(clauses.stream().map(clause -> (DisjunctsOfSingletons) clause).collect(Collectors.toSet()));
         }
         return new Conjuncts<>(clauses);
     }
