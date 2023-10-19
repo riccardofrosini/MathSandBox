@@ -1,45 +1,36 @@
 package ai.maths.sat3.model;
 
 import java.util.Objects;
-import java.util.Set;
+import java.util.stream.Stream;
 
-public class Variable extends SingletonVariable {
+public class Variable implements Singleton {
 
-    private final String name;
+    private String var;
 
-    public Variable(String name) {
-        this.name = name;
+    protected Variable(String var) {
+        this.var = var;
     }
 
     @Override
-    public Variable getVariable() {
-        return this;
-    }
-
-    @Override
-    public Set<Variable> getAllVariables() {
-        return Set.of(this);
+    public Stream<Variable> getSubClauses() {
+        return Stream.of(this);
     }
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (o == null || getClass() != o.getClass()) {
-            return false;
-        }
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
         Variable variable = (Variable) o;
-        return name.equals(variable.name);
+        return var.equals(variable.var);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(name);
+        return Objects.hash(var);
     }
 
     @Override
     public String toString() {
-        return name;
+        return var;
     }
 }

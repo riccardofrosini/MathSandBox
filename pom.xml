@@ -31,21 +31,6 @@
             <version>2.8.6</version>
         </dependency>
 
-
-        <!-- https://mvnrepository.com/artifact/java3d/j3dutils -->
-        <dependency>
-            <groupId>java3d</groupId>
-            <artifactId>j3dutils</artifactId>
-            <version>1.5.2</version>
-        </dependency>
-
-        <!-- https://mvnrepository.com/artifact/java3d/j3dcore -->
-        <dependency>
-            <groupId>java3d</groupId>
-            <artifactId>j3dcore</artifactId>
-            <version>1.5.2</version>
-        </dependency>
-
     </dependencies>
     <repositories>
         <repository>
