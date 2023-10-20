@@ -17,6 +17,11 @@ public class Negation<T extends Clause<?>> implements Clause<T> {
     }
 
     @Override
+    public T getAnySubClause() {
+        return clause;
+    }
+
+    @Override
     public boolean equals(Object o) {
         if (this == o) {
             return true;

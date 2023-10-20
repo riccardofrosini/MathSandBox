@@ -17,6 +17,11 @@ public class Variable implements Singleton {
     }
 
     @Override
+    public Variable getAnySubClause() {
+        return this;
+    }
+
+    @Override
     public boolean equals(Object o) {
         if (this == o) {
             return true;

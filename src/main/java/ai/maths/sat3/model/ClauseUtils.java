@@ -16,7 +16,7 @@ public class ClauseUtils {
             return new VariableNegation((Variable) clause);
         }
         if (clause instanceof Negation) {
-            return clause;
+            return clause.getAnySubClause();
         }
         if (clause instanceof Disjuncts) {
             if (clause.equals(Disjuncts.TRUE)) {
@@ -39,7 +39,7 @@ public class ClauseUtils {
 
     public static Clause<?> buildConjuncts(Set<Clause<?>> clauses) {
         clauses = normaliseConjuncts(clauses);
-        if (clauses.isEmpty() || checkClashingClauses(clauses)) {
+        if (clauses.isEmpty() || clauses.contains(Conjuncts.FALSE) || checkClashingClauses(clauses)) {
             return Conjuncts.FALSE;
         }
         if (clauses.size() == 1) {
@@ -65,7 +65,7 @@ public class ClauseUtils {
 
     public static Clause<?> buildDisjuncts(Set<Clause<?>> clauses) {
         clauses = normaliseDisjuncts(clauses);
-        if (clauses.isEmpty() || checkClashingClauses(clauses)) {
+        if (clauses.isEmpty() || clauses.contains(Disjuncts.TRUE) || checkClashingClauses(clauses)) {
             return Disjuncts.TRUE;
         }
         if (clauses.size() == 1) {
@@ -95,7 +95,8 @@ public class ClauseUtils {
                 .map(clause -> (Disjuncts<?>) clause)
                 .flatMap(Disjuncts::getSubClauses)
                 .collect(Collectors.toSet());
-        Set<Clause<?>> rest = clauses.stream().filter(clause -> !(clause instanceof Disjuncts))
+        Set<Clause<?>> rest = clauses.stream()
+                .filter(clause -> !(clause instanceof Disjuncts) && !clause.equals(Conjuncts.FALSE))
                 .collect(Collectors.toSet());
         disjunctsNormalised.addAll(rest);
         return disjunctsNormalised;
@@ -107,7 +108,8 @@ public class ClauseUtils {
                 .map(clause -> (Conjuncts<?>) clause)
                 .flatMap(Conjuncts::getSubClauses)
                 .collect(Collectors.toSet());
-        Set<Clause<?>> rest = clauses.stream().filter(clause -> !(clause instanceof Conjuncts))
+        Set<Clause<?>> rest = clauses.stream()
+                .filter(clause -> !(clause instanceof Conjuncts) && !clause.equals(Disjuncts.TRUE))
                 .collect(Collectors.toSet());
         conjunctsNormalised.addAll(rest);
         return conjunctsNormalised;

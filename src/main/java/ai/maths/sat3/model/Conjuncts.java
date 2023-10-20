@@ -16,8 +16,14 @@ public class Conjuncts<T extends Clause<?>> implements Clause<T> {
         this.conjuncts = conjuncts;
     }
 
+    @Override
     public Stream<T> getSubClauses() {
         return conjuncts.stream();
+    }
+
+    @Override
+    public T getAnySubClause() {
+        return conjuncts.iterator().next();
     }
 
     @Override
