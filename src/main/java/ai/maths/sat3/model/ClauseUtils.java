@@ -13,7 +13,7 @@ public class ClauseUtils {
 
     public static Clause<?> buildNegation(Clause<?> clause) {
         if (clause instanceof Variable) {
-            return new VariableNegation((Variable) clause);
+            return new NegVariable((Variable) clause);
         }
         if (clause instanceof Negation) {
             return clause.getAnySubClause();
