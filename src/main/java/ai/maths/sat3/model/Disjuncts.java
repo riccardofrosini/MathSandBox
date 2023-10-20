@@ -10,7 +10,7 @@ import ai.maths.sat3.sets.VariableSet;
 
 public class Disjuncts<T extends Clause<?>> extends VariableSet implements Clause<T> {
 
-    public static final Disjuncts<?> TRUE = new Disjuncts<>(Collections.emptySet());
+    public static final Disjuncts<?> FALSE = new Disjuncts<>(Collections.emptySet());
 
     protected Set<T> disjuncts;
 
@@ -48,8 +48,8 @@ public class Disjuncts<T extends Clause<?>> extends VariableSet implements Claus
 
     @Override
     public String toString() {
-        if (this.equals(TRUE)) {
-            return "T";
+        if (this == FALSE) {
+            return "F";
         }
         return disjuncts.stream().map(Object::toString).collect(Collectors.joining("∨", "(", ")"));
     }

@@ -20,16 +20,16 @@ public class ClauseBuilder {
             return clause.getAnySubClause();
         }
         if (clause instanceof Disjuncts) {
-            if (clause.equals(Disjuncts.TRUE)) {
-                return Conjuncts.FALSE;
+            if (clause == Disjuncts.FALSE) {
+                return Conjuncts.TRUE;
             }
             return buildConjuncts(clause.getSubClauses()
                     .map(ClauseBuilder::buildNegation)
                     .collect(Collectors.toUnmodifiableSet()));
         }
         if (clause instanceof Conjuncts) {
-            if (clause.equals(Conjuncts.FALSE)) {
-                return Disjuncts.TRUE;
+            if (clause == Conjuncts.TRUE) {
+                return Disjuncts.FALSE;
             }
             return buildDisjuncts(clause.getSubClauses()
                     .map(ClauseBuilder::buildNegation)
@@ -44,8 +44,8 @@ public class ClauseBuilder {
 
     private static Clause<?> buildConjuncts(Set<Clause<?>> clauses) {
         clauses = normaliseConjuncts(clauses);
-        if (clauses.isEmpty() || clauses.contains(Conjuncts.FALSE) || checkClashingClauses(clauses)) {
-            return Conjuncts.FALSE;
+        if (clauses.isEmpty() || clauses.contains(Disjuncts.FALSE) || checkClashingClauses(clauses)) {
+            return Disjuncts.FALSE;
         }
         if (clauses.size() == 1) {
             return clauses.iterator().next();
@@ -74,8 +74,8 @@ public class ClauseBuilder {
 
     private static Clause<?> buildDisjuncts(Set<Clause<?>> clauses) {
         clauses = normaliseDisjuncts(clauses);
-        if (clauses.isEmpty() || clauses.contains(Disjuncts.TRUE) || checkClashingClauses(clauses)) {
-            return Disjuncts.TRUE;
+        if (clauses.isEmpty() || clauses.contains(Conjuncts.TRUE) || checkClashingClauses(clauses)) {
+            return Conjuncts.TRUE;
         }
         if (clauses.size() == 1) {
             return clauses.iterator().next();
@@ -100,21 +100,21 @@ public class ClauseBuilder {
 
     private static Set<Clause<?>> normaliseDisjuncts(Set<Clause<?>> clauses) {
         return Stream.concat(clauses.stream()
-                                .filter(clause -> clause instanceof Disjuncts)
+                                .filter(clause -> clause instanceof Disjuncts && clause != Disjuncts.FALSE)
                                 .map(clause -> (Disjuncts<?>) clause)
                                 .flatMap(Disjuncts::getSubClauses),
                         clauses.stream()
-                                .filter(clause -> !(clause instanceof Disjuncts) && !clause.equals(Conjuncts.FALSE)))
+                                .filter(clause -> !(clause instanceof Disjuncts)))
                 .collect(Collectors.toUnmodifiableSet());
     }
 
     private static Set<Clause<?>> normaliseConjuncts(Set<Clause<?>> clauses) {
         return Stream.concat(clauses.stream()
-                                .filter(clause -> clause instanceof Conjuncts)
+                                .filter(clause -> clause instanceof Conjuncts && clause != Conjuncts.TRUE)
                                 .map(clause -> (Conjuncts<?>) clause)
                                 .flatMap(Conjuncts::getSubClauses),
                         clauses.stream()
-                                .filter(clause -> !(clause instanceof Conjuncts) && !clause.equals(Disjuncts.TRUE)))
+                                .filter(clause -> !(clause instanceof Conjuncts)))
                 .collect(Collectors.toUnmodifiableSet());
     }
 

@@ -23,7 +23,8 @@ public class ConnectedVariables {
                         varToConjunct.computeIfAbsent(variable, v -> new HashSet<>()).add(disjunct)));
         return getIndependentConnectedVariables(threeSatConjuncts).stream()
                 .map(variables -> ClauseBuilder.buildConjuncts(variables.stream()
-                        .flatMap(variable -> varToConjunct.get(variable).stream()).toArray(Clause[]::new)))
+                        .flatMap(variable -> varToConjunct.get(variable).stream())
+                        .toArray(Clause[]::new)))
                 .collect(Collectors.toUnmodifiableSet());
     }
 

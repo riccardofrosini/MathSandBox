@@ -10,7 +10,7 @@ import ai.maths.sat3.sets.VariableSet;
 
 public class Conjuncts<T extends Clause<?>> extends VariableSet implements Clause<T> {
 
-    public static final Conjuncts<?> FALSE = new Conjuncts<>(Collections.emptySet());
+    public static final Conjuncts<?> TRUE = new Conjuncts<>(Collections.emptySet());
 
     protected Set<T> conjuncts;
 
@@ -48,8 +48,8 @@ public class Conjuncts<T extends Clause<?>> extends VariableSet implements Claus
 
     @Override
     public String toString() {
-        if (this.equals(FALSE)) {
-            return "F";
+        if (this == TRUE) {
+            return "T";
         }
         return conjuncts.stream().map(Object::toString).collect(Collectors.joining("∧", "(", ")"));
     }
