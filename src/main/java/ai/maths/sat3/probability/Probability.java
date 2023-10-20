@@ -17,22 +17,22 @@ public class Probability {
 
     public static double probability(Clause<?> clause) {
         if (clause == Disjuncts.FALSE) {
-            return 0;
+            return 0d;
         }
         if (clause == Conjuncts.TRUE) {
-            return 1;
+            return 1d;
         }
         if (clause instanceof Variable) {
             return 1d / 2;
         }
         if (clause instanceof Negation) {
-            return 1 - probability(clause.getAnySubClause());
+            return 1d - probability(clause.getAnySubClause());
         }
         if (clause instanceof DisjunctsOfSingletons) {
-            return 1 - 1 / Math.pow(2, clause.getSubClauses().count());
+            return 1d - 1d / Math.pow(2, clause.getSubClauses().count());
         }
         if (clause instanceof ConjunctsOfSingletons) {
-            return 1 / Math.pow(2, clause.getSubClauses().count());
+            return 1d / Math.pow(2, clause.getSubClauses().count());
         }
         if (clause instanceof ThreeSatConjuncts) {
             Set<Clause<?>> independentConnectedConjuncts = ConnectedVariables.getIndependentConnectedConjuncts((ThreeSatConjuncts) clause);
@@ -40,13 +40,13 @@ public class Probability {
                 Clause<?> next = independentConnectedConjuncts.iterator().next();
                 if (next instanceof ThreeSatConjuncts) {
                     SplitThreeSatClause split = SplitThreeSatClause.split((ThreeSatConjuncts) next);
-                    return probability(split.getRest()) + probability(ClauseBuilder.buildNegation(split.getFirst())) * probability(split.makeRestIndependentToFirst());
+                    return probability(ClauseBuilder.buildConjuncts(split.getRest())) - probability(ClauseBuilder.buildNegation(split.getFirst())) * probability(split.makeRestIndependentToFirst());
 
                 }
                 return probability(next);
             }
             return independentConnectedConjuncts
-                    .stream().mapToDouble(variables -> probability(clause)).reduce(1, (left, right) -> left * right);
+                    .stream().mapToDouble(Probability::probability).reduce(1, (left, right) -> left * right);
         }
         return 0;
     }

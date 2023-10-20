@@ -35,7 +35,8 @@ public class ClauseBuilder {
                     .map(ClauseBuilder::buildNegation)
                     .collect(Collectors.toUnmodifiableSet()));
         }
-        return new Negation<>(clause);
+        System.err.println("Code will never enter here!");
+        return null;
     }
 
     public static Clause<?> buildConjuncts(Clause<?>... clauses) {
