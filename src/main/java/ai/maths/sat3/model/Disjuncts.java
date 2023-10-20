@@ -22,8 +22,12 @@ public class Disjuncts<T extends Clause<?>> implements Clause<T> {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
         Disjuncts<?> disjuncts = (Disjuncts<?>) o;
         return this.disjuncts.equals(disjuncts.disjuncts);
     }

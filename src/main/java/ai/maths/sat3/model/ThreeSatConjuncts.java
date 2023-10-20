@@ -2,9 +2,9 @@ package ai.maths.sat3.model;
 
 import java.util.Set;
 
-public class ThreeSatConjuncts extends Conjuncts<DisjunctsOfSingletons> {
+public class ThreeSatConjuncts extends Conjuncts<DisjunctOfSingletonsOrSingleton<?>> {
 
-    protected ThreeSatConjuncts(Set<DisjunctsOfSingletons> disjunctsOfSingletons) {
+    protected ThreeSatConjuncts(Set<DisjunctOfSingletonsOrSingleton<?>> disjunctsOfSingletons) {
         super(disjunctsOfSingletons);
     }
 }

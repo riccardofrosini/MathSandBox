@@ -45,8 +45,21 @@ public class ClauseUtils {
         if (clauses.size() == 1) {
             return clauses.iterator().next();
         }
-        if (clauses.stream().allMatch(clause -> clause instanceof DisjunctsOfSingletons)) {
-            return new ThreeSatConjuncts(clauses.stream().map(clause -> (DisjunctsOfSingletons) clause).collect(Collectors.toSet()));
+        if (clauses.stream().allMatch(clause -> clause instanceof Singleton)) {
+            Iterator<Singleton> iterator = clauses.stream().map(clause -> (Singleton) clause).collect(Collectors.toSet()).iterator();
+            if (clauses.size() == 3) {
+                return new Conjuncts3(iterator.next(), iterator.next(), iterator.next());
+            }
+            if (clauses.size() == 2) {
+                return new Conjuncts2(iterator.next(), iterator.next());
+            }
+            return new ConjunctsOfSingletons(clauses.stream().map(clause -> (Singleton) clause).collect(Collectors.toSet()));
+        }
+        if (clauses.stream().allMatch(clause -> clause instanceof DisjunctOfSingletonsOrSingleton)) {
+            return new ThreeSatConjuncts(clauses.stream()
+                    .filter(clause -> clause instanceof DisjunctOfSingletonsOrSingleton)
+                    .map(clause -> (DisjunctOfSingletonsOrSingleton<?>) clause)
+                    .collect(Collectors.toSet()));
         }
         return new Conjuncts<>(clauses);
     }
@@ -67,12 +80,14 @@ public class ClauseUtils {
             if (clauses.size() == 2) {
                 return new Disjuncts2(iterator.next(), iterator.next());
             }
+            return new DisjunctsOfSingletons(clauses.stream().map(clause -> (Singleton) clause).collect(Collectors.toSet()));
         }
         return new Disjuncts<>(clauses);
     }
 
     private static Set<Clause<?>> normaliseDisjuncts(Set<Clause<?>> clauses) {
-        Set<Clause<?>> disjunctsNormalised = clauses.stream().filter(clause -> clause instanceof Disjuncts)
+        Set<Clause<?>> disjunctsNormalised = clauses.stream()
+                .filter(clause -> clause instanceof Disjuncts)
                 .map(clause -> (Disjuncts<?>) clause)
                 .flatMap(Disjuncts::getSubClauses)
                 .collect(Collectors.toSet());
@@ -83,7 +98,8 @@ public class ClauseUtils {
     }
 
     private static Set<Clause<?>> normaliseConjuncts(Set<Clause<?>> clauses) {
-        Set<Clause<?>> conjunctsNormalised = clauses.stream().filter(clause -> clause instanceof Conjuncts)
+        Set<Clause<?>> conjunctsNormalised = clauses.stream()
+                .filter(clause -> clause instanceof Conjuncts)
                 .map(clause -> (Conjuncts<?>) clause)
                 .flatMap(Conjuncts::getSubClauses)
                 .collect(Collectors.toSet());

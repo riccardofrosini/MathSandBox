@@ -18,8 +18,12 @@ public class Variable implements Singleton {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
         Variable variable = (Variable) o;
         return var.equals(variable.var);
     }

@@ -2,9 +2,9 @@ package ai.maths.sat3.model;
 
 import java.util.Set;
 
-public abstract class DisjunctsOfSingletons extends Disjuncts<Singleton> {
+public class DisjunctsOfSingletons extends Disjuncts<Singleton> implements DisjunctOfSingletonsOrSingleton<Singleton> {
 
-    public DisjunctsOfSingletons(Set<Singleton> disjuncts) {
+    protected DisjunctsOfSingletons(Set<Singleton> disjuncts) {
         super(disjuncts);
     }
 }

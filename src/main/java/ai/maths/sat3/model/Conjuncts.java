@@ -22,8 +22,12 @@ public class Conjuncts<T extends Clause<?>> implements Clause<T> {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
         Conjuncts<?> conjuncts = (Conjuncts<?>) o;
         return this.conjuncts.equals(conjuncts.conjuncts);
     }

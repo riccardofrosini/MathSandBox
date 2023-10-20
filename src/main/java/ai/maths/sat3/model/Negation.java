@@ -18,8 +18,12 @@ public class Negation<T extends Clause<?>> implements Clause<T> {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
         Negation<?> negation = (Negation<?>) o;
         return clause.equals(negation.clause);
     }
