@@ -3,9 +3,9 @@ package ai.maths.sat3.model;
 import java.util.Objects;
 import java.util.stream.Stream;
 
-import ai.maths.sat3.sets.VariableSet;
+import ai.maths.sat3.sets.VariableSingletonSet;
 
-public class Variable extends VariableSet implements Singleton {
+public class Variable extends VariableSingletonSet implements Singleton {
 
     private String var;
 

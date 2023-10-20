@@ -10,4 +10,6 @@ public interface Clause<T extends Clause<?>> {
     T getAnySubClause();
 
     Set<Variable> getVariables();
+
+    Set<Singleton> getSingletons();
 }

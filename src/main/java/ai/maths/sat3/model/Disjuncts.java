@@ -6,16 +6,17 @@ import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import ai.maths.sat3.sets.VariableSet;
+import ai.maths.sat3.sets.VariableSingletonSet;
 
-public class Disjuncts<T extends Clause<?>> extends VariableSet implements Clause<T> {
+public class Disjuncts<T extends Clause<?>> extends VariableSingletonSet implements Clause<T> {
 
     public static final Disjuncts<?> FALSE = new Disjuncts<>(Collections.emptySet());
 
-    protected Set<T> disjuncts;
+    private final Set<T> disjuncts;
 
     protected Disjuncts(Set<T> disjuncts) {
-        super(disjuncts.stream().flatMap(t -> t.getVariables().stream()).collect(Collectors.toUnmodifiableSet()));
+        super(disjuncts.stream().flatMap(t -> t.getVariables().stream()).collect(Collectors.toUnmodifiableSet()),
+                disjuncts.stream().flatMap(t -> t.getSingletons().stream()).collect(Collectors.toUnmodifiableSet()));
         this.disjuncts = disjuncts;
     }
 

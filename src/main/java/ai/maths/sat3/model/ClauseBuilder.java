@@ -44,23 +44,26 @@ public class ClauseBuilder {
 
     private static Clause<?> buildConjuncts(Set<Clause<?>> clauses) {
         clauses = normaliseConjuncts(clauses);
-        if (clauses.isEmpty() || clauses.contains(Disjuncts.FALSE) || checkClashingClauses(clauses)) {
+        if (clauses.contains(Disjuncts.FALSE) || checkClashingClauses(clauses)) {
             return Disjuncts.FALSE;
+        }
+        if (clauses.isEmpty()) {
+            return Conjuncts.TRUE;
         }
         if (clauses.size() == 1) {
             return clauses.iterator().next();
         }
-        if (clauses.stream().allMatch(clause -> clause instanceof Singleton)) {
-            Iterator<Singleton> iterator = clauses.stream().map(clause -> (Singleton) clause).iterator();
-            if (clauses.size() == 3) {
-                return new Conjuncts3(iterator.next(), iterator.next(), iterator.next());
-            }
-            if (clauses.size() == 2) {
-                return new Conjuncts2(iterator.next(), iterator.next());
-            }
-            return new ConjunctsOfSingletons(clauses.stream().map(clause -> (Singleton) clause).collect(Collectors.toUnmodifiableSet()));
-        }
         if (clauses.stream().allMatch(clause -> clause instanceof ThreeDisjunctOfSingletonsOrSingleton)) {
+            if (clauses.stream().allMatch(clause -> clause instanceof Singleton)) {
+                Iterator<Singleton> iterator = clauses.stream().map(clause -> (Singleton) clause).iterator();
+                if (clauses.size() == 3) {
+                    return new Conjuncts3(iterator.next(), iterator.next(), iterator.next());
+                }
+                if (clauses.size() == 2) {
+                    return new Conjuncts2(iterator.next(), iterator.next());
+                }
+                return new ConjunctsOfSingletons(clauses.stream().map(clause -> (Singleton) clause).collect(Collectors.toUnmodifiableSet()));
+            }
             return new ThreeSatConjuncts(clauses.stream()
                     .map(clause -> (ThreeDisjunctOfSingletonsOrSingleton<?>) clause)
                     .collect(Collectors.toUnmodifiableSet()));
@@ -74,23 +77,26 @@ public class ClauseBuilder {
 
     private static Clause<?> buildDisjuncts(Set<Clause<?>> clauses) {
         clauses = normaliseDisjuncts(clauses);
-        if (clauses.isEmpty() || clauses.contains(Conjuncts.TRUE) || checkClashingClauses(clauses)) {
+        if (clauses.contains(Conjuncts.TRUE) || checkClashingClauses(clauses)) {
             return Conjuncts.TRUE;
+        }
+        if (clauses.isEmpty()) {
+            return Disjuncts.FALSE;
         }
         if (clauses.size() == 1) {
             return clauses.iterator().next();
         }
-        if (clauses.stream().allMatch(clause -> clause instanceof Singleton)) {
-            Iterator<Singleton> iterator = clauses.stream().map(clause -> (Singleton) clause).iterator();
-            if (clauses.size() == 3) {
-                return new Disjuncts3(iterator.next(), iterator.next(), iterator.next());
-            }
-            if (clauses.size() == 2) {
-                return new Disjuncts2(iterator.next(), iterator.next());
-            }
-            return new DisjunctsOfSingletons(clauses.stream().map(clause -> (Singleton) clause).collect(Collectors.toUnmodifiableSet()));
-        }
         if (clauses.stream().allMatch(clause -> clause instanceof ThreeConjunctOfSingletonsOrSingleton)) {
+            if (clauses.stream().allMatch(clause -> clause instanceof Singleton)) {
+                Iterator<Singleton> iterator = clauses.stream().map(clause -> (Singleton) clause).iterator();
+                if (clauses.size() == 3) {
+                    return new Disjuncts3(iterator.next(), iterator.next(), iterator.next());
+                }
+                if (clauses.size() == 2) {
+                    return new Disjuncts2(iterator.next(), iterator.next());
+                }
+                return new DisjunctsOfSingletons(clauses.stream().map(clause -> (Singleton) clause).collect(Collectors.toUnmodifiableSet()));
+            }
             return new NegThreeSatDisjuncts(clauses.stream()
                     .map(clause -> (ThreeConjunctOfSingletonsOrSingleton<?>) clause)
                     .collect(Collectors.toUnmodifiableSet()));
