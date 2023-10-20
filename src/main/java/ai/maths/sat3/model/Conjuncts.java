@@ -6,13 +6,16 @@ import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-public class Conjuncts<T extends Clause<?>> implements Clause<T> {
+import ai.maths.sat3.sets.VariableSet;
+
+public class Conjuncts<T extends Clause<?>> extends VariableSet implements Clause<T> {
 
     public static final Conjuncts<?> FALSE = new Conjuncts<>(Collections.emptySet());
 
     protected Set<T> conjuncts;
 
     protected Conjuncts(Set<T> conjuncts) {
+        super(conjuncts.stream().flatMap(t -> t.getVariables().stream()).collect(Collectors.toUnmodifiableSet()));
         this.conjuncts = conjuncts;
     }
 

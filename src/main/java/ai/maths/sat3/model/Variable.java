@@ -3,11 +3,14 @@ package ai.maths.sat3.model;
 import java.util.Objects;
 import java.util.stream.Stream;
 
-public class Variable implements Singleton {
+import ai.maths.sat3.sets.VariableSet;
+
+public class Variable extends VariableSet implements Singleton {
 
     private String var;
 
     protected Variable(String var) {
+        super();
         this.var = var;
     }
 

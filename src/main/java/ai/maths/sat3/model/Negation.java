@@ -3,11 +3,14 @@ package ai.maths.sat3.model;
 import java.util.Objects;
 import java.util.stream.Stream;
 
-public class Negation<T extends Clause<?>> implements Clause<T> {
+import ai.maths.sat3.sets.VariableSet;
+
+public class Negation<T extends Clause<?>> extends VariableSet implements Clause<T> {
 
     protected T clause;
 
     protected Negation(T clause) {
+        super(clause.getVariables());
         this.clause = clause;
     }
 
