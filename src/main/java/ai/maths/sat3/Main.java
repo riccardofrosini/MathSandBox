@@ -1,11 +1,11 @@
 package ai.maths.sat3;
 
-import java.util.Set;
-
 import ai.maths.sat3.model.Clause;
 import ai.maths.sat3.model.ClauseBuilder;
 import ai.maths.sat3.model.NegVariable;
+import ai.maths.sat3.model.ThreeSatConjuncts;
 import ai.maths.sat3.model.Variable;
+import ai.maths.sat3.sets.ConnectedVariables;
 
 public class Main {
 
@@ -21,16 +21,18 @@ public class Main {
         NegVariable ny = (NegVariable) ClauseBuilder.buildNegation(y);
         NegVariable nz = (NegVariable) ClauseBuilder.buildNegation(z);
 
-        Clause<?> clause = ClauseBuilder.buildDisjuncts(Set.of(x, y, z));
+        Clause<?> clause = ClauseBuilder.buildDisjuncts(x, y, z);
 
-        System.out.println(ClauseBuilder.buildConjuncts(Set.of(clause, ClauseBuilder.buildDisjuncts(Set.of(nx, y, z)))));
-        System.out.println(ClauseBuilder.buildConjuncts(Set.of(clause, ClauseBuilder.buildDisjuncts(Set.of(nx, ny, z)))));
-        System.out.println(ClauseBuilder.buildConjuncts(Set.of(clause, ClauseBuilder.buildDisjuncts(Set.of(nx, ny, nz)))));
-        System.out.println(ClauseBuilder.buildConjuncts(Set.of(clause, ClauseBuilder.buildDisjuncts(Set.of(x, y, c)))));
-        System.out.println(ClauseBuilder.buildConjuncts(Set.of(clause, ClauseBuilder.buildDisjuncts(Set.of(nx, y, c)))));
-        System.out.println(ClauseBuilder.buildConjuncts(Set.of(clause, ClauseBuilder.buildDisjuncts(Set.of(nx, ny, c)))));
-        System.out.println(ClauseBuilder.buildConjuncts(Set.of(clause, ClauseBuilder.buildDisjuncts(Set.of(x, b, c)))));
-        System.out.println(ClauseBuilder.buildConjuncts(Set.of(clause, ClauseBuilder.buildDisjuncts(Set.of(nx, b, c)))));
-        System.out.println(ClauseBuilder.buildConjuncts(Set.of(clause, ClauseBuilder.buildDisjuncts(Set.of(a, b, c)))));
+        System.out.println(ClauseBuilder.buildConjuncts(clause, ClauseBuilder.buildDisjuncts(nx, y, z)));
+        System.out.println(ClauseBuilder.buildConjuncts(clause, ClauseBuilder.buildDisjuncts(nx, ny, z)));
+        System.out.println(ClauseBuilder.buildConjuncts(clause, ClauseBuilder.buildDisjuncts(nx, ny, nz)));
+        System.out.println(ClauseBuilder.buildConjuncts(clause, ClauseBuilder.buildDisjuncts(x, y, c)));
+        System.out.println(ClauseBuilder.buildConjuncts(clause, ClauseBuilder.buildDisjuncts(nx, y, c)));
+        System.out.println(ClauseBuilder.buildConjuncts(clause, ClauseBuilder.buildDisjuncts(nx, ny, c)));
+        System.out.println(ClauseBuilder.buildConjuncts(clause, ClauseBuilder.buildDisjuncts(x, b, c)));
+        System.out.println(ClauseBuilder.buildConjuncts(clause, ClauseBuilder.buildDisjuncts(nx, b, c)));
+        System.out.println(ClauseBuilder.buildConjuncts(clause, ClauseBuilder.buildDisjuncts(a, b, c)));
+
+        System.out.println(ConnectedVariables.getIndependentConnectedConjuncts((ThreeSatConjuncts) ClauseBuilder.buildConjuncts(clause, ClauseBuilder.buildDisjuncts(a, b, c))));
     }
 }

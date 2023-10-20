@@ -22,8 +22,9 @@ public class ConnectedVariables {
                 disjunct.getVariables().forEach(variable ->
                         varToConjunct.computeIfAbsent(variable, v -> new HashSet<>()).add(disjunct)));
         return getIndependentConnectedVariables(threeSatConjuncts).stream()
-                .map(variables -> ClauseBuilder.buildConjuncts(variables.stream().flatMap(variable -> varToConjunct.get(variable).stream()).collect(Collectors.toSet())))
-                .collect(Collectors.toSet());
+                .map(variables -> ClauseBuilder.buildConjuncts(variables.stream()
+                        .flatMap(variable -> varToConjunct.get(variable).stream()).toArray(Clause[]::new)))
+                .collect(Collectors.toUnmodifiableSet());
     }
 
     public static Set<Set<Variable>> getIndependentConnectedVariables(ThreeSatConjuncts threeSatConjuncts) {
@@ -32,10 +33,10 @@ public class ConnectedVariables {
             Set<Variable> newVariables = threeDisjunctOfSingletonsOrSingleton.getVariables();
             Set<Set<Variable>> toRemove = disconnectedSets.stream()
                     .filter(variables -> newVariables.stream().anyMatch(variables::contains))
-                    .collect(Collectors.toSet());
+                    .collect(Collectors.toUnmodifiableSet());
             disconnectedSets.removeAll(toRemove);
             Set<Variable> toAdd = Stream.concat(newVariables.stream(), toRemove.stream().flatMap(Collection::stream))
-                    .collect(Collectors.toSet());
+                    .collect(Collectors.toUnmodifiableSet());
             disconnectedSets.add(toAdd);
         });
         return disconnectedSets;
