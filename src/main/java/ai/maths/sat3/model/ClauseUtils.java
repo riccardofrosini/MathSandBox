@@ -57,7 +57,6 @@ public class ClauseUtils {
         }
         if (clauses.stream().allMatch(clause -> clause instanceof DisjunctOfSingletonsOrSingleton)) {
             return new ThreeSatConjuncts(clauses.stream()
-                    .filter(clause -> clause instanceof DisjunctOfSingletonsOrSingleton)
                     .map(clause -> (DisjunctOfSingletonsOrSingleton<?>) clause)
                     .collect(Collectors.toSet()));
         }
@@ -81,6 +80,11 @@ public class ClauseUtils {
                 return new Disjuncts2(iterator.next(), iterator.next());
             }
             return new DisjunctsOfSingletons(clauses.stream().map(clause -> (Singleton) clause).collect(Collectors.toSet()));
+        }
+        if (clauses.stream().allMatch(clause -> clause instanceof ConjunctOfSingletonsOrSingleton)) {
+            return new NegThreeSatDisjuncts(clauses.stream()
+                    .map(clause -> (ConjunctOfSingletonsOrSingleton<?>) clause)
+                    .collect(Collectors.toSet()));
         }
         return new Disjuncts<>(clauses);
     }
