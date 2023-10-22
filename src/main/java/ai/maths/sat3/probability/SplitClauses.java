@@ -47,7 +47,7 @@ public class SplitClauses {
                 .map(disjunct -> disjunct.getSubClauses()
                         .filter(singleton -> !first.getSingletons().contains(singleton))
                         .collect(Collectors.toSet()))
-                .filter(singletons -> singletons.size() != 0)
+                .filter(singletons -> !singletons.isEmpty())
                 .map(ClauseBuilder::buildDisjunctsOfSingletons)
                 .collect(Collectors.toUnmodifiableSet());
     }
