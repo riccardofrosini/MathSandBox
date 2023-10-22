@@ -12,10 +12,12 @@ public class SplitClauses {
 
     private final DisjunctOfSingletonsOrSingleton first;
     private final Set<DisjunctOfSingletonsOrSingleton> rest;
+    private final Set<DisjunctOfSingletonsOrSingleton> disconnectedFromFirst;
 
     private SplitClauses(DisjunctOfSingletonsOrSingleton first, Set<DisjunctOfSingletonsOrSingleton> rest) {
         this.first = first;
         this.rest = rest;
+        this.disconnectedFromFirst = makeRestIndependentToFirst();
     }
 
     public static SplitClauses split(CNF<?> conjuncts) {
@@ -24,7 +26,7 @@ public class SplitClauses {
         return new SplitClauses(anySubClause, rest);
     }
 
-    public Set<DisjunctOfSingletonsOrSingleton> makeRestIndependentToFirst() {
+    private Set<DisjunctOfSingletonsOrSingleton> makeRestIndependentToFirst() {
         Set<DisjunctOfSingletonsOrSingleton> disjunctsWithoutNegativeVars = rest.stream()
                 .filter(disjunct ->
                         disjunct.getSingletons().stream()
@@ -52,5 +54,9 @@ public class SplitClauses {
 
     public Set<DisjunctOfSingletonsOrSingleton> getRest() {
         return rest;
+    }
+
+    public Set<DisjunctOfSingletonsOrSingleton> getDisconnectedFromFirst() {
+        return disconnectedFromFirst;
     }
 }

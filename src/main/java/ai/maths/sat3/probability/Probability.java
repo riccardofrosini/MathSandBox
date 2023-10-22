@@ -39,7 +39,7 @@ public class Probability {
                 if (cnForDisjunctOfSingletonsOrSingleton instanceof CNF) {
                     SplitClauses split = SplitClauses.split((CNF<?>) cnForDisjunctOfSingletonsOrSingleton);
                     return probability(ClauseBuilder.buildCNF(split.getRest())) - probability(ClauseBuilder.buildNegation(split.getFirst())) * probability(
-                            ClauseBuilder.buildCNF(split.makeRestIndependentToFirst()));
+                            ClauseBuilder.buildCNF(split.getDisconnectedFromFirst()));
                 }
                 return probability(cnForDisjunctOfSingletonsOrSingleton);
             }

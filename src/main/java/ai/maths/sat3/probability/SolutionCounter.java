@@ -39,7 +39,7 @@ public class SolutionCounter {
                 if (cnfOrDisjunctOfSingletonsOrSingleton instanceof CNF) {
                     SplitClauses split = SplitClauses.split((CNF<?>) cnfOrDisjunctOfSingletonsOrSingleton);
                     CNFOrDisjunctOfSingletonsOrSingleton<?> cnf = ClauseBuilder.buildCNF(split.getRest());
-                    CNFOrDisjunctOfSingletonsOrSingleton<?> independentCNF = ClauseBuilder.buildCNF(split.makeRestIndependentToFirst());
+                    CNFOrDisjunctOfSingletonsOrSingleton<?> independentCNF = ClauseBuilder.buildCNF(split.getDisconnectedFromFirst());
                     return countSolutions(cnf) *
                             (long) Math.pow(2, split.getFirst().getVariables().stream()
                                     .filter(variable -> !cnf.getVariables().contains(variable)).count())
