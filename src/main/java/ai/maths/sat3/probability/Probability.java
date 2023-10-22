@@ -10,7 +10,6 @@ import ai.maths.sat3.model.ConjunctsOfSingletons;
 import ai.maths.sat3.model.DisjunctsOfSingletons;
 import ai.maths.sat3.model.Negation;
 import ai.maths.sat3.model.Variable;
-import ai.maths.sat3.sets.ConnectedVariables;
 
 public class Probability {
 

@@ -1,4 +1,4 @@
-package ai.maths.sat3.sets;
+package ai.maths.sat3.probability;
 
 import java.util.Set;
 

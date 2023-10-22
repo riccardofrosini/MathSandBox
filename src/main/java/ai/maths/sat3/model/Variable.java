@@ -3,7 +3,7 @@ package ai.maths.sat3.model;
 import java.util.Objects;
 import java.util.stream.Stream;
 
-import ai.maths.sat3.sets.VariableSingletonSet;
+import ai.maths.sat3.probability.VariableSingletonSet;
 
 public class Variable extends VariableSingletonSet implements Singleton {
 

@@ -1,4 +1,4 @@
-package ai.maths.sat3.sets;
+package ai.maths.sat3.probability;
 
 import java.util.Collection;
 import java.util.HashMap;
@@ -28,7 +28,7 @@ public class ConnectedVariables {
                 .collect(Collectors.toUnmodifiableSet());
     }
 
-    public static <T extends DisjunctOfSingletonsOrSingleton> Set<Set<Variable>> getIndependentConnectedVariables(CNF<T> cnf) {
+    private static <T extends DisjunctOfSingletonsOrSingleton> Set<Set<Variable>> getIndependentConnectedVariables(CNF<T> cnf) {
         Set<Set<Variable>> disconnectedSets = new HashSet<>();
         cnf.getSubClauses().forEach(disjunctOfSingletonsOrSingleton -> {
             Set<Variable> newVariables = disjunctOfSingletonsOrSingleton.getVariables();
