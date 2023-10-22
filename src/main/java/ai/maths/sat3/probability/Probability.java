@@ -6,10 +6,7 @@ import ai.maths.sat3.model.CNF;
 import ai.maths.sat3.model.CNFOrDisjunctOfSingletonsOrSingleton;
 import ai.maths.sat3.model.Clause;
 import ai.maths.sat3.model.ClauseBuilder;
-import ai.maths.sat3.model.Conjuncts;
 import ai.maths.sat3.model.ConjunctsOfSingletons;
-import ai.maths.sat3.model.DisjunctOfSingletonsOrSingleton;
-import ai.maths.sat3.model.Disjuncts;
 import ai.maths.sat3.model.DisjunctsOfSingletons;
 import ai.maths.sat3.model.Negation;
 import ai.maths.sat3.model.Variable;
@@ -18,10 +15,10 @@ import ai.maths.sat3.sets.ConnectedVariables;
 public class Probability {
 
     public static double probability(Clause<?> clause) {
-        if (clause == Disjuncts.FALSE) {
+        if (clause == DisjunctsOfSingletons.FALSE) {
             return 0d;
         }
-        if (clause == Conjuncts.TRUE) {
+        if (clause == ConjunctsOfSingletons.TRUE) {
             return 1d;
         }
         if (clause instanceof Variable) {
@@ -42,13 +39,8 @@ public class Probability {
                 CNFOrDisjunctOfSingletonsOrSingleton<?> cnForDisjunctOfSingletonsOrSingleton = independentConnectedConjuncts.iterator().next();
                 if (cnForDisjunctOfSingletonsOrSingleton instanceof CNF) {
                     SplitClauses split = SplitClauses.split((CNF<?>) cnForDisjunctOfSingletonsOrSingleton);
-                    CNFOrDisjunctOfSingletonsOrSingleton<?> cnf = ClauseBuilder.buildCNF(split.getRest());
-                    Set<DisjunctOfSingletonsOrSingleton> independentClauses = split.makeRestIndependentToFirst();
-                    if (independentClauses.isEmpty()) {
-                        return probability(cnf) - probability(ClauseBuilder.buildNegation(split.getFirst()));
-                    }
-                    CNFOrDisjunctOfSingletonsOrSingleton<?> independentCNF = ClauseBuilder.buildCNF(independentClauses);
-                    return probability(cnf) - probability(ClauseBuilder.buildNegation(split.getFirst())) * probability(independentCNF);
+                    return probability(ClauseBuilder.buildCNF(split.getRest())) - probability(ClauseBuilder.buildNegation(split.getFirst())) * probability(
+                            ClauseBuilder.buildCNF(split.makeRestIndependentToFirst()));
                 }
                 return probability(cnForDisjunctOfSingletonsOrSingleton);
             }

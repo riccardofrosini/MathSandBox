@@ -1,6 +1,5 @@
 package ai.maths.sat3.model;
 
-import java.util.Collections;
 import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -9,8 +8,6 @@ import java.util.stream.Stream;
 import ai.maths.sat3.sets.VariableSingletonSet;
 
 public class Disjuncts<T extends Clause<?>> extends VariableSingletonSet implements Clause<T> {
-
-    public static final Disjuncts<?> FALSE = new Disjuncts<>(Collections.emptySet());
 
     private final Set<T> disjuncts;
 
@@ -49,7 +46,7 @@ public class Disjuncts<T extends Clause<?>> extends VariableSingletonSet impleme
 
     @Override
     public String toString() {
-        if (this == FALSE) {
+        if (this == DisjunctsOfSingletons.FALSE) {
             return "F";
         }
         return disjuncts.stream().map(Object::toString).collect(Collectors.joining("∨", "(", ")"));

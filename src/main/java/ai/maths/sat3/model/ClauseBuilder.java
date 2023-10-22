@@ -20,16 +20,16 @@ public class ClauseBuilder {
             return clause.getAnySubClause();
         }
         if (clause instanceof Disjuncts) {
-            if (clause == Disjuncts.FALSE) {
-                return Conjuncts.TRUE;
+            if (clause == DisjunctsOfSingletons.FALSE) {
+                return ConjunctsOfSingletons.TRUE;
             }
             return buildConjuncts(clause.getSubClauses()
                     .map(ClauseBuilder::buildNegation)
                     .collect(Collectors.toUnmodifiableSet()));
         }
         if (clause instanceof Conjuncts) {
-            if (clause == Conjuncts.TRUE) {
-                return Disjuncts.FALSE;
+            if (clause == ConjunctsOfSingletons.TRUE) {
+                return DisjunctsOfSingletons.FALSE;
             }
             return buildDisjuncts(clause.getSubClauses()
                     .map(ClauseBuilder::buildNegation)
@@ -40,11 +40,11 @@ public class ClauseBuilder {
 
     private static Clause<?> buildConjuncts(Set<Clause<?>> clauses) {
         clauses = normaliseConjuncts(clauses);
-        if (clauses.contains(Disjuncts.FALSE) || checkClashingClauses(clauses)) {
-            return Disjuncts.FALSE;
+        if (clauses.contains(DisjunctsOfSingletons.FALSE) || checkClashingClauses(clauses)) {
+            return DisjunctsOfSingletons.FALSE;
         }
         if (clauses.isEmpty()) {
-            return Conjuncts.TRUE;
+            return ConjunctsOfSingletons.TRUE;
         }
         if (clauses.size() == 1) {
             return clauses.iterator().next();
@@ -59,11 +59,11 @@ public class ClauseBuilder {
 
     private static Clause<?> buildDisjuncts(Set<Clause<?>> clauses) {
         clauses = normaliseDisjuncts(clauses);
-        if (clauses.contains(Conjuncts.TRUE) || checkClashingClauses(clauses)) {
-            return Conjuncts.TRUE;
+        if (clauses.contains(ConjunctsOfSingletons.TRUE) || checkClashingClauses(clauses)) {
+            return ConjunctsOfSingletons.TRUE;
         }
         if (clauses.isEmpty()) {
-            return Disjuncts.FALSE;
+            return DisjunctsOfSingletons.FALSE;
         }
         if (clauses.size() == 1) {
             return clauses.iterator().next();
@@ -98,6 +98,9 @@ public class ClauseBuilder {
 
     public static DisjunctOfSingletonsOrSingleton buildDisjunctsOfSingletons(Set<Singleton> singletons) {
         Iterator<Singleton> iterator = singletons.iterator();
+        if (!iterator.hasNext()) {
+            return DisjunctsOfSingletons.FALSE;
+        }
         if (singletons.size() == 1) {
             return iterator.next();
         }
@@ -134,6 +137,9 @@ public class ClauseBuilder {
 
     public static ConjunctOfSingletonsOrSingleton buildConjunctsOfSingletons(Set<Singleton> singletons) {
         Iterator<Singleton> iterator = singletons.iterator();
+        if (!iterator.hasNext()) {
+            return ConjunctsOfSingletons.TRUE;
+        }
         if (singletons.size() == 1) {
             return iterator.next();
         }
@@ -148,7 +154,7 @@ public class ClauseBuilder {
 
     private static Set<Clause<?>> normaliseDisjuncts(Set<Clause<?>> clauses) {
         return Stream.concat(clauses.stream()
-                                .filter(clause -> clause instanceof Disjuncts && clause != Disjuncts.FALSE)
+                                .filter(clause -> clause instanceof Disjuncts && clause != DisjunctsOfSingletons.FALSE)
                                 .map(clause -> (Disjuncts<?>) clause)
                                 .flatMap(Disjuncts::getSubClauses),
                         clauses.stream()
@@ -158,7 +164,7 @@ public class ClauseBuilder {
 
     private static Set<Clause<?>> normaliseConjuncts(Set<Clause<?>> clauses) {
         return Stream.concat(clauses.stream()
-                                .filter(clause -> clause instanceof Conjuncts && clause != Conjuncts.TRUE)
+                                .filter(clause -> clause instanceof Conjuncts && clause != ConjunctsOfSingletons.TRUE)
                                 .map(clause -> (Conjuncts<?>) clause)
                                 .flatMap(Conjuncts::getSubClauses),
                         clauses.stream()

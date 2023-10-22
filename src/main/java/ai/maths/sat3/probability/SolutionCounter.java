@@ -6,10 +6,7 @@ import ai.maths.sat3.model.CNF;
 import ai.maths.sat3.model.CNFOrDisjunctOfSingletonsOrSingleton;
 import ai.maths.sat3.model.Clause;
 import ai.maths.sat3.model.ClauseBuilder;
-import ai.maths.sat3.model.Conjuncts;
 import ai.maths.sat3.model.ConjunctsOfSingletons;
-import ai.maths.sat3.model.DisjunctOfSingletonsOrSingleton;
-import ai.maths.sat3.model.Disjuncts;
 import ai.maths.sat3.model.DisjunctsOfSingletons;
 import ai.maths.sat3.model.Negation;
 import ai.maths.sat3.model.Variable;
@@ -18,10 +15,10 @@ import ai.maths.sat3.sets.ConnectedVariables;
 public class SolutionCounter {
 
     public static long countSolutions(Clause<?> clause) {
-        if (clause == Disjuncts.FALSE) {
+        if (clause == DisjunctsOfSingletons.FALSE) {
             return 0;
         }
-        if (clause == Conjuncts.TRUE) {
+        if (clause == ConjunctsOfSingletons.TRUE) {
             return 1;
         }
         if (clause instanceof Variable) {
@@ -43,15 +40,7 @@ public class SolutionCounter {
                 if (cnfOrDisjunctOfSingletonsOrSingleton instanceof CNF) {
                     SplitClauses split = SplitClauses.split((CNF<?>) cnfOrDisjunctOfSingletonsOrSingleton);
                     CNFOrDisjunctOfSingletonsOrSingleton<?> cnf = ClauseBuilder.buildCNF(split.getRest());
-                    Set<DisjunctOfSingletonsOrSingleton> independentClauses = split.makeRestIndependentToFirst();
-                    if (independentClauses.isEmpty()) {
-                        return countSolutions(cnf) *
-                                (long) Math.pow(2, split.getFirst().getVariables().stream()
-                                        .filter(variable -> !cnf.getVariables().contains(variable)).count()) -
-                                (long) Math.pow(2, cnf.getVariables().stream()
-                                        .filter(variable -> !split.getFirst().getVariables().contains(variable)).count());
-                    }
-                    CNFOrDisjunctOfSingletonsOrSingleton<?> independentCNF = ClauseBuilder.buildCNF(independentClauses);
+                    CNFOrDisjunctOfSingletonsOrSingleton<?> independentCNF = ClauseBuilder.buildCNF(split.makeRestIndependentToFirst());
                     return countSolutions(cnf) *
                             (long) Math.pow(2, split.getFirst().getVariables().stream()
                                     .filter(variable -> !cnf.getVariables().contains(variable)).count())
@@ -63,6 +52,6 @@ public class SolutionCounter {
             }
             return independentConnectedConjuncts.stream().mapToLong(SolutionCounter::countSolutions).reduce(1, (left, right) -> left * right);
         }
-        return 0;
+        throw new RuntimeException("A new class that extends clause has been added but not handled!");
     }
 }
