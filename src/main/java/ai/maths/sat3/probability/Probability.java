@@ -27,10 +27,10 @@ public class Probability {
             return 1d - probability(clause.getAnySubClause());
         }
         if (clause instanceof DisjunctsOfSingletons) {
-            return 1d - 1d / Math.pow(2, clause.getSubClauses().count());
+            return 1d - 1d / Math.pow(2, clause.getVariables().size());
         }
         if (clause instanceof ConjunctsOfSingletons) {
-            return 1d / Math.pow(2, clause.getSubClauses().count());
+            return 1d / Math.pow(2, clause.getVariables().size());
         }
         if (clause instanceof CNF) {
             Set<CNFOrDisjunctOfSingletonsOrSingleton<?>> independentConnectedConjuncts = ConnectedVariables.getIndependentConnectedConjuncts((CNF<?>) clause);
@@ -38,8 +38,8 @@ public class Probability {
                 CNFOrDisjunctOfSingletonsOrSingleton<?> cnForDisjunctOfSingletonsOrSingleton = independentConnectedConjuncts.iterator().next();
                 if (cnForDisjunctOfSingletonsOrSingleton instanceof CNF) {
                     SplitClauses split = SplitClauses.split((CNF<?>) cnForDisjunctOfSingletonsOrSingleton);
-                    return probability(ClauseBuilder.buildCNF(split.getRest())) - probability(ClauseBuilder.buildNegation(split.getFirst())) * probability(
-                            ClauseBuilder.buildCNF(split.getDisconnectedFromFirst()));
+                    return probability(ClauseBuilder.buildCNF(split.getRest())) -
+                            probability(ClauseBuilder.buildCNF(split.getDisconnectedFromFirst())) / Math.pow(2, split.getFirst().getVariables().size());
                 }
                 return probability(cnForDisjunctOfSingletonsOrSingleton);
             }

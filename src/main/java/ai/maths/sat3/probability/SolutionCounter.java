@@ -24,10 +24,10 @@ public class SolutionCounter {
             return 1;
         }
         if (clause instanceof Negation) {
-            return (long) Math.pow(2, clause.getSubClauses().count()) - countSolutions(clause.getAnySubClause());
+            return (long) Math.pow(2, clause.getVariables().size()) - countSolutions(clause.getAnySubClause());
         }
         if (clause instanceof DisjunctsOfSingletons) {
-            return (long) Math.pow(2, clause.getSubClauses().count()) - 1;
+            return (long) Math.pow(2, clause.getVariables().size()) - 1;
         }
         if (clause instanceof ConjunctsOfSingletons) {
             return 1;
