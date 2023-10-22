@@ -35,12 +35,7 @@ public class ClauseBuilder {
                     .map(ClauseBuilder::buildNegation)
                     .collect(Collectors.toUnmodifiableSet()));
         }
-        System.err.println("Code will never enter here!");
-        return null;
-    }
-
-    public static Clause<?> buildConjuncts(Clause<?>... clauses) {
-        return buildConjuncts(Arrays.stream(clauses).collect(Collectors.toUnmodifiableSet()));
+        throw new RuntimeException("A new class that extends clause has been added but not handled!");
     }
 
     private static Clause<?> buildConjuncts(Set<Clause<?>> clauses) {
@@ -54,26 +49,12 @@ public class ClauseBuilder {
         if (clauses.size() == 1) {
             return clauses.iterator().next();
         }
-        if (clauses.stream().allMatch(clause -> clause instanceof ThreeDisjunctOfSingletonsOrSingleton)) {
-            if (clauses.stream().allMatch(clause -> clause instanceof Singleton)) {
-                Iterator<Singleton> iterator = clauses.stream().map(clause -> (Singleton) clause).iterator();
-                if (clauses.size() == 3) {
-                    return new Conjuncts3(iterator.next(), iterator.next(), iterator.next());
-                }
-                if (clauses.size() == 2) {
-                    return new Conjuncts2(iterator.next(), iterator.next());
-                }
-                return new ConjunctsOfSingletons(clauses.stream().map(clause -> (Singleton) clause).collect(Collectors.toUnmodifiableSet()));
-            }
-            return new ThreeSatConjuncts(clauses.stream()
-                    .map(clause -> (ThreeDisjunctOfSingletonsOrSingleton<?>) clause)
+        if (clauses.stream().allMatch(clause -> clause instanceof DisjunctOfSingletonsOrSingleton)) {
+            return buildCNF(clauses.stream()
+                    .map(clause -> (DisjunctOfSingletonsOrSingleton) clause)
                     .collect(Collectors.toUnmodifiableSet()));
         }
         return new Conjuncts<>(clauses);
-    }
-
-    public static Clause<?> buildDisjuncts(Clause<?>... clauses) {
-        return buildDisjuncts(Arrays.stream(clauses).collect(Collectors.toUnmodifiableSet()));
     }
 
     private static Clause<?> buildDisjuncts(Set<Clause<?>> clauses) {
@@ -87,22 +68,82 @@ public class ClauseBuilder {
         if (clauses.size() == 1) {
             return clauses.iterator().next();
         }
-        if (clauses.stream().allMatch(clause -> clause instanceof ThreeConjunctOfSingletonsOrSingleton)) {
-            if (clauses.stream().allMatch(clause -> clause instanceof Singleton)) {
-                Iterator<Singleton> iterator = clauses.stream().map(clause -> (Singleton) clause).iterator();
-                if (clauses.size() == 3) {
-                    return new Disjuncts3(iterator.next(), iterator.next(), iterator.next());
-                }
-                if (clauses.size() == 2) {
-                    return new Disjuncts2(iterator.next(), iterator.next());
-                }
-                return new DisjunctsOfSingletons(clauses.stream().map(clause -> (Singleton) clause).collect(Collectors.toUnmodifiableSet()));
-            }
-            return new NegThreeSatDisjuncts(clauses.stream()
-                    .map(clause -> (ThreeConjunctOfSingletonsOrSingleton<?>) clause)
+        if (clauses.stream().allMatch(clause -> clause instanceof ConjunctOfSingletonsOrSingleton)) {
+            return buildDNF(clauses.stream()
+                    .map(clause -> (ConjunctOfSingletonsOrSingleton) clause)
                     .collect(Collectors.toUnmodifiableSet()));
         }
         return new Disjuncts<>(clauses);
+    }
+
+    public static DNFOrConjunctOfSingletonsOrSingleton<?> buildDNF(ConjunctOfSingletonsOrSingleton first, ConjunctOfSingletonsOrSingleton... rest) {
+        return buildDNF(Stream.concat(Stream.of(first), Stream.of(rest)).collect(Collectors.toUnmodifiableSet()));
+    }
+
+    public static DNFOrConjunctOfSingletonsOrSingleton<?> buildDNF(Set<ConjunctOfSingletonsOrSingleton> conjuncts) {
+        if (conjuncts.size() == 1) {
+            return conjuncts.iterator().next();
+        }
+        if (conjuncts.stream().allMatch(clause -> clause instanceof Singleton)) {
+            return buildDisjunctsOfSingletons(conjuncts.stream().map(singleton -> (Singleton) singleton).collect(Collectors.toUnmodifiableSet()));
+        }
+        return new ThreeSatDisjuncts(conjuncts.stream()
+                .map(clause -> (ThreeConjunctOfSingletonsOrSingleton) clause)
+                .collect(Collectors.toUnmodifiableSet()));
+    }
+
+    public static DisjunctOfSingletonsOrSingleton buildDisjunctsOfSingletons(Singleton first, Singleton... rest) {
+        return buildDisjunctsOfSingletons(Stream.concat(Stream.of(first), Arrays.stream(rest)).collect(Collectors.toUnmodifiableSet()));
+    }
+
+    public static DisjunctOfSingletonsOrSingleton buildDisjunctsOfSingletons(Set<Singleton> singletons) {
+        Iterator<Singleton> iterator = singletons.iterator();
+        if (singletons.size() == 1) {
+            return iterator.next();
+        }
+        if (singletons.size() == 2) {
+            return new Disjuncts2(iterator.next(), iterator.next());
+        }
+        if (singletons.size() == 3) {
+            return new Disjuncts3(iterator.next(), iterator.next(), iterator.next());
+        }
+        return new DisjunctsOfSingletons(singletons);
+    }
+
+    public static CNFOrDisjunctOfSingletonsOrSingleton<?> buildCNF(DisjunctOfSingletonsOrSingleton first, DisjunctOfSingletonsOrSingleton... disjuncts) {
+        return buildCNF(Stream.concat(Stream.of(first), Stream.of(disjuncts)).collect(Collectors.toUnmodifiableSet()));
+    }
+
+    public static CNFOrDisjunctOfSingletonsOrSingleton<?> buildCNF(Set<DisjunctOfSingletonsOrSingleton> disjuncts) {
+        if (disjuncts.size() == 1) {
+            return disjuncts.iterator().next();
+        }
+        if (disjuncts.stream().allMatch(clause -> clause instanceof Singleton)) {
+            return buildConjunctsOfSingletons(disjuncts.stream()
+                    .map(singleton -> (Singleton) singleton)
+                    .collect(Collectors.toUnmodifiableSet()));
+        }
+        return new ThreeSatConjuncts(disjuncts.stream()
+                .map(clause -> (ThreeDisjunctOfSingletonsOrSingleton) clause)
+                .collect(Collectors.toUnmodifiableSet()));
+    }
+
+    public static ConjunctOfSingletonsOrSingleton buildConjunctsOfSingletons(Singleton first, Singleton... rest) {
+        return buildConjunctsOfSingletons(Stream.concat(Stream.of(first), Arrays.stream(rest)).collect(Collectors.toUnmodifiableSet()));
+    }
+
+    public static ConjunctOfSingletonsOrSingleton buildConjunctsOfSingletons(Set<Singleton> singletons) {
+        Iterator<Singleton> iterator = singletons.iterator();
+        if (singletons.size() == 1) {
+            return iterator.next();
+        }
+        if (singletons.size() == 2) {
+            return new Conjuncts2(iterator.next(), iterator.next());
+        }
+        if (singletons.size() == 3) {
+            return new Conjuncts3(iterator.next(), iterator.next(), iterator.next());
+        }
+        return new ConjunctsOfSingletons(singletons);
     }
 
     private static Set<Clause<?>> normaliseDisjuncts(Set<Clause<?>> clauses) {

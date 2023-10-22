@@ -7,7 +7,7 @@ import ai.maths.sat3.sets.VariableSingletonSet;
 
 public class Variable extends VariableSingletonSet implements Singleton {
 
-    private String var;
+    private final String var;
 
     protected Variable(String var) {
         super();
@@ -15,12 +15,12 @@ public class Variable extends VariableSingletonSet implements Singleton {
     }
 
     @Override
-    public Stream<Variable> getSubClauses() {
+    public Stream<Singleton> getSubClauses() {
         return Stream.of(this);
     }
 
     @Override
-    public Variable getAnySubClause() {
+    public Singleton getAnySubClause() {
         return this;
     }
 

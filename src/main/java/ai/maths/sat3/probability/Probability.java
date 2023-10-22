@@ -2,14 +2,16 @@ package ai.maths.sat3.probability;
 
 import java.util.Set;
 
+import ai.maths.sat3.model.CNF;
+import ai.maths.sat3.model.CNFOrDisjunctOfSingletonsOrSingleton;
 import ai.maths.sat3.model.Clause;
 import ai.maths.sat3.model.ClauseBuilder;
 import ai.maths.sat3.model.Conjuncts;
 import ai.maths.sat3.model.ConjunctsOfSingletons;
+import ai.maths.sat3.model.DisjunctOfSingletonsOrSingleton;
 import ai.maths.sat3.model.Disjuncts;
 import ai.maths.sat3.model.DisjunctsOfSingletons;
 import ai.maths.sat3.model.Negation;
-import ai.maths.sat3.model.ThreeSatConjuncts;
 import ai.maths.sat3.model.Variable;
 import ai.maths.sat3.sets.ConnectedVariables;
 
@@ -34,20 +36,24 @@ public class Probability {
         if (clause instanceof ConjunctsOfSingletons) {
             return 1d / Math.pow(2, clause.getSubClauses().count());
         }
-        if (clause instanceof ThreeSatConjuncts) {
-            Set<Clause<?>> independentConnectedConjuncts = ConnectedVariables.getIndependentConnectedConjuncts((ThreeSatConjuncts) clause);
+        if (clause instanceof CNF) {
+            Set<CNFOrDisjunctOfSingletonsOrSingleton<?>> independentConnectedConjuncts = ConnectedVariables.getIndependentConnectedConjuncts((CNF<?>) clause);
             if (independentConnectedConjuncts.size() == 1) {
-                Clause<?> next = independentConnectedConjuncts.iterator().next();
-                if (next instanceof ThreeSatConjuncts) {
-                    SplitThreeSatClause split = SplitThreeSatClause.split((ThreeSatConjuncts) next);
-                    return probability(ClauseBuilder.buildConjuncts(split.getRest())) - probability(ClauseBuilder.buildNegation(split.getFirst())) * probability(split.makeRestIndependentToFirst());
-
+                CNFOrDisjunctOfSingletonsOrSingleton<?> cnForDisjunctOfSingletonsOrSingleton = independentConnectedConjuncts.iterator().next();
+                if (cnForDisjunctOfSingletonsOrSingleton instanceof CNF) {
+                    SplitClauses split = SplitClauses.split((CNF<?>) cnForDisjunctOfSingletonsOrSingleton);
+                    CNFOrDisjunctOfSingletonsOrSingleton<?> cnf = ClauseBuilder.buildCNF(split.getRest());
+                    Set<DisjunctOfSingletonsOrSingleton> independentClauses = split.makeRestIndependentToFirst();
+                    if (independentClauses.isEmpty()) {
+                        return probability(cnf) - probability(ClauseBuilder.buildNegation(split.getFirst()));
+                    }
+                    CNFOrDisjunctOfSingletonsOrSingleton<?> independentCNF = ClauseBuilder.buildCNF(independentClauses);
+                    return probability(cnf) - probability(ClauseBuilder.buildNegation(split.getFirst())) * probability(independentCNF);
                 }
-                return probability(next);
+                return probability(cnForDisjunctOfSingletonsOrSingleton);
             }
-            return independentConnectedConjuncts
-                    .stream().mapToDouble(Probability::probability).reduce(1, (left, right) -> left * right);
+            return independentConnectedConjuncts.stream().mapToDouble(Probability::probability).reduce(1, (left, right) -> left * right);
         }
-        return 0;
+        throw new RuntimeException("A new class that extends clause has been added but not handled!");
     }
 }

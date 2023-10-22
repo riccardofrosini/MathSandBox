@@ -5,9 +5,9 @@ import java.util.stream.Stream;
 
 import ai.maths.sat3.sets.VariableSingletonSet;
 
-public class Negation<T extends Clause<?>> extends VariableSingletonSet implements Clause<T> {
+public abstract class Negation<T extends Clause<?>> extends VariableSingletonSet implements Clause<T> {
 
-    protected T clause;
+    private final T clause;
 
     protected Negation(T clause) {
         super(clause.getVariables());

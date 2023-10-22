@@ -8,8 +8,8 @@ import ai.maths.sat3.model.Variable;
 
 public abstract class VariableSingletonSet {
 
-    protected Set<Variable> variables;
-    protected Set<Singleton> singletons;
+    private final Set<Variable> variables;
+    private final Set<Singleton> singletons;
 
     protected VariableSingletonSet() {
         this.variables = Set.of((Variable) this);

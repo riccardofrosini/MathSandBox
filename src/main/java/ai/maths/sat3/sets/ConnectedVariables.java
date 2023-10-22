@@ -8,30 +8,30 @@ import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import ai.maths.sat3.model.Clause;
+import ai.maths.sat3.model.CNF;
+import ai.maths.sat3.model.CNFOrDisjunctOfSingletonsOrSingleton;
 import ai.maths.sat3.model.ClauseBuilder;
-import ai.maths.sat3.model.ThreeDisjunctOfSingletonsOrSingleton;
-import ai.maths.sat3.model.ThreeSatConjuncts;
+import ai.maths.sat3.model.DisjunctOfSingletonsOrSingleton;
 import ai.maths.sat3.model.Variable;
 
 public class ConnectedVariables {
 
-    public static Set<Clause<?>> getIndependentConnectedConjuncts(ThreeSatConjuncts threeSatConjuncts) {
-        Map<Variable, Set<ThreeDisjunctOfSingletonsOrSingleton<?>>> varToConjunct = new HashMap<>();
-        threeSatConjuncts.getSubClauses().forEach(disjunct ->
+    public static <T extends DisjunctOfSingletonsOrSingleton> Set<CNFOrDisjunctOfSingletonsOrSingleton<?>> getIndependentConnectedConjuncts(CNF<T> cnf) {
+        Map<Variable, Set<T>> varToConjunct = new HashMap<>();
+        cnf.getSubClauses().forEach(disjunct ->
                 disjunct.getVariables().forEach(variable ->
                         varToConjunct.computeIfAbsent(variable, v -> new HashSet<>()).add(disjunct)));
-        return getIndependentConnectedVariables(threeSatConjuncts).stream()
-                .map(variables -> ClauseBuilder.buildConjuncts(variables.stream()
+        return getIndependentConnectedVariables(cnf).stream()
+                .map(variables -> ClauseBuilder.buildCNF(variables.stream()
                         .flatMap(variable -> varToConjunct.get(variable).stream())
-                        .toArray(Clause[]::new)))
+                        .collect(Collectors.toSet())))
                 .collect(Collectors.toUnmodifiableSet());
     }
 
-    public static Set<Set<Variable>> getIndependentConnectedVariables(ThreeSatConjuncts threeSatConjuncts) {
+    public static <T extends DisjunctOfSingletonsOrSingleton> Set<Set<Variable>> getIndependentConnectedVariables(CNF<T> cnf) {
         Set<Set<Variable>> disconnectedSets = new HashSet<>();
-        threeSatConjuncts.getSubClauses().forEach(threeDisjunctOfSingletonsOrSingleton -> {
-            Set<Variable> newVariables = threeDisjunctOfSingletonsOrSingleton.getVariables();
+        cnf.getSubClauses().forEach(disjunctOfSingletonsOrSingleton -> {
+            Set<Variable> newVariables = disjunctOfSingletonsOrSingleton.getVariables();
             Set<Set<Variable>> toRemove = disconnectedSets.stream()
                     .filter(variables -> newVariables.stream().anyMatch(variables::contains))
                     .collect(Collectors.toUnmodifiableSet());
