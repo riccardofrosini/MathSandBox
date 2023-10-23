@@ -1,5 +1,6 @@
 package ai.maths.sat3.probability;
 
+import java.util.HashSet;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -12,12 +13,20 @@ import ai.maths.sat3.model.Singleton;
 
 public class SimplifyCNF {
 
+    private final CNFOrDisjunctOfSingletonsOrSingleton<?> cnfOrDisjunctOfSingletonsOrSingleton;
+    private final Set<Singleton> variables;
 
-    protected static CNFOrDisjunctOfSingletonsOrSingleton<?> simplify(CNF<?> cnf) {
+    private SimplifyCNF(CNFOrDisjunctOfSingletonsOrSingleton<?> cnfOrDisjunctOfSingletonsOrSingleton, Set<Singleton> variables) {
+        this.cnfOrDisjunctOfSingletonsOrSingleton = cnfOrDisjunctOfSingletonsOrSingleton;
+        this.variables = variables;
+    }
+
+    public static SimplifyCNF simplify(CNF<?> cnf) {
         Set<Singleton> singletons = cnf.getSubClauses()
                 .filter(disjunct -> disjunct instanceof Singleton)
                 .map(disjunct -> (Singleton) disjunct)
                 .collect(Collectors.toSet());
+        Set<Singleton> variables = new HashSet<>(singletons);
         while (!singletons.isEmpty()) {
             Set<DisjunctOfSingletonsOrSingleton> disjuncts = cnf.getSubClauses()
                     .filter(disjunct -> !singletons.contains(disjunct) &&
@@ -28,7 +37,7 @@ public class SimplifyCNF {
                                     .collect(Collectors.toUnmodifiableSet())) : disjunct)
                     .collect(Collectors.toUnmodifiableSet());
             if (disjuncts.stream().anyMatch(disjunct -> disjunct == DisjunctsOfSingletons.FALSE)) {
-                return DisjunctsOfSingletons.FALSE;
+                return new SimplifyCNF(DisjunctsOfSingletons.FALSE, variables);
             }
             CNFOrDisjunctOfSingletonsOrSingleton<?> disjunctOfSingletonsOrSingleton = ClauseBuilder.buildCNF(disjuncts);
             if (disjunctOfSingletonsOrSingleton instanceof CNF) {
@@ -37,10 +46,19 @@ public class SimplifyCNF {
                         .filter(disjunct -> disjunct instanceof Singleton)
                         .map(disjunct -> (Singleton) disjunct)
                         .collect(Collectors.toSet()));
+                variables.addAll(singletons);
             } else {
-                return disjunctOfSingletonsOrSingleton;
+                return new SimplifyCNF(disjunctOfSingletonsOrSingleton, variables);
             }
         }
-        return cnf;
+        return new SimplifyCNF(cnf, variables);
+    }
+
+    public CNFOrDisjunctOfSingletonsOrSingleton<?> getCnfOrDisjunctOfSingletonsOrSingleton() {
+        return cnfOrDisjunctOfSingletonsOrSingleton;
+    }
+
+    public Set<Singleton> getVariables() {
+        return variables;
     }
 }

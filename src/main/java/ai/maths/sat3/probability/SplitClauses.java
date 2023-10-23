@@ -6,6 +6,7 @@ import java.util.stream.Collectors;
 import ai.maths.sat3.model.CNF;
 import ai.maths.sat3.model.CNFOrDisjunctOfSingletonsOrSingleton;
 import ai.maths.sat3.model.ClauseBuilder;
+import ai.maths.sat3.model.ConjunctsOfSingletons;
 import ai.maths.sat3.model.DisjunctOfSingletonsOrSingleton;
 import ai.maths.sat3.model.Singleton;
 
@@ -27,7 +28,7 @@ public class SplitClauses {
                 .map(disjunct -> new SplitClauses(disjunct, conjuncts.getSubClauses().filter(t -> t != disjunct).collect(Collectors.toUnmodifiableSet())))
                 .filter(splitClauses -> {
                     CNFOrDisjunctOfSingletonsOrSingleton<?> cnfOrDisjunctOfSingletonsOrSingleton = ClauseBuilder.buildCNF(splitClauses.disconnectedFromFirst);
-                    if (cnfOrDisjunctOfSingletonsOrSingleton instanceof CNF) {
+                    if (cnfOrDisjunctOfSingletonsOrSingleton instanceof CNF && !(cnfOrDisjunctOfSingletonsOrSingleton instanceof ConjunctsOfSingletons)) {
                         return ConnectedVariables.getIndependentConnectedConjuncts((CNF<?>) cnfOrDisjunctOfSingletonsOrSingleton).size() == 1;
                     }
                     return true;
@@ -43,7 +44,9 @@ public class SplitClauses {
                                 .noneMatch(singleton -> first.getSingletons().contains((Singleton) ClauseBuilder.buildNegation(singleton))))
                 .map(disjunct ->
                         disjunct.getSingletons().stream().anyMatch(singleton -> first.getSingletons().contains(singleton)) ?
-                                ClauseBuilder.buildDisjunctsOfSingletons(disjunct.getSingletons().stream().filter(singleton -> !first.getSingletons().contains(singleton)).collect(Collectors.toSet()))
+                                ClauseBuilder.buildDisjunctsOfSingletons(disjunct.getSingletons().stream()
+                                        .filter(singleton -> !first.getSingletons().contains(singleton))
+                                        .collect(Collectors.toUnmodifiableSet()))
                                 : disjunct)
 
                 .collect(Collectors.toSet());
