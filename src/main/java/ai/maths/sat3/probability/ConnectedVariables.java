@@ -24,7 +24,7 @@ public class ConnectedVariables {
         return getIndependentConnectedVariables(cnf).stream()
                 .map(variables -> ClauseBuilder.buildCNF(variables.stream()
                         .flatMap(variable -> varToConjunct.get(variable).stream())
-                        .collect(Collectors.toSet())))
+                        .collect(Collectors.toUnmodifiableSet())))
                 .collect(Collectors.toUnmodifiableSet());
     }
 

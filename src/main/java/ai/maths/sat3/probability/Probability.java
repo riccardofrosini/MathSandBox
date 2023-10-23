@@ -33,17 +33,24 @@ public class Probability {
             return 1d / Math.pow(2, clause.getVariables().size());
         }
         if (clause instanceof CNF) {
-            Set<CNFOrDisjunctOfSingletonsOrSingleton<?>> independentConnectedConjuncts = ConnectedVariables.getIndependentConnectedConjuncts((CNF<?>) clause);
-            if (independentConnectedConjuncts.size() == 1) {
-                CNFOrDisjunctOfSingletonsOrSingleton<?> cnForDisjunctOfSingletonsOrSingleton = independentConnectedConjuncts.iterator().next();
-                if (cnForDisjunctOfSingletonsOrSingleton instanceof CNF) {
-                    SplitClauses split = SplitClauses.split((CNF<?>) cnForDisjunctOfSingletonsOrSingleton);
-                    return probability(ClauseBuilder.buildCNF(split.getRest())) -
-                            probability(ClauseBuilder.buildCNF(split.getDisconnectedFromFirst())) / Math.pow(2, split.getFirst().getVariables().size());
+            SimplifyCNF simplifiedCNFWithLostVariables = SimplifyCNF.simplify((CNF<?>) clause);
+            CNFOrDisjunctOfSingletonsOrSingleton<?> cnForDisjunctOfSingletonsOrSingleton = simplifiedCNFWithLostVariables.getCnfOrDisjunctOfSingletonsOrSingleton();
+            if (cnForDisjunctOfSingletonsOrSingleton instanceof CNF) {
+                Set<CNFOrDisjunctOfSingletonsOrSingleton<?>> independentConnectedConjuncts = ConnectedVariables.getIndependentConnectedConjuncts((CNF<?>) clause);
+                if (independentConnectedConjuncts.size() == 1) {
+                    cnForDisjunctOfSingletonsOrSingleton = independentConnectedConjuncts.iterator().next();
+                    if (cnForDisjunctOfSingletonsOrSingleton instanceof CNF) {
+                        SplitClauses split = SplitClauses.split((CNF<?>) cnForDisjunctOfSingletonsOrSingleton);
+                        return (probability(ClauseBuilder.buildCNF(split.getRest())) -
+                                probability(ClauseBuilder.buildCNF(split.getDisconnectedFromFirst())) / Math.pow(2, split.getFirst().getVariables().size())) / Math.pow(2,
+                                simplifiedCNFWithLostVariables.getVariables().size());
+                    }
+                    return probability(cnForDisjunctOfSingletonsOrSingleton) / Math.pow(2, simplifiedCNFWithLostVariables.getVariables().size());
                 }
-                return probability(cnForDisjunctOfSingletonsOrSingleton);
+                return independentConnectedConjuncts.stream().mapToDouble(Probability::probability).reduce(1, (left, right) -> left * right) / Math.pow(2,
+                        simplifiedCNFWithLostVariables.getVariables().size());
             }
-            return independentConnectedConjuncts.stream().mapToDouble(Probability::probability).reduce(1, (left, right) -> left * right);
+            return probability(cnForDisjunctOfSingletonsOrSingleton) / Math.pow(2, simplifiedCNFWithLostVariables.getVariables().size());
         }
         throw new RuntimeException("A new class that extends clause has been added but not handled!");
     }

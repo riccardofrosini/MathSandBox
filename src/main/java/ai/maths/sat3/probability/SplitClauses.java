@@ -56,7 +56,7 @@ public class SplitClauses {
                         !negatedClauses.contains(disjunct))
                 .map(disjunct -> disjunct.getSubClauses()
                         .filter(singleton -> !first.getSingletons().contains(singleton))
-                        .collect(Collectors.toSet()))
+                        .collect(Collectors.toUnmodifiableSet()))
                 .filter(singletons -> !singletons.isEmpty())
                 .map(ClauseBuilder::buildDisjunctsOfSingletons)
                 .collect(Collectors.toUnmodifiableSet());

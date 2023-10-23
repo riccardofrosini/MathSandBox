@@ -33,23 +33,27 @@ public class SolutionCounter {
             return 1;
         }
         if (clause instanceof CNF) {
-            Set<CNFOrDisjunctOfSingletonsOrSingleton<?>> independentConnectedConjuncts = ConnectedVariables.getIndependentConnectedConjuncts((CNF<?>) clause);
-            if (independentConnectedConjuncts.size() == 1) {
-                CNFOrDisjunctOfSingletonsOrSingleton<?> cnfOrDisjunctOfSingletonsOrSingleton = independentConnectedConjuncts.iterator().next();
-                if (cnfOrDisjunctOfSingletonsOrSingleton instanceof CNF) {
-                    SplitClauses split = SplitClauses.split((CNF<?>) cnfOrDisjunctOfSingletonsOrSingleton);
-                    CNFOrDisjunctOfSingletonsOrSingleton<?> cnf = ClauseBuilder.buildCNF(split.getRest());
-                    CNFOrDisjunctOfSingletonsOrSingleton<?> independentCNF = ClauseBuilder.buildCNF(split.getDisconnectedFromFirst());
-                    return countSolutions(cnf) *
-                            (long) Math.pow(2, split.getFirst().getVariables().stream()
-                                    .filter(variable -> !cnf.getVariables().contains(variable)).count())
-                            - countSolutions(independentCNF) *
-                            (long) Math.pow(2, cnf.getVariables().stream()
-                                    .filter(variable -> !independentCNF.getVariables().contains(variable) && !split.getFirst().getVariables().contains(variable)).count());
+            CNFOrDisjunctOfSingletonsOrSingleton<?> cnfOrDisjunctOfSingletonsOrSingleton = SimplifyCNF.simplify((CNF<?>) clause).getCnfOrDisjunctOfSingletonsOrSingleton();
+            if (cnfOrDisjunctOfSingletonsOrSingleton instanceof CNF) {
+                Set<CNFOrDisjunctOfSingletonsOrSingleton<?>> independentConnectedConjuncts = ConnectedVariables.getIndependentConnectedConjuncts((CNF<?>) clause);
+                if (independentConnectedConjuncts.size() == 1) {
+                    cnfOrDisjunctOfSingletonsOrSingleton = independentConnectedConjuncts.iterator().next();
+                    if (cnfOrDisjunctOfSingletonsOrSingleton instanceof CNF) {
+                        SplitClauses split = SplitClauses.split((CNF<?>) cnfOrDisjunctOfSingletonsOrSingleton);
+                        CNFOrDisjunctOfSingletonsOrSingleton<?> cnf = ClauseBuilder.buildCNF(split.getRest());
+                        CNFOrDisjunctOfSingletonsOrSingleton<?> independentCNF = ClauseBuilder.buildCNF(split.getDisconnectedFromFirst());
+                        return countSolutions(cnf) *
+                                (long) Math.pow(2, split.getFirst().getVariables().stream()
+                                        .filter(variable -> !cnf.getVariables().contains(variable)).count())
+                                - countSolutions(independentCNF) *
+                                (long) Math.pow(2, cnf.getVariables().stream()
+                                        .filter(variable -> !independentCNF.getVariables().contains(variable) && !split.getFirst().getVariables().contains(variable)).count());
+                    }
+                    return countSolutions(cnfOrDisjunctOfSingletonsOrSingleton);
                 }
-                return countSolutions(cnfOrDisjunctOfSingletonsOrSingleton);
+                return independentConnectedConjuncts.stream().mapToLong(SolutionCounter::countSolutions).reduce(1, (left, right) -> left * right);
             }
-            return independentConnectedConjuncts.stream().mapToLong(SolutionCounter::countSolutions).reduce(1, (left, right) -> left * right);
+            return countSolutions(cnfOrDisjunctOfSingletonsOrSingleton);
         }
         throw new RuntimeException("A new class that extends clause has been added but not handled!");
     }
