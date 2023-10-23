@@ -10,8 +10,13 @@ public abstract class Negation<T extends Clause<?>> extends VariableSingletonSet
     private final T clause;
 
     protected Negation(T clause) {
-        super(clause.getVariables());
+        super(clause.getVariables(), clause.getSingletons());
         this.clause = clause;
+    }
+
+    protected Negation(Variable clause) {
+        super(clause.getVariables());
+        this.clause = (T) clause;
     }
 
     @Override

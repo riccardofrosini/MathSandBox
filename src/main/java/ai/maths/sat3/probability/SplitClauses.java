@@ -26,7 +26,7 @@ public class SplitClauses {
         this.independentClauses = buildIndependentClauses();
     }
 
-    public static SplitClauses split(CNF<?> conjuncts) {
+    protected static SplitClauses split(CNF<?> conjuncts) {
         DisjunctOfSingletonsOrSingleton anySubClause = conjuncts.getAnySubClause();
         return conjuncts.getSubClauses()
                 .map(disjunct -> new SplitClauses(disjunct, conjuncts.getSubClauses().filter(t -> t != disjunct).collect(Collectors.toUnmodifiableSet())))

@@ -33,19 +33,18 @@ public class Probability {
             return 1d / Math.pow(2, clause.getVariables().size());
         }
         if (clause instanceof CNF) {
-            SimplifyCNF simplifiedCNFWithLostVariables = SimplifyCNF.simplify((CNF<?>) clause);
-            return probabilityOfCNF(simplifiedCNFWithLostVariables.getCnfOrDisjunctOfSingletonsOrSingleton())
-                    / Math.pow(2, simplifiedCNFWithLostVariables.getVariables().size());
+            return probabilityOfCNFOrDisjunctOfSingletonsOrSingleton(SimplifyCNF.simplify((CNF<?>) clause))
+                    / Math.pow(2, clause.getVariables().size());
         }
         throw new RuntimeException("A new class that extends clause has been added but not handled!");
     }
 
-    private static double probabilityOfCNF(CNFOrDisjunctOfSingletonsOrSingleton<?> simplifiedCNF) {
-        if (simplifiedCNF instanceof CNF) {
+    private static double probabilityOfCNFOrDisjunctOfSingletonsOrSingleton(CNFOrDisjunctOfSingletonsOrSingleton<?> simplifiedCNF) {
+        if (simplifiedCNF instanceof CNF && !(simplifiedCNF instanceof ConjunctsOfSingletons)) {
             Set<CNFOrDisjunctOfSingletonsOrSingleton<?>> independentConnectedConjuncts = ConnectedVariables.getIndependentConnectedConjuncts((CNF<?>) simplifiedCNF);
             if (independentConnectedConjuncts.size() == 1) {
                 simplifiedCNF = independentConnectedConjuncts.iterator().next();
-                if (simplifiedCNF instanceof CNF) {
+                if (simplifiedCNF instanceof CNF && !(simplifiedCNF instanceof ConjunctsOfSingletons)) {
                     SplitClauses split = SplitClauses.split((CNF<?>) simplifiedCNF);
                     return (probability(ClauseBuilder.buildCNF(split.getRest())) -
                             probability(ClauseBuilder.buildCNF(split.getDisconnectedFromFirst())) / Math.pow(2, split.getFirst().getVariables().size()));
