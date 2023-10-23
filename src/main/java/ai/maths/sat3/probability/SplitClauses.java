@@ -5,6 +5,7 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import ai.maths.sat3.model.CNF;
+import ai.maths.sat3.model.CNFOrDisjunctOfSingletonsOrSingleton;
 import ai.maths.sat3.model.ClauseBuilder;
 import ai.maths.sat3.model.DisjunctOfSingletonsOrSingleton;
 import ai.maths.sat3.model.Singleton;
@@ -27,8 +28,17 @@ public class SplitClauses {
 
     public static SplitClauses split(CNF<?> conjuncts) {
         DisjunctOfSingletonsOrSingleton anySubClause = conjuncts.getAnySubClause();
-        Set<DisjunctOfSingletonsOrSingleton> rest = conjuncts.getSubClauses().filter(t -> t != anySubClause).collect(Collectors.toUnmodifiableSet());
-        return new SplitClauses(anySubClause, rest);
+        return conjuncts.getSubClauses()
+                .map(disjunct -> new SplitClauses(disjunct, conjuncts.getSubClauses().filter(t -> t != disjunct).collect(Collectors.toUnmodifiableSet())))
+                .filter(splitClauses -> {
+                    CNFOrDisjunctOfSingletonsOrSingleton<?> cnfOrDisjunctOfSingletonsOrSingleton = ClauseBuilder.buildCNF(splitClauses.getDisconnectedFromFirst());
+                    if (cnfOrDisjunctOfSingletonsOrSingleton instanceof CNF) {
+                        return ConnectedVariables.getIndependentConnectedConjuncts((CNF<?>) cnfOrDisjunctOfSingletonsOrSingleton).size() == 1;
+                    }
+                    return true;
+                })
+                .findAny()
+                .orElse(new SplitClauses(anySubClause, conjuncts.getSubClauses().filter(t -> t != anySubClause).collect(Collectors.toUnmodifiableSet())));
     }
 
     private Set<DisjunctOfSingletonsOrSingleton> buildNegatedClauses() {
