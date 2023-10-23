@@ -87,8 +87,13 @@ public class ClauseBuilder {
         if (conjuncts.stream().allMatch(clause -> clause instanceof Singleton)) {
             return buildDisjunctsOfSingletons(conjuncts.stream().map(singleton -> (Singleton) singleton).collect(Collectors.toUnmodifiableSet()));
         }
-        return new ThreeSatDisjuncts(conjuncts.stream()
-                .map(clause -> (ThreeConjunctOfSingletonsOrSingleton) clause)
+        if (conjuncts.stream().allMatch(clause -> clause instanceof ThreeConjunctOfSingletonsOrSingleton)) {
+            return new ThreeSatDisjuncts(conjuncts.stream()
+                    .map(clause -> (ThreeConjunctOfSingletonsOrSingleton) clause)
+                    .collect(Collectors.toUnmodifiableSet()));
+        }
+        return new TwoSatDisjuncts(conjuncts.stream()
+                .map(clause -> (TwoConjunctOfSingletonsOrSingleton) clause)
                 .collect(Collectors.toUnmodifiableSet()));
     }
 
@@ -126,8 +131,13 @@ public class ClauseBuilder {
                     .map(singleton -> (Singleton) singleton)
                     .collect(Collectors.toUnmodifiableSet()));
         }
-        return new ThreeSatConjuncts(disjuncts.stream()
-                .map(clause -> (ThreeDisjunctOfSingletonsOrSingleton) clause)
+        if (disjuncts.stream().allMatch(clause -> clause instanceof ThreeDisjunctOfSingletonsOrSingleton)) {
+            return new ThreeSatConjuncts(disjuncts.stream()
+                    .map(clause -> (ThreeDisjunctOfSingletonsOrSingleton) clause)
+                    .collect(Collectors.toUnmodifiableSet()));
+        }
+        return new TwoSatConjuncts(disjuncts.stream()
+                .map(clause -> (TwoDisjunctOfSingletonsOrSingleton) clause)
                 .collect(Collectors.toUnmodifiableSet()));
     }
 
