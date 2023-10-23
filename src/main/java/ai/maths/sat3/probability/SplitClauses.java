@@ -2,7 +2,6 @@ package ai.maths.sat3.probability;
 
 import java.util.Set;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import ai.maths.sat3.model.CNF;
 import ai.maths.sat3.model.CNFOrDisjunctOfSingletonsOrSingleton;
@@ -14,16 +13,12 @@ public class SplitClauses {
 
     private final DisjunctOfSingletonsOrSingleton first;
     private final Set<DisjunctOfSingletonsOrSingleton> rest;
-    private final Set<DisjunctOfSingletonsOrSingleton> negatedClauses;
-    private final Set<DisjunctOfSingletonsOrSingleton> positiveClauses;
-    private final Set<DisjunctOfSingletonsOrSingleton> independentClauses;
+    private final Set<DisjunctOfSingletonsOrSingleton> disconnectedFromFirst;
 
     private SplitClauses(DisjunctOfSingletonsOrSingleton first, Set<DisjunctOfSingletonsOrSingleton> rest) {
         this.first = first;
         this.rest = rest;
-        this.negatedClauses = buildNegatedClauses();
-        this.positiveClauses = buildPositiveClauses();
-        this.independentClauses = buildIndependentClauses();
+        this.disconnectedFromFirst = buildDisconnectedFromFirst();
     }
 
     protected static SplitClauses split(CNF<?> conjuncts) {
@@ -31,7 +26,7 @@ public class SplitClauses {
         return conjuncts.getSubClauses()
                 .map(disjunct -> new SplitClauses(disjunct, conjuncts.getSubClauses().filter(t -> t != disjunct).collect(Collectors.toUnmodifiableSet())))
                 .filter(splitClauses -> {
-                    CNFOrDisjunctOfSingletonsOrSingleton<?> cnfOrDisjunctOfSingletonsOrSingleton = ClauseBuilder.buildCNF(splitClauses.getDisconnectedFromFirst());
+                    CNFOrDisjunctOfSingletonsOrSingleton<?> cnfOrDisjunctOfSingletonsOrSingleton = ClauseBuilder.buildCNF(splitClauses.disconnectedFromFirst);
                     if (cnfOrDisjunctOfSingletonsOrSingleton instanceof CNF) {
                         return ConnectedVariables.getIndependentConnectedConjuncts((CNF<?>) cnfOrDisjunctOfSingletonsOrSingleton).size() == 1;
                     }
@@ -41,37 +36,21 @@ public class SplitClauses {
                 .orElse(new SplitClauses(anySubClause, conjuncts.getSubClauses().filter(t -> t != anySubClause).collect(Collectors.toUnmodifiableSet())));
     }
 
-    private Set<DisjunctOfSingletonsOrSingleton> buildNegatedClauses() {
+    private Set<DisjunctOfSingletonsOrSingleton> buildDisconnectedFromFirst() {
         return rest.stream()
                 .filter(disjunct ->
                         disjunct.getSingletons().stream()
-                                .anyMatch(singleton -> first.getSingletons().contains((Singleton) ClauseBuilder.buildNegation(singleton))))
-                .collect(Collectors.toUnmodifiableSet());
-    }
+                                .noneMatch(singleton -> first.getSingletons().contains((Singleton) ClauseBuilder.buildNegation(singleton))))
+                .map(disjunct ->
+                        disjunct.getSingletons().stream().anyMatch(singleton -> first.getSingletons().contains(singleton)) ?
+                                ClauseBuilder.buildDisjunctsOfSingletons(disjunct.getSingletons().stream().filter(singleton -> !first.getSingletons().contains(singleton)).collect(Collectors.toSet()))
+                                : disjunct)
 
-    private Set<DisjunctOfSingletonsOrSingleton> buildPositiveClauses() {
-        return rest.stream()
-                .filter(disjunct -> disjunct.getSingletons().stream()
-                        .anyMatch(singleton -> first.getSingletons().contains(singleton)) &&
-                        !negatedClauses.contains(disjunct))
-                .map(disjunct -> disjunct.getSubClauses()
-                        .filter(singleton -> !first.getSingletons().contains(singleton))
-                        .collect(Collectors.toUnmodifiableSet()))
-                .filter(singletons -> !singletons.isEmpty())
-                .map(ClauseBuilder::buildDisjunctsOfSingletons)
-                .collect(Collectors.toUnmodifiableSet());
-    }
-
-    private Set<DisjunctOfSingletonsOrSingleton> buildIndependentClauses() {
-        return rest.stream()
-                .filter(disjunct -> disjunct.getSingletons().stream()
-                        .noneMatch(singleton -> first.getSingletons().contains(singleton)) &&
-                        !negatedClauses.contains(disjunct))
-                .collect(Collectors.toUnmodifiableSet());
+                .collect(Collectors.toSet());
     }
 
     public Set<DisjunctOfSingletonsOrSingleton> getDisconnectedFromFirst() {
-        return Stream.concat(positiveClauses.stream(), independentClauses.stream()).collect(Collectors.toUnmodifiableSet());
+        return disconnectedFromFirst;
     }
 
     public DisjunctOfSingletonsOrSingleton getFirst() {
@@ -80,17 +59,5 @@ public class SplitClauses {
 
     public Set<DisjunctOfSingletonsOrSingleton> getRest() {
         return rest;
-    }
-
-    public Set<DisjunctOfSingletonsOrSingleton> getNegatedClauses() {
-        return negatedClauses;
-    }
-
-    public Set<DisjunctOfSingletonsOrSingleton> getPositiveClauses() {
-        return positiveClauses;
-    }
-
-    public Set<DisjunctOfSingletonsOrSingleton> getIndependentClauses() {
-        return independentClauses;
     }
 }
