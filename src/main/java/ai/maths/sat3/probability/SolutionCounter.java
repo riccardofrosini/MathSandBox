@@ -37,7 +37,6 @@ public class SolutionCounter {
     }
 
     private static Long probabilityOfCNFOrDisjunctOfSingletonsOrSingleton(CNF<?> cnfOrDisjunctOfSingletonsOrSingleton) {
-
         Set<CNF<?>> independentConnectedConjuncts = ConnectedVariables.getIndependentConnectedConjuncts((CNF<?>) cnfOrDisjunctOfSingletonsOrSingleton);
         if (independentConnectedConjuncts.size() == 1) {
             cnfOrDisjunctOfSingletonsOrSingleton = independentConnectedConjuncts.iterator().next();

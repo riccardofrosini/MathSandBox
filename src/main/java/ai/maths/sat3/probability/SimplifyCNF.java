@@ -30,7 +30,7 @@ public class SimplifyCNF {
             singletons.addAll(tempCNF.getSubClauses()
                     .filter(disjunct -> disjunct instanceof Singleton)
                     .map(disjunct -> (Singleton) disjunct)
-                    .collect(Collectors.toSet()));
+                    .collect(Collectors.toUnmodifiableSet()));
             variables.addAll(singletons);
             cnf = tempCNF;
         }

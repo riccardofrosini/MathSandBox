@@ -39,7 +39,7 @@ public class ClauseBuilder {
         if (singleton instanceof Variable) {
             return new NegVariable((Variable) singleton);
         }
-        return singleton;
+        return singleton.getAnySubClause();
     }
 
     private static Clause<?> buildConjuncts(Set<Clause<?>> clauses) {
@@ -81,10 +81,22 @@ public class ClauseBuilder {
     }
 
     public static DNF<?> buildNegationOfCNF(CNF<?> cnf) {
+        if (cnf instanceof DisjunctOfSingletons) {
+            return buildNegationOfDisjunctOfSingletons((DisjunctOfSingletons) cnf);
+        }
+        if (cnf instanceof ConjunctOfSingletons) {
+            return buildNegationOfConjunctsOfSingletons((ConjunctOfSingletonsOrSingleton) cnf);
+        }
         return buildDNF(cnf.getSubClauses().map(ClauseBuilder::buildNegationOfDisjunctOfSingletons).collect(Collectors.toUnmodifiableSet()));
     }
 
     public static CNF<?> buildNegationOfDNF(DNF<?> dnf) {
+        if (dnf instanceof DisjunctOfSingletons) {
+            return buildNegationOfDisjunctOfSingletons((DisjunctOfSingletons) dnf);
+        }
+        if (dnf instanceof ConjunctOfSingletons) {
+            return buildNegationOfConjunctsOfSingletons((ConjunctOfSingletonsOrSingleton) dnf);
+        }
         return buildCNF(dnf.getSubClauses().map(ClauseBuilder::buildNegationOfConjunctsOfSingletons).collect(Collectors.toUnmodifiableSet()));
     }
 
@@ -95,7 +107,7 @@ public class ClauseBuilder {
         if (conjunctOfSingletonsOrSingleton instanceof Singleton) {
             return buildNegationOfSingleton((Singleton) conjunctOfSingletonsOrSingleton);
         }
-        return buildDisjunctsOfSingletons(conjunctOfSingletonsOrSingleton.getSubClauses().map(ClauseBuilder::buildNegationOfSingleton).collect(Collectors.toSet()));
+        return buildDisjunctsOfSingletons(conjunctOfSingletonsOrSingleton.getSubClauses().map(ClauseBuilder::buildNegationOfSingleton).collect(Collectors.toUnmodifiableSet()));
     }
 
     public static ConjunctOfSingletonsOrSingleton buildNegationOfDisjunctOfSingletons(DisjunctOfSingletonsOrSingleton disjunctOfSingletonsOrSingleton) {
@@ -105,7 +117,7 @@ public class ClauseBuilder {
         if (disjunctOfSingletonsOrSingleton instanceof Singleton) {
             return buildNegationOfSingleton((Singleton) disjunctOfSingletonsOrSingleton);
         }
-        return buildConjunctsOfSingletons(disjunctOfSingletonsOrSingleton.getSubClauses().map(ClauseBuilder::buildNegationOfSingleton).collect(Collectors.toSet()));
+        return buildConjunctsOfSingletons(disjunctOfSingletonsOrSingleton.getSubClauses().map(ClauseBuilder::buildNegationOfSingleton).collect(Collectors.toUnmodifiableSet()));
     }
 
     public static DNF<?> buildDNF(ConjunctOfSingletonsOrSingleton first, ConjunctOfSingletonsOrSingleton... rest) {
