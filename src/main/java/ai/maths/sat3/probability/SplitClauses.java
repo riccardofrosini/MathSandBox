@@ -41,14 +41,14 @@ public class SplitClauses {
         return rest.stream()
                 .filter(disjunct ->
                         disjunct.getSingletons().stream()
-                                .noneMatch(singleton -> first.getSingletons().contains((Singleton) ClauseBuilder.buildNegation(singleton))))
+                                .noneMatch(singleton -> first.getSingletons().contains((Singleton) ClauseBuilder.buildNegation(singleton)))
+                                && !first.getSingletons().containsAll(disjunct.getSingletons()))
                 .map(disjunct ->
                         disjunct.getSingletons().stream().anyMatch(singleton -> first.getSingletons().contains(singleton)) ?
                                 ClauseBuilder.buildDisjunctsOfSingletons(disjunct.getSingletons().stream()
                                         .filter(singleton -> !first.getSingletons().contains(singleton))
                                         .collect(Collectors.toUnmodifiableSet()))
                                 : disjunct)
-
                 .collect(Collectors.toSet());
     }
 
