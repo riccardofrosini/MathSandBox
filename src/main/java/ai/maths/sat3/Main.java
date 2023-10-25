@@ -17,9 +17,9 @@ public class Main {
         Variable b = ClauseBuilder.buildVariable("b");
         Variable c = ClauseBuilder.buildVariable("c");
 
-        NegVariable nx = (NegVariable) ClauseBuilder.buildNegation(x);
-        NegVariable ny = (NegVariable) ClauseBuilder.buildNegation(y);
-        NegVariable nz = (NegVariable) ClauseBuilder.buildNegation(z);
+        NegVariable nx = (NegVariable) ClauseBuilder.buildNegationOfSingleton(x);
+        NegVariable ny = (NegVariable) ClauseBuilder.buildNegationOfSingleton(y);
+        NegVariable nz = (NegVariable) ClauseBuilder.buildNegationOfSingleton(z);
 
         DisjunctOfSingletonsOrSingleton clause = ClauseBuilder.buildDisjunctsOfSingletons(x, y, z);
 

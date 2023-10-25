@@ -7,7 +7,7 @@ import java.util.stream.Stream;
 
 import ai.maths.sat3.probability.VariableSingletonSet;
 
-public class Conjuncts<T extends Clause<?>> extends VariableSingletonSet implements Clause<T> {
+public abstract class Conjuncts<T extends Clause<?>> extends VariableSingletonSet implements Clause<T> {
 
     private final Set<T> conjuncts;
 
@@ -46,7 +46,7 @@ public class Conjuncts<T extends Clause<?>> extends VariableSingletonSet impleme
 
     @Override
     public String toString() {
-        if (this == ConjunctsOfSingletons.TRUE) {
+        if (this == ConjunctOfSingletons.TRUE) {
             return "T";
         }
         return conjuncts.stream().map(Object::toString).collect(Collectors.joining("∧", "(", ")"));

@@ -4,21 +4,18 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import ai.maths.sat3.model.CNF;
-import ai.maths.sat3.model.CNFOrDisjunctOfSingletonsOrSingleton;
 import ai.maths.sat3.model.ClauseBuilder;
-import ai.maths.sat3.model.ConjunctsOfSingletons;
 import ai.maths.sat3.model.DisjunctOfSingletonsOrSingleton;
-import ai.maths.sat3.model.Singleton;
 
 public class SplitClauses {
 
     private final DisjunctOfSingletonsOrSingleton first;
-    private final Set<DisjunctOfSingletonsOrSingleton> rest;
-    private final Set<DisjunctOfSingletonsOrSingleton> disconnectedFromFirst;
+    private final CNF<?> rest;
+    private final CNF<?> disconnectedFromFirst;
 
     private SplitClauses(DisjunctOfSingletonsOrSingleton first, Set<DisjunctOfSingletonsOrSingleton> rest) {
         this.first = first;
-        this.rest = rest;
+        this.rest = ClauseBuilder.buildCNF(rest);
         this.disconnectedFromFirst = buildDisconnectedFromFirst();
     }
 
@@ -26,33 +23,16 @@ public class SplitClauses {
         DisjunctOfSingletonsOrSingleton anySubClause = conjuncts.getAnySubClause();
         return conjuncts.getSubClauses()
                 .map(disjunct -> new SplitClauses(disjunct, conjuncts.getSubClauses().filter(t -> t != disjunct).collect(Collectors.toUnmodifiableSet())))
-                .filter(splitClauses -> {
-                    CNFOrDisjunctOfSingletonsOrSingleton<?> cnfOrDisjunctOfSingletonsOrSingleton = ClauseBuilder.buildCNF(splitClauses.disconnectedFromFirst);
-                    if (cnfOrDisjunctOfSingletonsOrSingleton instanceof CNF && !(cnfOrDisjunctOfSingletonsOrSingleton instanceof ConjunctsOfSingletons)) {
-                        return ConnectedVariables.getIndependentConnectedConjuncts((CNF<?>) cnfOrDisjunctOfSingletonsOrSingleton).size() == 1;
-                    }
-                    return true;
-                })
+                .filter(splitClauses -> ConnectedVariables.getIndependentConnectedConjuncts(splitClauses.disconnectedFromFirst).size() == 1)
                 .findAny()
                 .orElse(new SplitClauses(anySubClause, conjuncts.getSubClauses().filter(t -> t != anySubClause).collect(Collectors.toUnmodifiableSet())));
     }
 
-    private Set<DisjunctOfSingletonsOrSingleton> buildDisconnectedFromFirst() {
-        return rest.stream()
-                .filter(disjunct ->
-                        disjunct.getSingletons().stream()
-                                .noneMatch(singleton -> first.getSingletons().contains((Singleton) ClauseBuilder.buildNegation(singleton)))
-                                && !first.getSingletons().containsAll(disjunct.getSingletons()))
-                .map(disjunct ->
-                        disjunct.getSingletons().stream().anyMatch(singleton -> first.getSingletons().contains(singleton)) ?
-                                ClauseBuilder.buildDisjunctsOfSingletons(disjunct.getSingletons().stream()
-                                        .filter(singleton -> !first.getSingletons().contains(singleton))
-                                        .collect(Collectors.toUnmodifiableSet()))
-                                : disjunct)
-                .collect(Collectors.toSet());
+    private CNF<?> buildDisconnectedFromFirst() {
+        return ClauseBuilder.buildNegationOfDNF(ClauseBuilder.simplifyDNFWithGivenSingletons(ClauseBuilder.buildNegationOfCNF(rest), first.getSingletons()));
     }
 
-    public Set<DisjunctOfSingletonsOrSingleton> getDisconnectedFromFirst() {
+    public CNF<?> getDisconnectedFromFirst() {
         return disconnectedFromFirst;
     }
 
@@ -60,7 +40,7 @@ public class SplitClauses {
         return first;
     }
 
-    public Set<DisjunctOfSingletonsOrSingleton> getRest() {
+    public CNF<?> getRest() {
         return rest;
     }
 }

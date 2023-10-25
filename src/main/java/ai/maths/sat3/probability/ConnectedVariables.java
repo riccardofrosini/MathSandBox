@@ -9,14 +9,13 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import ai.maths.sat3.model.CNF;
-import ai.maths.sat3.model.CNFOrDisjunctOfSingletonsOrSingleton;
 import ai.maths.sat3.model.ClauseBuilder;
 import ai.maths.sat3.model.DisjunctOfSingletonsOrSingleton;
 import ai.maths.sat3.model.Variable;
 
 public class ConnectedVariables {
 
-    protected static <T extends DisjunctOfSingletonsOrSingleton> Set<CNFOrDisjunctOfSingletonsOrSingleton<?>> getIndependentConnectedConjuncts(CNF<T> cnf) {
+    protected static <T extends DisjunctOfSingletonsOrSingleton> Set<CNF<?>> getIndependentConnectedConjuncts(CNF<T> cnf) {
         Map<Variable, Set<T>> varToConjunct = new HashMap<>();
         cnf.getSubClauses().forEach(disjunct ->
                 disjunct.getVariables().forEach(variable ->
