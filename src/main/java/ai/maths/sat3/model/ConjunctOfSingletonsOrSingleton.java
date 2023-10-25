@@ -1,5 +1,5 @@
 package ai.maths.sat3.model;
 
-public interface ConjunctOfSingletonsOrSingleton extends OfSingletonOrSingleton {
+public interface ConjunctOfSingletonsOrSingleton extends ClauseOfSingletonOrSingleton {
 
 }

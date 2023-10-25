@@ -239,14 +239,14 @@ public class ClauseBuilder {
         if (cnf instanceof DisjunctOfSingletons) {
             return simplifyDisjunctOfSingletonsGivenSingletons((DisjunctOfSingletons) cnf, singletons);
         }
-        Set<OfSingletonOrSingleton> disjuncts = cnf.getSubClauses()
+        Set<ClauseOfSingletonOrSingleton> disjuncts = cnf.getSubClauses()
                 .map(disjunctOfSingletonsOrSingleton -> simplifyDisjunctOfSingletonsGivenSingletons(disjunctOfSingletonsOrSingleton, singletons))
-                .filter(ofSingletonOrSingleton -> ofSingletonOrSingleton != ConjunctOfSingletons.TRUE)
+                .filter(clauseOfSingletonOrSingleton -> clauseOfSingletonOrSingleton != ConjunctOfSingletons.TRUE)
                 .collect(Collectors.toUnmodifiableSet());
         if (disjuncts.contains(DisjunctOfSingletons.FALSE)) {
             return DisjunctOfSingletons.FALSE;
         }
-        return buildCNF(disjuncts.stream().map(ofSingletonOrSingleton -> (DisjunctOfSingletonsOrSingleton) ofSingletonOrSingleton).collect(Collectors.toUnmodifiableSet()));
+        return buildCNF(disjuncts.stream().map(clauseOfSingletonOrSingleton -> (DisjunctOfSingletonsOrSingleton) clauseOfSingletonOrSingleton).collect(Collectors.toUnmodifiableSet()));
     }
 
     public static DNF<?> simplifyDNFWithGivenSingletons(DNF<?> dnf, Set<Singleton> singletons) {
@@ -256,17 +256,17 @@ public class ClauseBuilder {
         if (dnf instanceof DisjunctOfSingletons) {
             return simplifyDisjunctOfSingletonsGivenSingletons((DisjunctOfSingletons) dnf, singletons);
         }
-        Set<OfSingletonOrSingleton> conjuncts = dnf.getSubClauses()
+        Set<ClauseOfSingletonOrSingleton> conjuncts = dnf.getSubClauses()
                 .map(conjunctOfSingletonsOrSingleton -> simplifyConjunctOfSingletonsGivenSingletons(conjunctOfSingletonsOrSingleton, singletons))
-                .filter(ofSingletonOrSingleton -> ofSingletonOrSingleton != DisjunctOfSingletons.FALSE)
+                .filter(clauseOfSingletonOrSingleton -> clauseOfSingletonOrSingleton != DisjunctOfSingletons.FALSE)
                 .collect(Collectors.toUnmodifiableSet());
         if (conjuncts.contains(ConjunctOfSingletons.TRUE)) {
             return ConjunctOfSingletons.TRUE;
         }
-        return buildDNF(conjuncts.stream().map(ofSingletonOrSingleton -> (ConjunctOfSingletonsOrSingleton) ofSingletonOrSingleton).collect(Collectors.toUnmodifiableSet()));
+        return buildDNF(conjuncts.stream().map(clauseOfSingletonOrSingleton -> (ConjunctOfSingletonsOrSingleton) clauseOfSingletonOrSingleton).collect(Collectors.toUnmodifiableSet()));
     }
 
-    private static OfSingletonOrSingleton simplifyConjunctOfSingletonsGivenSingletons(ConjunctOfSingletonsOrSingleton conjunctsOfSingletons, Set<Singleton> singletons) {
+    private static ClauseOfSingletonOrSingleton simplifyConjunctOfSingletonsGivenSingletons(ConjunctOfSingletonsOrSingleton conjunctsOfSingletons, Set<Singleton> singletons) {
         if (singletons.containsAll(conjunctsOfSingletons.getSingletons())) {
             return ConjunctOfSingletons.TRUE;
         }
@@ -278,7 +278,7 @@ public class ClauseBuilder {
                 .collect(Collectors.toUnmodifiableSet()));
     }
 
-    private static OfSingletonOrSingleton simplifyDisjunctOfSingletonsGivenSingletons(DisjunctOfSingletonsOrSingleton disjunctsOfSingletons, Set<Singleton> singletons) {
+    private static ClauseOfSingletonOrSingleton simplifyDisjunctOfSingletonsGivenSingletons(DisjunctOfSingletonsOrSingleton disjunctsOfSingletons, Set<Singleton> singletons) {
         if (disjunctsOfSingletons.getSubClauses().anyMatch(singletons::contains)) {
             return ConjunctOfSingletons.TRUE;
         }
