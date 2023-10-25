@@ -12,7 +12,7 @@ public class ClauseBuilder {
         return new Variable(var);
     }
 
-    public static Clause<?> buildNegation(Clause<?> clause) {
+    private static Clause<?> buildNegation(Clause<?> clause) {
         if (clause instanceof Singleton) {
             return buildNegationOfSingleton((Singleton) clause);
         }
