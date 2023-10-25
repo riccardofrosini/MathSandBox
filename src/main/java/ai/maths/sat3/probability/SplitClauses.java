@@ -5,6 +5,8 @@ import java.util.stream.Collectors;
 
 import ai.maths.sat3.model.CNF;
 import ai.maths.sat3.model.ClauseBuilder;
+import ai.maths.sat3.model.ConjunctOfSingletons;
+import ai.maths.sat3.model.DisjunctOfSingletons;
 import ai.maths.sat3.model.DisjunctOfSingletonsOrSingleton;
 
 public class SplitClauses {
@@ -23,7 +25,9 @@ public class SplitClauses {
         DisjunctOfSingletonsOrSingleton anySubClause = conjuncts.getAnySubClause();
         return conjuncts.getSubClauses()
                 .map(disjunct -> new SplitClauses(disjunct, conjuncts.getSubClauses().filter(t -> t != disjunct).collect(Collectors.toUnmodifiableSet())))
-                .filter(splitClauses -> ConnectedVariables.getIndependentConnectedConjuncts(splitClauses.disconnectedFromFirst).size() == 1)
+                .filter(splitClauses -> splitClauses.disconnectedFromFirst instanceof ConjunctOfSingletons ||
+                        splitClauses.disconnectedFromFirst instanceof DisjunctOfSingletons ||
+                        ConnectedVariables.getIndependentConnectedConjuncts(splitClauses.disconnectedFromFirst).size() == 1)
                 .findAny()
                 .orElse(new SplitClauses(anySubClause, conjuncts.getSubClauses().filter(t -> t != anySubClause).collect(Collectors.toUnmodifiableSet())));
     }
