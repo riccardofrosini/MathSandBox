@@ -120,8 +120,8 @@ public class ClauseBuilder {
         return buildConjunctsOfSingletons(disjunctOfSingletonsOrSingleton.getSubClauses().map(ClauseBuilder::buildNegationOfSingleton).collect(Collectors.toUnmodifiableSet()));
     }
 
-    public static DNF<?> buildDNF(ConjunctOfSingletonsOrSingleton first, ConjunctOfSingletonsOrSingleton... rest) {
-        return buildDNF(Stream.concat(Stream.of(first), Stream.of(rest)).collect(Collectors.toUnmodifiableSet()));
+    public static DNF<?> buildDNF(ConjunctOfSingletonsOrSingleton... conjunctOfSingletonsOrSingletons) {
+        return buildDNF(Stream.of(conjunctOfSingletonsOrSingletons).collect(Collectors.toUnmodifiableSet()));
     }
 
     public static DNF<?> buildDNF(Set<ConjunctOfSingletonsOrSingleton> conjuncts) {
@@ -144,8 +144,8 @@ public class ClauseBuilder {
                 .collect(Collectors.toUnmodifiableSet()));
     }
 
-    public static CNF<?> buildCNF(DisjunctOfSingletonsOrSingleton first, DisjunctOfSingletonsOrSingleton... disjuncts) {
-        return buildCNF(Stream.concat(Stream.of(first), Stream.of(disjuncts)).collect(Collectors.toUnmodifiableSet()));
+    public static CNF<?> buildCNF(DisjunctOfSingletonsOrSingleton... disjunctOfSingletonsOrSingletons) {
+        return buildCNF(Stream.of(disjunctOfSingletonsOrSingletons).collect(Collectors.toUnmodifiableSet()));
     }
 
     public static CNF<?> buildCNF(Set<DisjunctOfSingletonsOrSingleton> disjuncts) {
@@ -170,8 +170,8 @@ public class ClauseBuilder {
                 .collect(Collectors.toUnmodifiableSet()));
     }
 
-    public static DisjunctOfSingletonsOrSingleton buildDisjunctsOfSingletons(Singleton first, Singleton... rest) {
-        return buildDisjunctsOfSingletons(Stream.concat(Stream.of(first), Arrays.stream(rest)).collect(Collectors.toUnmodifiableSet()));
+    public static DisjunctOfSingletonsOrSingleton buildDisjunctsOfSingletons(Singleton... singletons) {
+        return buildDisjunctsOfSingletons(Arrays.stream(singletons).collect(Collectors.toUnmodifiableSet()));
     }
 
     private static DisjunctOfSingletonsOrSingleton buildDisjunctsOfSingletons(Set<Singleton> singletons) {
@@ -191,8 +191,8 @@ public class ClauseBuilder {
         return new DisjunctOfSingletons(singletons);
     }
 
-    public static ConjunctOfSingletonsOrSingleton buildConjunctsOfSingletons(Singleton first, Singleton... rest) {
-        return buildConjunctsOfSingletons(Stream.concat(Stream.of(first), Arrays.stream(rest)).collect(Collectors.toUnmodifiableSet()));
+    public static ConjunctOfSingletonsOrSingleton buildConjunctsOfSingletons(Singleton... singletons) {
+        return buildConjunctsOfSingletons(Arrays.stream(singletons).collect(Collectors.toUnmodifiableSet()));
     }
 
     private static ConjunctOfSingletonsOrSingleton buildConjunctsOfSingletons(Set<Singleton> singletons) {
