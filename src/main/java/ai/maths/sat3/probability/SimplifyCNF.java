@@ -19,10 +19,10 @@ public class SimplifyCNF {
     }
 
     public static SimplifyCNF simplify(CNF<?> cnf) {
-        Set<Singleton> singletons = cnf.getSubClauses()
+        Set<Singleton> singletons = new HashSet<>(cnf.getSubClauses()
                 .filter(disjunct -> disjunct instanceof Singleton)
                 .map(disjunct -> (Singleton) disjunct)
-                .collect(Collectors.toSet());
+                .collect(Collectors.toUnmodifiableSet()));
         Set<Singleton> variables = new HashSet<>(singletons);
         while (!singletons.isEmpty()) {
             CNF<?> tempCNF = ClauseBuilder.simplifyCNFWithGivenSingletons(cnf, singletons);
