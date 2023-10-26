@@ -33,7 +33,7 @@ public class SolutionCounter {
         if (clause instanceof CNF) {
             SimplifyCNF simplifiedCNF = SimplifyCNF.simplify((CNF<?>) clause);
             return countSolutionsOfCNFOrDisjunctOfSingletonsOrSingleton(simplifiedCNF.getCnfOrDisjunctOfSingletonsOrSingleton())
-                    * (long) Math.pow(2, simplifiedCNF.getLostVariablesNotGivenAsTrue().size());
+                    * (long) Math.pow(2, simplifiedCNF.getLostVariablesNotGivenTrue().size());
         }
         throw new RuntimeException("A new class that extends clause has been added but not handled!");
     }

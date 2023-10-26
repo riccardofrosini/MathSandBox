@@ -33,7 +33,7 @@ public class Probability {
         if (clause instanceof CNF) {
             SimplifyCNF simplifiedCNF = SimplifyCNF.simplify((CNF<?>) clause);
             return probabilityOfCNFOrDisjunctOfSingletonsOrSingleton(simplifiedCNF.getCnfOrDisjunctOfSingletonsOrSingleton())
-                    / Math.pow(2, simplifiedCNF.getLostVariables().size());
+                    / Math.pow(2, simplifiedCNF.getGivenTrueVariables().size());
         }
         throw new RuntimeException("A new class that extends clause has been added but not handled!");
     }
