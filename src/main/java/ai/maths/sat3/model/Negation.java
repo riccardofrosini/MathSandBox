@@ -10,8 +10,7 @@ public abstract class Negation<T extends Clause<?>> extends VariableSingletonSet
     private final T clause;
 
     protected Negation(T clause) {
-        super(clause.getVariables(), clause.getSingletons());
-        this.clause = clause;
+        throw new RuntimeException("Negation not implemented");
     }
 
     protected Negation(Variable clause) {
@@ -21,11 +20,15 @@ public abstract class Negation<T extends Clause<?>> extends VariableSingletonSet
 
     @Override
     public Stream<T> getSubClauses() {
-        return Stream.of(clause);
+        throw new RuntimeException("Negation not implemented");
     }
 
     @Override
     public T getAnySubClause() {
+        throw new RuntimeException("Negation not implemented");
+    }
+
+    public T getNegatedClause() {
         return clause;
     }
 

@@ -22,7 +22,7 @@ public class SolutionCounter {
             return 1;
         }
         if (clause instanceof Negation) {
-            return (long) Math.pow(2, clause.getVariables().size()) - countSolutions(clause.getAnySubClause());
+            return (long) Math.pow(2, clause.getVariables().size()) - countSolutions(((Negation<?>) clause).getNegatedClause());
         }
         if (clause instanceof DisjunctOfSingletons) {
             return (long) Math.pow(2, clause.getVariables().size()) - 1;
@@ -31,12 +31,14 @@ public class SolutionCounter {
             return 1;
         }
         if (clause instanceof CNF) {
-            return probabilityOfCNFOrDisjunctOfSingletonsOrSingleton(SimplifyCNF.simplify((CNF<?>) clause).getCnfOrDisjunctOfSingletonsOrSingleton());
+            SimplifyCNF simplifiedCNF = SimplifyCNF.simplify((CNF<?>) clause);
+            return countSolutionsOfCNFOrDisjunctOfSingletonsOrSingleton(simplifiedCNF.getCnfOrDisjunctOfSingletonsOrSingleton())
+                    * (long) Math.pow(2, simplifiedCNF.getLostVariablesNotGivenAsTrue().size());
         }
         throw new RuntimeException("A new class that extends clause has been added but not handled!");
     }
 
-    private static Long probabilityOfCNFOrDisjunctOfSingletonsOrSingleton(CNF<?> cnfOrDisjunctOfSingletonsOrSingleton) {
+    private static Long countSolutionsOfCNFOrDisjunctOfSingletonsOrSingleton(CNF<?> cnfOrDisjunctOfSingletonsOrSingleton) {
         Set<CNF<?>> independentConnectedConjuncts = ConnectedVariables.getIndependentConnectedConjuncts((CNF<?>) cnfOrDisjunctOfSingletonsOrSingleton);
         if (independentConnectedConjuncts.size() == 1) {
             cnfOrDisjunctOfSingletonsOrSingleton = independentConnectedConjuncts.iterator().next();

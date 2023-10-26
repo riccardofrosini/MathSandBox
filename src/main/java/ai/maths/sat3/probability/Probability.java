@@ -22,7 +22,7 @@ public class Probability {
             return 1d / 2;
         }
         if (clause instanceof Negation) {
-            return 1d - probability(clause.getAnySubClause());
+            return 1d - probability(((Negation<?>) clause).getNegatedClause());
         }
         if (clause instanceof DisjunctOfSingletons) {
             return 1d - 1d / Math.pow(2, clause.getVariables().size());
@@ -33,7 +33,7 @@ public class Probability {
         if (clause instanceof CNF) {
             SimplifyCNF simplifiedCNF = SimplifyCNF.simplify((CNF<?>) clause);
             return probabilityOfCNFOrDisjunctOfSingletonsOrSingleton(simplifiedCNF.getCnfOrDisjunctOfSingletonsOrSingleton())
-                    / Math.pow(2, simplifiedCNF.getVariables().size());
+                    / Math.pow(2, simplifiedCNF.getLostVariables().size());
         }
         throw new RuntimeException("A new class that extends clause has been added but not handled!");
     }

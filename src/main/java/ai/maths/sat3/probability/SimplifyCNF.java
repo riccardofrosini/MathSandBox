@@ -11,37 +11,49 @@ import ai.maths.sat3.model.Singleton;
 public class SimplifyCNF {
 
     private final CNF<?> cnfOrDisjunctOfSingletonsOrSingleton;
-    private final Set<Singleton> variables;
+    private final Set<Singleton> lostVariables;
+    private final Set<Singleton> lostVariablesNotGivenAsTrue;
 
-    private SimplifyCNF(CNF<?> cnfOrDisjunctOfSingletonsOrSingleton, Set<Singleton> variables) {
+    private SimplifyCNF(CNF<?> cnfOrDisjunctOfSingletonsOrSingleton, Set<Singleton> lostVariables, Set<Singleton> lostVariablesNotGivenAsTrue) {
         this.cnfOrDisjunctOfSingletonsOrSingleton = cnfOrDisjunctOfSingletonsOrSingleton;
-        this.variables = variables;
+        this.lostVariables = lostVariables;
+        this.lostVariablesNotGivenAsTrue = lostVariablesNotGivenAsTrue;
     }
 
-    public static SimplifyCNF simplify(CNF<?> cnf) {
+    protected static SimplifyCNF simplify(CNF<?> cnf) {//TODO fix
         Set<Singleton> singletons = new HashSet<>(cnf.getSubClauses()
                 .filter(disjunct -> disjunct instanceof Singleton)
                 .map(disjunct -> (Singleton) disjunct)
                 .collect(Collectors.toUnmodifiableSet()));
-        Set<Singleton> variables = new HashSet<>(singletons);
+        Set<Singleton> lostVariables = new HashSet<>();
+        Set<Singleton> lostVariablesNotGivenAsTrue = new HashSet<>();
         while (!singletons.isEmpty()) {
             CNF<?> tempCNF = ClauseBuilder.simplifyCNFWithGivenSingletons(cnf, singletons);
+            lostVariables.addAll(cnf.getVariables().stream()
+                    .filter(variable -> !tempCNF.getVariables().contains(variable))
+                    .collect(Collectors.toUnmodifiableSet()));
+            lostVariablesNotGivenAsTrue.addAll(cnf.getVariables().stream()
+                    .filter(variable -> !tempCNF.getVariables().contains(variable) &&
+                            !singletons.contains(variable)).collect(Collectors.toUnmodifiableSet()));
             singletons.clear();
             singletons.addAll(tempCNF.getSubClauses()
                     .filter(disjunct -> disjunct instanceof Singleton)
                     .map(disjunct -> (Singleton) disjunct)
                     .collect(Collectors.toUnmodifiableSet()));
-            variables.addAll(singletons);
             cnf = tempCNF;
         }
-        return new SimplifyCNF(cnf, variables);
+        return new SimplifyCNF(cnf, lostVariables, lostVariablesNotGivenAsTrue);
     }
 
     public CNF<?> getCnfOrDisjunctOfSingletonsOrSingleton() {
         return cnfOrDisjunctOfSingletonsOrSingleton;
     }
 
-    public Set<Singleton> getVariables() {
-        return variables;
+    public Set<Singleton> getLostVariables() {
+        return lostVariables;
+    }
+
+    public Set<Singleton> getLostVariablesNotGivenAsTrue() {
+        return lostVariablesNotGivenAsTrue;
     }
 }

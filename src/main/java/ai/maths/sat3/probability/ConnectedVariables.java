@@ -15,7 +15,7 @@ import ai.maths.sat3.model.Variable;
 
 public class ConnectedVariables {
 
-    protected static <T extends DisjunctOfSingletonsOrSingleton> Set<CNF<?>> getIndependentConnectedConjuncts(CNF<T> cnf) {
+    public static <T extends DisjunctOfSingletonsOrSingleton> Set<CNF<?>> getIndependentConnectedConjuncts(CNF<T> cnf) {
         Map<Variable, Set<T>> varToConjunct = new HashMap<>();
         cnf.getSubClauses().forEach(disjunct ->
                 disjunct.getVariables().forEach(variable ->

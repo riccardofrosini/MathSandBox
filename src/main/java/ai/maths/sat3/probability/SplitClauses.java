@@ -1,6 +1,5 @@
 package ai.maths.sat3.probability;
 
-import java.util.Set;
 import java.util.stream.Collectors;
 
 import ai.maths.sat3.model.CNF;
@@ -15,21 +14,21 @@ public class SplitClauses {
     private final CNF<?> rest;
     private final CNF<?> disconnectedFromFirst;
 
-    private SplitClauses(DisjunctOfSingletonsOrSingleton first, Set<DisjunctOfSingletonsOrSingleton> rest) {
+    private SplitClauses(DisjunctOfSingletonsOrSingleton first, CNF<?> cnf) {
         this.first = first;
-        this.rest = ClauseBuilder.buildCNF(rest);
+        this.rest = ClauseBuilder.buildCNF(cnf.getSubClauses().filter(t -> t != first).collect(Collectors.toUnmodifiableSet()));
         this.disconnectedFromFirst = buildDisconnectedFromFirst();
     }
 
-    protected static SplitClauses split(CNF<?> conjuncts) {
-        DisjunctOfSingletonsOrSingleton anySubClause = conjuncts.getAnySubClause();
-        return conjuncts.getSubClauses()
-                .map(disjunct -> new SplitClauses(disjunct, conjuncts.getSubClauses().filter(t -> t != disjunct).collect(Collectors.toUnmodifiableSet())))
+    protected static SplitClauses split(CNF<?> cnf) {
+        DisjunctOfSingletonsOrSingleton anySubClause = cnf.getAnySubClause();
+        return cnf.getSubClauses()
+                .map(disjunct -> new SplitClauses(disjunct, cnf))
                 .filter(splitClauses -> splitClauses.disconnectedFromFirst instanceof ConjunctOfSingletons ||
                         splitClauses.disconnectedFromFirst instanceof DisjunctOfSingletons ||
                         ConnectedVariables.getIndependentConnectedConjuncts(splitClauses.disconnectedFromFirst).size() == 1)
                 .findAny()
-                .orElse(new SplitClauses(anySubClause, conjuncts.getSubClauses().filter(t -> t != anySubClause).collect(Collectors.toUnmodifiableSet())));
+                .orElse(new SplitClauses(anySubClause, cnf));
     }
 
     private CNF<?> buildDisconnectedFromFirst() {
