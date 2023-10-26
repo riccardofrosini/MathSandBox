@@ -242,9 +242,6 @@ public class ClauseBuilder {
                 .map(disjunctOfSingletonsOrSingleton -> simplifyDisjunctOfSingletonsWithGivenSingletons(disjunctOfSingletonsOrSingleton, singletons))
                 .filter(clauseOfSingletonOrSingleton -> clauseOfSingletonOrSingleton != ConjunctOfSingletons.TRUE)
                 .collect(Collectors.toUnmodifiableSet());
-        if (disjuncts.contains(DisjunctOfSingletons.FALSE)) {
-            return DisjunctOfSingletons.FALSE;
-        }
         return buildCNF(disjuncts.stream().map(clauseOfSingletonOrSingleton -> (DisjunctOfSingletonsOrSingleton) clauseOfSingletonOrSingleton).collect(Collectors.toUnmodifiableSet()));
     }
 
@@ -259,9 +256,6 @@ public class ClauseBuilder {
                 .map(conjunctOfSingletonsOrSingleton -> simplifyConjunctOfSingletonsWithGivenSingletons(conjunctOfSingletonsOrSingleton, singletons))
                 .filter(clauseOfSingletonOrSingleton -> clauseOfSingletonOrSingleton != DisjunctOfSingletons.FALSE)
                 .collect(Collectors.toUnmodifiableSet());
-        if (conjuncts.contains(ConjunctOfSingletons.TRUE)) {
-            return ConjunctOfSingletons.TRUE;
-        }
         return buildDNF(conjuncts.stream().map(clauseOfSingletonOrSingleton -> (ConjunctOfSingletonsOrSingleton) clauseOfSingletonOrSingleton).collect(Collectors.toUnmodifiableSet()));
     }
 
