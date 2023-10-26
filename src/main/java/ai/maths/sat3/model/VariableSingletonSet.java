@@ -1,9 +1,6 @@
-package ai.maths.sat3.probability;
+package ai.maths.sat3.model;
 
 import java.util.Set;
-
-import ai.maths.sat3.model.Singleton;
-import ai.maths.sat3.model.Variable;
 
 public abstract class VariableSingletonSet {
 

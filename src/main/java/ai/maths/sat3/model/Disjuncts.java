@@ -5,8 +5,6 @@ import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import ai.maths.sat3.probability.VariableSingletonSet;
-
 public abstract class Disjuncts<T extends Clause<?>> extends VariableSingletonSet implements Clause<T> {
 
     private final Set<T> disjuncts;

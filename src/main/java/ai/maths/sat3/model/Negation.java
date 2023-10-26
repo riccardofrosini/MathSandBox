@@ -3,8 +3,6 @@ package ai.maths.sat3.model;
 import java.util.Objects;
 import java.util.stream.Stream;
 
-import ai.maths.sat3.probability.VariableSingletonSet;
-
 public abstract class Negation<T extends Clause<?>> extends VariableSingletonSet implements Clause<T> {
 
     private final T clause;
