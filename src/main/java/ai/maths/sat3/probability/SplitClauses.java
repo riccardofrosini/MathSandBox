@@ -32,8 +32,7 @@ public class SplitClauses {
     }
 
     private CNF<?> buildDisconnectedFromFirst() {
-        return ClauseBuilder.buildNegationOfDNF(
-                ClauseBuilder.simplifyDNFWithGivenSingletons(ClauseBuilder.buildNegationOfCNF(rest), ClauseBuilder.buildNegationOfDisjunctOfSingletons(first).getSingletons()));
+        return ClauseBuilder.simplifyCNFWithGivenSingletons(rest, ClauseBuilder.buildNegationOfDisjunctOfSingletons(first).getSingletons());
     }
 
     public CNF<?> getDisconnectedFromFirst() {
