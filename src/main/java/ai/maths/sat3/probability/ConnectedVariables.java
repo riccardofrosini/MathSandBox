@@ -8,10 +8,10 @@ import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import ai.maths.sat3.model.CNF;
-import ai.maths.sat3.model.ClauseBuilder;
-import ai.maths.sat3.model.DisjunctOfSingletonsOrSingleton;
-import ai.maths.sat3.model.Variable;
+import ai.maths.sat3.model.sat3.CNF;
+import ai.maths.sat3.model.sat3.ClauseBuilder;
+import ai.maths.sat3.model.sat3.DisjunctOfSingletonsOrSingleton;
+import ai.maths.sat3.model.sat3.Variable;
 
 public class ConnectedVariables {
 

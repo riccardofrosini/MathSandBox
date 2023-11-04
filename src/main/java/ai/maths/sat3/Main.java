@@ -3,13 +3,15 @@ package ai.maths.sat3;
 import java.util.HashSet;
 import java.util.stream.Collectors;
 
-import ai.maths.sat3.model.CNF;
-import ai.maths.sat3.model.ClauseBuilder;
-import ai.maths.sat3.model.ConjunctOfSingletonsOrSingleton;
-import ai.maths.sat3.model.DisjunctOfSingletonsOrSingleton;
-import ai.maths.sat3.model.Variable;
+import ai.maths.sat3.model.probability.ProbabilityOfCNF;
+import ai.maths.sat3.model.sat3.CNF;
+import ai.maths.sat3.model.sat3.ClauseBuilder;
+import ai.maths.sat3.model.sat3.ConjunctOfSingletonsOrSingleton;
+import ai.maths.sat3.model.sat3.DisjunctOfSingletonsOrSingleton;
+import ai.maths.sat3.model.sat3.Variable;
 import ai.maths.sat3.probability.ConnectedVariables;
 import ai.maths.sat3.probability.Probability;
+import ai.maths.sat3.probability.ProbabilityFormula;
 import ai.maths.sat3.probability.SolutionCounter;
 
 public class Main {
@@ -20,7 +22,7 @@ public class Main {
         HashSet<CNF<?>> previous = new HashSet<>();
         for (int varNumbers = 0; varNumbers < 100; varNumbers++) {
             variables.add(ClauseBuilder.buildVariable("x" + varNumbers));
-            HashSet<DisjunctOfSingletonsOrSingleton> newDisjuncts = new HashSet<>(14);
+            HashSet<DisjunctOfSingletonsOrSingleton> newDisjuncts = new HashSet<>();
             for (Variable variable1 : variables) {
                 newDisjuncts.add(ClauseBuilder.buildDisjunctsOfSingletons(variable1));
                 newDisjuncts.add(ClauseBuilder.buildDisjunctsOfSingletons(ClauseBuilder.buildNegationOfSingleton(variable1)));
@@ -76,9 +78,11 @@ public class Main {
             }
             previous.clear();
             newCNFs.stream().filter(cnf -> !CNFs.contains(cnf)).forEach(cnf -> {
-                double probability = Probability.probability(cnf);
-                long countSolutions = SolutionCounter.countSolutions(cnf);
+                double probability = Probability.probabilityOfCNF(cnf);
+                long countSolutions = SolutionCounter.countSolutionsOfCNF(cnf);
+                ProbabilityOfCNF formulaOfCNF = ProbabilityFormula.getFormulaOfCNF(cnf);
                 System.out.println(cnf + " " + probability + " " + countSolutions + " " + ((double) countSolutions / probability));
+                System.out.println(formulaOfCNF);
                 previous.add(cnf);
                 CNFs.add(cnf);
             });

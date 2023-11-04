@@ -1,4 +1,4 @@
-package ai.maths.sat3.model;
+package ai.maths.sat3.model.sat3;
 
 import java.util.Set;
 

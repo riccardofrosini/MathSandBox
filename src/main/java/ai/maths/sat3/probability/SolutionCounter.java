@@ -2,16 +2,15 @@ package ai.maths.sat3.probability;
 
 import java.util.Set;
 
-import ai.maths.sat3.model.CNF;
-import ai.maths.sat3.model.Clause;
-import ai.maths.sat3.model.ConjunctOfSingletons;
-import ai.maths.sat3.model.DisjunctOfSingletons;
-import ai.maths.sat3.model.Negation;
-import ai.maths.sat3.model.Variable;
+import ai.maths.sat3.model.sat3.CNF;
+import ai.maths.sat3.model.sat3.ConjunctOfSingletons;
+import ai.maths.sat3.model.sat3.DisjunctOfSingletons;
+import ai.maths.sat3.model.sat3.NegVariable;
+import ai.maths.sat3.model.sat3.Variable;
 
 public class SolutionCounter {
 
-    public static long countSolutions(Clause<?> clause) {
+    public static long countSolutionsOfCNF(CNF<?> clause) {
         if (clause == DisjunctOfSingletons.FALSE) {
             return 0;
         }
@@ -21,8 +20,8 @@ public class SolutionCounter {
         if (clause instanceof Variable) {
             return 1;
         }
-        if (clause instanceof Negation) {
-            return (long) Math.pow(2, clause.getVariables().size()) - countSolutions(((Negation<?>) clause).getNegatedClause());
+        if (clause instanceof NegVariable) {
+            return (long) Math.pow(2, clause.getVariables().size()) - countSolutionsOfCNF(((NegVariable) clause).getNegatedClause());
         }
         if (clause instanceof DisjunctOfSingletons) {
             return (long) Math.pow(2, clause.getVariables().size()) - 1;
@@ -30,29 +29,26 @@ public class SolutionCounter {
         if (clause instanceof ConjunctOfSingletons) {
             return 1;
         }
-        if (clause instanceof CNF) {
-            SimplifyCNF simplifiedCNF = SimplifyCNF.simplify((CNF<?>) clause);
-            return countSolutionsOfCNFOrDisjunctOfSingletonsOrSingleton(simplifiedCNF.getCnfOrDisjunctOfSingletonsOrSingleton())
-                    * (long) Math.pow(2, simplifiedCNF.getLostVariablesNotGivenTrue().size());
-        }
-        throw new RuntimeException("A new class that extends clause has been added but not handled!");
+        SimplifyCNF simplifiedCNF = SimplifyCNF.simplify(clause);
+        return countSolutionsOfCNFSimplified(simplifiedCNF.getSimplifiedCnf())
+                * (long) Math.pow(2, simplifiedCNF.getLostVariablesNotGiven().size());
+
     }
 
-    private static Long countSolutionsOfCNFOrDisjunctOfSingletonsOrSingleton(CNF<?> cnfOrDisjunctOfSingletonsOrSingleton) {
-        Set<CNF<?>> independentConnectedConjuncts = ConnectedVariables.getIndependentConnectedConjuncts((CNF<?>) cnfOrDisjunctOfSingletonsOrSingleton);
+    private static Long countSolutionsOfCNFSimplified(CNF<?> simplifiedCNF) {
+        Set<CNF<?>> independentConnectedConjuncts = ConnectedVariables.getIndependentConnectedConjuncts((CNF<?>) simplifiedCNF);
         if (independentConnectedConjuncts.size() == 1) {
-            cnfOrDisjunctOfSingletonsOrSingleton = independentConnectedConjuncts.iterator().next();
-            SplitClauses split = SplitClauses.split(cnfOrDisjunctOfSingletonsOrSingleton);
+            SplitClauses split = SplitClauses.split(simplifiedCNF);
             CNF<?> cnf = split.getRest();
             CNF<?> independentCNF = split.getDisconnectedFromFirst();
-            return countSolutions(cnf) *
+            return countSolutionsOfCNF(cnf) *
                     (long) Math.pow(2, split.getFirst().getVariables().stream()
                             .filter(variable -> !cnf.getVariables().contains(variable)).count())
-                    - countSolutions(independentCNF) *
+                    - countSolutionsOfCNF(independentCNF) *
                     (long) Math.pow(2, cnf.getVariables().stream()
                             .filter(variable -> !independentCNF.getVariables().contains(variable) && !split.getFirst().getVariables().contains(variable)).count());
         }
-        return independentConnectedConjuncts.stream().mapToLong(SolutionCounter::countSolutions).reduce(1, (left, right) -> left * right);
+        return independentConnectedConjuncts.stream().mapToLong(SolutionCounter::countSolutionsOfCNF).reduce(1, (left, right) -> left * right);
 
     }
 }

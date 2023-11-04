@@ -2,11 +2,11 @@ package ai.maths.sat3.probability;
 
 import java.util.stream.Collectors;
 
-import ai.maths.sat3.model.CNF;
-import ai.maths.sat3.model.ClauseBuilder;
-import ai.maths.sat3.model.ConjunctOfSingletons;
-import ai.maths.sat3.model.DisjunctOfSingletons;
-import ai.maths.sat3.model.DisjunctOfSingletonsOrSingleton;
+import ai.maths.sat3.model.sat3.CNF;
+import ai.maths.sat3.model.sat3.ClauseBuilder;
+import ai.maths.sat3.model.sat3.ConjunctOfSingletons;
+import ai.maths.sat3.model.sat3.DisjunctOfSingletons;
+import ai.maths.sat3.model.sat3.DisjunctOfSingletonsOrSingleton;
 
 public class SplitClauses {
 

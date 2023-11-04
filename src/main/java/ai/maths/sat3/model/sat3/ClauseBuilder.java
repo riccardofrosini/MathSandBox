@@ -1,4 +1,4 @@
-package ai.maths.sat3.model;
+package ai.maths.sat3.model.sat3;
 
 import java.util.Iterator;
 import java.util.Set;
@@ -173,7 +173,7 @@ public class ClauseBuilder {
         return buildConjunctsOfSingletons(Set.of(singletons));
     }
 
-    private static ConjunctOfSingletonsOrSingleton buildConjunctsOfSingletons(Set<Singleton> singletons) {
+    public static ConjunctOfSingletonsOrSingleton buildConjunctsOfSingletons(Set<Singleton> singletons) {
         Iterator<Singleton> iterator = singletons.iterator();
         if (!iterator.hasNext()) {
             return ConjunctOfSingletons.TRUE;
@@ -194,7 +194,7 @@ public class ClauseBuilder {
         return buildDisjunctsOfSingletons(Set.of(singletons));
     }
 
-    private static DisjunctOfSingletonsOrSingleton buildDisjunctsOfSingletons(Set<Singleton> singletons) {
+    public static DisjunctOfSingletonsOrSingleton buildDisjunctsOfSingletons(Set<Singleton> singletons) {
         Iterator<Singleton> iterator = singletons.iterator();
         if (!iterator.hasNext()) {
             return DisjunctOfSingletons.FALSE;
