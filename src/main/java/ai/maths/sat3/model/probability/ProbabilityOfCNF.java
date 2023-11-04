@@ -20,8 +20,7 @@ public class ProbabilityOfCNF {
         sumsOfMultiplications = new HashMap<>(sumsOfMultiplications);
         Map<Set<ProbabilityOfCNF>, Integer> sumsOfMultiplicationsToSimplify = sumsOfMultiplications.entrySet().stream()
                 .filter(probabilityOfCNFEntry -> probabilityOfCNFEntry.getKey().stream()
-                        .anyMatch(probabilityOfCNF -> !(probabilityOfCNF instanceof ConjunctOfSingletonOrSingletonProbability) &&
-                                !(probabilityOfCNF instanceof DisjunctOfSingletonOrSingletonProbability)))
+                        .anyMatch(probabilityOfCNF -> !(probabilityOfCNF instanceof ConjunctOfSingletonOrSingletonProbability)))
                 .collect(Collectors.toMap(Entry::getKey, Entry::getValue));
 
         sumsOfMultiplications.keySet().removeAll(sumsOfMultiplicationsToSimplify.keySet());
@@ -42,11 +41,13 @@ public class ProbabilityOfCNF {
                                     Set<ProbabilityOfCNF> probabilityOfCNFS = new HashSet<>(setIntegerEntry1.getKey());
                                     probabilityOfCNFS.addAll(setIntegerEntry2.getKey());
                                     if (probabilityOfCNFS.size() == 1) {
-                                        return Map.of(probabilityOfCNFS, setIntegerEntry1.getValue() * setIntegerEntry2.getValue()).entrySet().stream();
+                                        return Map.of(probabilityOfCNFS, setIntegerEntry1.getValue() * setIntegerEntry2.getValue()).entrySet().stream()
+                                                .filter(setIntegerEntry -> setIntegerEntry.getValue() != 0);
                                     }
                                     return Map.of(probabilityOfCNFS.stream()
-                                            .filter(probabilityOfCNF -> !probabilityOfCNF.equals(ConjunctOfSingletonOrSingletonProbability.TRUE))
-                                            .collect(Collectors.toSet()), setIntegerEntry1.getValue() * setIntegerEntry2.getValue()).entrySet().stream();
+                                                    .filter(probabilityOfCNF -> !probabilityOfCNF.equals(ConjunctOfSingletonOrSingletonProbability.TRUE))
+                                                    .collect(Collectors.toUnmodifiableSet()), setIntegerEntry1.getValue() * setIntegerEntry2.getValue()).entrySet().stream()
+                                            .filter(setIntegerEntry -> setIntegerEntry.getValue() != 0);
                                 }))
                 .collect(Collectors.toMap(Entry::getKey, Entry::getValue, Integer::sum));
     }
@@ -70,12 +71,12 @@ public class ProbabilityOfCNF {
 
     @Override
     public String toString() {
-        return sumsOfMultiplications.entrySet().stream()
+        return "(" + sumsOfMultiplications.entrySet().stream()
                 .map(setIntegerEntry -> (setIntegerEntry.getValue() == 1 || setIntegerEntry.getValue() == -1 ?
                         (setIntegerEntry.getValue() == -1 ? "- " : "") : setIntegerEntry.getValue() + " ")
                         + setIntegerEntry.getKey().stream()
                         .map(ProbabilityOfCNF::toString)
                         .collect(Collectors.joining(" * ")))
-                .collect(Collectors.joining(" + "));
+                .collect(Collectors.joining(" + ")) + ")";
     }
 }

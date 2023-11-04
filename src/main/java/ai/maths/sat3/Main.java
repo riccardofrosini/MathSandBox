@@ -1,7 +1,6 @@
 package ai.maths.sat3;
 
 import java.util.HashSet;
-import java.util.stream.Collectors;
 
 import ai.maths.sat3.model.probability.ProbabilityOfCNF;
 import ai.maths.sat3.model.sat3.CNF;
@@ -67,7 +66,7 @@ public class Main {
                         if (cnf instanceof DisjunctOfSingletonsOrSingleton) {
                             newCNF = ClauseBuilder.buildCNF((DisjunctOfSingletonsOrSingleton) cnf, disjunct);
                         } else {
-                            newCNF = ClauseBuilder.buildCNF(disjunct, cnf.getSubClauses().collect(Collectors.toSet()).toArray(DisjunctOfSingletonsOrSingleton[]::new));
+                            newCNF = ClauseBuilder.buildCNF(disjunct, cnf.getSubClauses().toArray(DisjunctOfSingletonsOrSingleton[]::new));
                         }
                         if (!(newCNF instanceof ConjunctOfSingletonsOrSingleton) && (newCNF instanceof DisjunctOfSingletonsOrSingleton
                                 || ConnectedVariables.getIndependentConnectedConjuncts(newCNF).size() == 1)) {

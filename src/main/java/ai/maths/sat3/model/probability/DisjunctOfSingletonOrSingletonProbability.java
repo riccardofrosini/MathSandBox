@@ -1,20 +1,22 @@
 package ai.maths.sat3.model.probability;
 
-import java.util.Objects;
+import java.util.Map;
+import java.util.Set;
 
-import ai.maths.sat3.model.sat3.DisjunctOfSingletons;
+import ai.maths.sat3.model.sat3.ClauseBuilder;
 import ai.maths.sat3.model.sat3.DisjunctOfSingletonsOrSingleton;
-import ai.maths.sat3.model.sat3.Singleton;
 
 public class DisjunctOfSingletonOrSingletonProbability extends ProbabilityOfCNF {
 
-    public static final DisjunctOfSingletonOrSingletonProbability FALSE = new DisjunctOfSingletonOrSingletonProbability(DisjunctOfSingletons.FALSE);
+    public static final DisjunctOfSingletonOrSingletonProbability FALSE = new DisjunctOfSingletonOrSingletonProbability();
 
-    private final DisjunctOfSingletonsOrSingleton disjunctOfSingletonsOrSingleton;
+    private DisjunctOfSingletonOrSingletonProbability() {
+        super(Map.of(Set.of(), 0));
+    }
 
     public DisjunctOfSingletonOrSingletonProbability(DisjunctOfSingletonsOrSingleton disjunctOfSingletonsOrSingleton) {
-        super();
-        this.disjunctOfSingletonsOrSingleton = disjunctOfSingletonsOrSingleton;
+        super(Map.of(Set.of(ConjunctOfSingletonOrSingletonProbability.TRUE), 1,
+                Set.of(new ConjunctOfSingletonOrSingletonProbability(ClauseBuilder.buildNegationOfDisjunctOfSingletons(disjunctOfSingletonsOrSingleton))), -1));
     }
 
     @Override
@@ -25,23 +27,11 @@ public class DisjunctOfSingletonOrSingletonProbability extends ProbabilityOfCNF 
         if (o == null || getClass() != o.getClass()) {
             return false;
         }
-        DisjunctOfSingletonOrSingletonProbability that = (DisjunctOfSingletonOrSingletonProbability) o;
-        return disjunctOfSingletonsOrSingleton.equals(that.disjunctOfSingletonsOrSingleton);
+        return super.equals(o);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(disjunctOfSingletonsOrSingleton);
-    }
-
-    @Override
-    public String toString() {
-        if (disjunctOfSingletonsOrSingleton == DisjunctOfSingletons.FALSE) {
-            return "0";
-        }
-        if (disjunctOfSingletonsOrSingleton instanceof Singleton) {
-            return "P(" + disjunctOfSingletonsOrSingleton + ")";
-        }
-        return "P" + disjunctOfSingletonsOrSingleton;
+        return 67 * super.hashCode();
     }
 }
