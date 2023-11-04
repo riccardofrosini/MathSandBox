@@ -45,9 +45,7 @@ public class ProbabilityFormulaBuilder {
                                             .filter(probabilityOfCNF -> probabilityOfCNF != ProbabilityFormulaOfConjunctOfSingletonsOrSingleton.TRUE)
                                             .collect(Collectors.toUnmodifiableSet()), setIntegerEntry1.getValue() * setIntegerEntry2.getValue()).entrySet().stream();
                                 }))
-                        .collect(Collectors.toMap(Entry::getKey, Entry::getValue, Integer::sum))
-                        .entrySet().stream()
-                        .collect(Collectors.toMap(Entry::getKey, Entry::getValue)))).get();
+                        .collect(Collectors.toMap(Entry::getKey, Entry::getValue, Integer::sum)))).get();
     }
 
     public static ProbabilityFormulaOfCNF buildSumOfProbability(Map<Set<ProbabilityFormulaOfCNF>, Integer> probabilityFormulaOfCNFS) {
