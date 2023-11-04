@@ -6,13 +6,13 @@ import ai.maths.sat3.model.sat3.ConjunctOfSingletons;
 import ai.maths.sat3.model.sat3.ConjunctOfSingletonsOrSingleton;
 import ai.maths.sat3.model.sat3.Singleton;
 
-public class ConjunctOfSingletonOrSingletonProbability extends ProbabilityOfCNF {
+public class ProbabilityFormulaOfConjunctOfSingletonsOrSingleton extends ProbabilityFormulaOfCNF {
 
-    public static final ConjunctOfSingletonOrSingletonProbability TRUE = new ConjunctOfSingletonOrSingletonProbability(ConjunctOfSingletons.TRUE);
+    public static final ProbabilityFormulaOfConjunctOfSingletonsOrSingleton TRUE = new ProbabilityFormulaOfConjunctOfSingletonsOrSingleton(ConjunctOfSingletons.TRUE);
 
     private final ConjunctOfSingletonsOrSingleton conjunctOfSingletonsOrSingleton;
 
-    public ConjunctOfSingletonOrSingletonProbability(ConjunctOfSingletonsOrSingleton conjunctOfSingletonsOrSingleton) {
+    protected ProbabilityFormulaOfConjunctOfSingletonsOrSingleton(ConjunctOfSingletonsOrSingleton conjunctOfSingletonsOrSingleton) {
         super();
         this.conjunctOfSingletonsOrSingleton = conjunctOfSingletonsOrSingleton;
     }
@@ -25,7 +25,7 @@ public class ConjunctOfSingletonOrSingletonProbability extends ProbabilityOfCNF 
         if (o == null || getClass() != o.getClass()) {
             return false;
         }
-        ConjunctOfSingletonOrSingletonProbability that = (ConjunctOfSingletonOrSingletonProbability) o;
+        ProbabilityFormulaOfConjunctOfSingletonsOrSingleton that = (ProbabilityFormulaOfConjunctOfSingletonsOrSingleton) o;
         return conjunctOfSingletonsOrSingleton.equals(that.conjunctOfSingletonsOrSingleton);
     }
 

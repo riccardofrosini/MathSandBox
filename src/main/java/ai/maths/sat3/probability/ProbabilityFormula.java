@@ -4,45 +4,39 @@ import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import ai.maths.sat3.model.probability.ConjunctOfSingletonOrSingletonProbability;
-import ai.maths.sat3.model.probability.DisjunctOfSingletonOrSingletonProbability;
-import ai.maths.sat3.model.probability.ProbabilityOfCNF;
+import ai.maths.sat3.model.probability.ProbabilityFormulaBuilder;
+import ai.maths.sat3.model.probability.ProbabilityFormulaOfCNF;
 import ai.maths.sat3.model.sat3.CNF;
 import ai.maths.sat3.model.sat3.ClauseBuilder;
-import ai.maths.sat3.model.sat3.ConjunctOfSingletons;
 import ai.maths.sat3.model.sat3.ConjunctOfSingletonsOrSingleton;
-import ai.maths.sat3.model.sat3.DisjunctOfSingletons;
 import ai.maths.sat3.model.sat3.DisjunctOfSingletonsOrSingleton;
 
 public class ProbabilityFormula {
 
-
-    public static ProbabilityOfCNF getFormulaOfCNF(CNF<?> clause) {
+    public static ProbabilityFormulaOfCNF getFormulaOfCNF(CNF<?> clause) {
         if (clause instanceof ConjunctOfSingletonsOrSingleton) {
-            if (clause == ConjunctOfSingletons.TRUE) {
-                return ConjunctOfSingletonOrSingletonProbability.TRUE;
-            }
-            return new ConjunctOfSingletonOrSingletonProbability((ConjunctOfSingletonsOrSingleton) clause);
+            return ProbabilityFormulaBuilder.buildProbabilityFormulaOfConjunctOfSingletonOrSingleton((ConjunctOfSingletonsOrSingleton) clause);
         }
         if (clause instanceof DisjunctOfSingletonsOrSingleton) {
-            if (clause == DisjunctOfSingletons.FALSE) {
-                return DisjunctOfSingletonOrSingletonProbability.FALSE;
-            }
-            return new DisjunctOfSingletonOrSingletonProbability((DisjunctOfSingletonsOrSingleton) clause);
+            return ProbabilityFormulaBuilder.buildProbabilityFormulaOfDisjunctOfSingletonOrSingleton((DisjunctOfSingletonsOrSingleton) clause);
         }
         SimplifyCNF simplifiedCNF = SimplifyCNF.simplify(clause);
-        return new ProbabilityOfCNF(Map.of(Set.of(getFormulaOfCNFSimplified(simplifiedCNF.getSimplifiedCnf()), getFormulaOfCNF(simplifiedCNF.getGivenSingletons())), 1));
+        if (simplifiedCNF.getSimplifiedCnf() != clause) {
+            return ProbabilityFormulaBuilder.buildProductOfProbability(Set.of(getFormulaOfCNF(simplifiedCNF.getSimplifiedCnf()),
+                    getFormulaOfCNF(simplifiedCNF.getGivenSingletons())));
+        }
+        return getFormulaOfCNFNonSimplified(clause);
     }
 
-    private static ProbabilityOfCNF getFormulaOfCNFSimplified(CNF<?> simplifiedCNF) {
+    private static ProbabilityFormulaOfCNF getFormulaOfCNFNonSimplified(CNF<?> simplifiedCNF) {
         Set<CNF<?>> independentConnectedConjuncts = ConnectedVariables.getIndependentConnectedConjuncts(simplifiedCNF);
         if (independentConnectedConjuncts.size() == 1) {
             SplitClauses split = SplitClauses.split(simplifiedCNF);
-            return new ProbabilityOfCNF(Map.of(
+            return ProbabilityFormulaBuilder.buildSumOfProbability(Map.of(
                     Set.of(getFormulaOfCNF(split.getRest())), 1,
-                    Set.of(getFormulaOfCNF(split.getRest()), getFormulaOfCNF(ClauseBuilder.buildNegationOfDisjunctOfSingletons(split.getFirst()))), -1));
+                    Set.of(getFormulaOfCNF(split.getDisconnectedFromFirst()), getFormulaOfCNF(ClauseBuilder.buildNegationOfDisjunctOfSingletons(split.getFirst()))), -1));
         }
-        return new ProbabilityOfCNF(Map.of(independentConnectedConjuncts.stream().map(ProbabilityFormula::getFormulaOfCNF).collect(Collectors.toUnmodifiableSet()), 1));
+        return ProbabilityFormulaBuilder.buildProductOfProbability(independentConnectedConjuncts.stream().map(ProbabilityFormula::getFormulaOfCNF).collect(Collectors.toUnmodifiableSet()));
     }
 
 

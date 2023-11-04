@@ -30,12 +30,15 @@ public class SolutionCounter {
             return 1;
         }
         SimplifyCNF simplifiedCNF = SimplifyCNF.simplify(clause);
-        return countSolutionsOfCNFSimplified(simplifiedCNF.getSimplifiedCnf())
-                * (long) Math.pow(2, simplifiedCNF.getLostVariablesNotGiven().size());
+        if (simplifiedCNF.getSimplifiedCnf() != clause) {
+            return countSolutionsOfCNF(simplifiedCNF.getSimplifiedCnf())
+                    * (long) Math.pow(2, simplifiedCNF.getLostVariablesNotGiven().size());
+        }
+        return countSolutionsOfCNFNonSimplified(clause);
 
     }
 
-    private static Long countSolutionsOfCNFSimplified(CNF<?> simplifiedCNF) {
+    private static Long countSolutionsOfCNFNonSimplified(CNF<?> simplifiedCNF) {
         Set<CNF<?>> independentConnectedConjuncts = ConnectedVariables.getIndependentConnectedConjuncts((CNF<?>) simplifiedCNF);
         if (independentConnectedConjuncts.size() == 1) {
             SplitClauses split = SplitClauses.split(simplifiedCNF);

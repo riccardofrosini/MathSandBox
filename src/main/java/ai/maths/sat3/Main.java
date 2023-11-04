@@ -2,7 +2,7 @@ package ai.maths.sat3;
 
 import java.util.HashSet;
 
-import ai.maths.sat3.model.probability.ProbabilityOfCNF;
+import ai.maths.sat3.model.probability.ProbabilityFormulaOfCNF;
 import ai.maths.sat3.model.sat3.CNF;
 import ai.maths.sat3.model.sat3.ClauseBuilder;
 import ai.maths.sat3.model.sat3.ConjunctOfSingletonsOrSingleton;
@@ -79,7 +79,7 @@ public class Main {
             newCNFs.stream().filter(cnf -> !CNFs.contains(cnf)).forEach(cnf -> {
                 double probability = Probability.probabilityOfCNF(cnf);
                 long countSolutions = SolutionCounter.countSolutionsOfCNF(cnf);
-                ProbabilityOfCNF formulaOfCNF = ProbabilityFormula.getFormulaOfCNF(cnf);
+                ProbabilityFormulaOfCNF formulaOfCNF = ProbabilityFormula.getFormulaOfCNF(cnf);
                 System.out.println(cnf + " " + probability + " " + countSolutions + " " + ((double) countSolutions / probability));
                 System.out.println(formulaOfCNF);
                 previous.add(cnf);

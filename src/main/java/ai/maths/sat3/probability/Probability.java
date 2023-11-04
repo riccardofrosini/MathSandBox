@@ -30,10 +30,11 @@ public class Probability {
             return 1d / Math.pow(2, clause.getVariables().size());
         }
         SimplifyCNF simplifiedCNF = SimplifyCNF.simplify(clause);
-        return probabilityOfCNFSimplified(simplifiedCNF.getSimplifiedCnf())
-                / Math.pow(2, simplifiedCNF.getGivenVariables().size());
-
-
+        if (simplifiedCNF.getSimplifiedCnf() != clause) {
+            return probabilityOfCNF(simplifiedCNF.getSimplifiedCnf())
+                    / Math.pow(2, simplifiedCNF.getGivenVariables().size());
+        }
+        return probabilityOfCNFSimplified(clause);
     }
 
     private static double probabilityOfCNFSimplified(CNF<?> simplifiedCNF) {
