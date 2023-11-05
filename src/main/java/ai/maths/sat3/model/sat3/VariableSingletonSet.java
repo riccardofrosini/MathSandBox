@@ -12,8 +12,8 @@ public abstract class VariableSingletonSet {
         this.singletons = Set.of((Singleton) this);
     }
 
-    protected VariableSingletonSet(Set<Variable> variables) {
-        this.variables = variables;
+    protected VariableSingletonSet(Variable variables) {
+        this.variables = Set.of(variables);
         this.singletons = Set.of((Singleton) this);
     }
 
