@@ -38,17 +38,17 @@ public class SolutionCounter {
 
     }
 
-    private static Long countSolutionsOfCNFNonSimplified(CNF<?> simplifiedCNF) {
-        Set<CNF<?>> independentConnectedConjuncts = ConnectedVariables.getIndependentConnectedConjuncts((CNF<?>) simplifiedCNF);
+    private static Long countSolutionsOfCNFNonSimplified(CNF<?> cnf) {
+        Set<CNF<?>> independentConnectedConjuncts = ConnectedVariables.getIndependentConnectedConjuncts((CNF<?>) cnf);
         if (independentConnectedConjuncts.size() == 1) {
-            SplitClauses split = SplitClauses.split(simplifiedCNF);
-            CNF<?> cnf = split.getRest();
+            SplitClauses split = SplitClauses.split(cnf);
+            CNF<?> first = split.getRest();
             CNF<?> independentCNF = split.getDisconnectedFromFirst();
-            return countSolutionsOfCNF(cnf) *
+            return countSolutionsOfCNF(first) *
                     (long) Math.pow(2, split.getFirst().getVariables().stream()
-                            .filter(variable -> !cnf.getVariables().contains(variable)).count())
+                            .filter(variable -> !first.getVariables().contains(variable)).count())
                     - countSolutionsOfCNF(independentCNF) *
-                    (long) Math.pow(2, cnf.getVariables().stream()
+                    (long) Math.pow(2, first.getVariables().stream()
                             .filter(variable -> !independentCNF.getVariables().contains(variable) && !split.getFirst().getVariables().contains(variable)).count());
         }
         return independentConnectedConjuncts.stream().mapToLong(SolutionCounter::countSolutionsOfCNF).reduce(1, (left, right) -> left * right);

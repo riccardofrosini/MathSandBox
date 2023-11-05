@@ -80,9 +80,14 @@ public class Main {
                 double probability = Probability.probabilityOfCNF(cnf);
                 long countSolutions = SolutionCounter.countSolutionsOfCNF(cnf);
                 ProbabilityFormulaOfCNF formulaOfCNF = ProbabilityFormula.getFormulaOfCNF(cnf);
-                System.out.println(cnf + " " + probability + " " + countSolutions + " " + ((double) countSolutions / probability));
+                System.out.println(cnf);
                 System.out.println(formulaOfCNF);
-                previous.add(cnf);
+                System.out.println(probability + " " + countSolutions + " " + ((double) countSolutions / probability));
+                probability = formulaOfCNF.getProbability();
+                System.out.println(probability + " " + probability * Math.pow(2, cnf.getVariables().size()));
+                if (probability != 0) {
+                    previous.add(cnf);
+                }
                 CNFs.add(cnf);
             });
         }

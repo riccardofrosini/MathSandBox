@@ -11,12 +11,16 @@ public class ProbabilityFormulaOfDisjunctOfSingletonsOrSingleton extends Probabi
     public static final ProbabilityFormulaOfDisjunctOfSingletonsOrSingleton FALSE = new ProbabilityFormulaOfDisjunctOfSingletonsOrSingleton();
 
     protected ProbabilityFormulaOfDisjunctOfSingletonsOrSingleton() {
-        super(Map.of(Set.of(), 0));
+        super(Map.of(Set.of(), 0L));
     }
 
     protected ProbabilityFormulaOfDisjunctOfSingletonsOrSingleton(DisjunctOfSingletonsOrSingleton disjunctOfSingletonsOrSingleton) {
-        super(Map.of(Set.of(ProbabilityFormulaOfConjunctOfSingletonsOrSingleton.TRUE), 1,
-                Set.of(new ProbabilityFormulaOfConjunctOfSingletonsOrSingleton(ClauseBuilder.buildNegationOfDisjunctOfSingletons(disjunctOfSingletonsOrSingleton))), -1));
+        super(Map.of(Set.of(ProbabilityFormulaOfConjunctOfSingletonsOrSingleton.TRUE), 1L,
+                Set.of(new ProbabilityFormulaOfConjunctOfSingletonsOrSingleton(ClauseBuilder.buildNegationOfDisjunctOfSingletons(disjunctOfSingletonsOrSingleton))), -1L));
+    }
+
+    public double getProbability() {
+        return this == FALSE ? 0.0 : super.getProbability();
     }
 
     @Override

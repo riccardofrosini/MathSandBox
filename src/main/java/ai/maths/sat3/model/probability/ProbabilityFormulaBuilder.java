@@ -34,27 +34,27 @@ public class ProbabilityFormulaBuilder {
         return probabilityFormulaOfCNFS.stream()
                 .filter(probabilityFormulaOfCNF -> probabilityFormulaOfCNF != ProbabilityFormulaOfConjunctOfSingletonsOrSingleton.TRUE)
                 .reduce((probabilityOfCNF1, probabilityOfCNF2) -> new ProbabilityFormulaOfCNF(probabilityOfCNF1.getSumsOfMultiplications()
-                        .flatMap(setIntegerEntry1 -> probabilityOfCNF2.getSumsOfMultiplications()
-                                .flatMap(setIntegerEntry2 -> {
-                                    Set<ProbabilityFormulaOfCNF> probabilityOfCNFS = new HashSet<>(setIntegerEntry1.getKey());
-                                    probabilityOfCNFS.addAll(setIntegerEntry2.getKey());
+                        .flatMap(setLongEntry1 -> probabilityOfCNF2.getSumsOfMultiplications()
+                                .flatMap(setLongEntry2 -> {
+                                    Set<ProbabilityFormulaOfCNF> probabilityOfCNFS = new HashSet<>(setLongEntry1.getKey());
+                                    probabilityOfCNFS.addAll(setLongEntry2.getKey());
                                     if (probabilityOfCNFS.size() == 1) {
-                                        return Map.of(probabilityOfCNFS, setIntegerEntry1.getValue() * setIntegerEntry2.getValue()).entrySet().stream();
+                                        return Map.of(probabilityOfCNFS, setLongEntry1.getValue() * setLongEntry2.getValue()).entrySet().stream();
                                     }
                                     return Map.of(probabilityOfCNFS.stream()
                                             .filter(probabilityOfCNF -> probabilityOfCNF != ProbabilityFormulaOfConjunctOfSingletonsOrSingleton.TRUE)
-                                            .collect(Collectors.toUnmodifiableSet()), setIntegerEntry1.getValue() * setIntegerEntry2.getValue()).entrySet().stream();
+                                            .collect(Collectors.toUnmodifiableSet()), setLongEntry1.getValue() * setLongEntry2.getValue()).entrySet().stream();
                                 }))
-                        .collect(Collectors.toMap(Entry::getKey, Entry::getValue, Integer::sum)))).get();
+                        .collect(Collectors.toMap(Entry::getKey, Entry::getValue, Long::sum)))).get();
     }
 
-    public static ProbabilityFormulaOfCNF buildSumOfProbability(Map<Set<ProbabilityFormulaOfCNF>, Integer> probabilityFormulaOfCNFS) {
+    public static ProbabilityFormulaOfCNF buildSumOfProbability(Map<Set<ProbabilityFormulaOfCNF>, Long> probabilityFormulaOfCNFS) {
         probabilityFormulaOfCNFS = probabilityFormulaOfCNFS.entrySet().stream()
                 .flatMap(probabilityOfCNFEntry -> buildProductOfProbability(probabilityOfCNFEntry.getKey()).getSumsOfMultiplications()
-                        .map(setIntegerEntry -> Map.of(setIntegerEntry.getKey(), setIntegerEntry.getValue() * probabilityOfCNFEntry.getValue()).entrySet().iterator().next()))
-                .collect(Collectors.toMap(Entry::getKey, Entry::getValue, Integer::sum))
+                        .map(setLongEntry -> Map.of(setLongEntry.getKey(), setLongEntry.getValue() * probabilityOfCNFEntry.getValue()).entrySet().iterator().next()))
+                .collect(Collectors.toMap(Entry::getKey, Entry::getValue, Long::sum))
                 .entrySet().stream()
-                .filter(setIntegerEntry -> setIntegerEntry.getValue() != 0)
+                .filter(setLongEntry -> setLongEntry.getValue() != 0)
                 .collect(Collectors.toMap(Entry::getKey, Entry::getValue));
         return new ProbabilityFormulaOfCNF(probabilityFormulaOfCNFS);
     }

@@ -37,10 +37,10 @@ public class Probability {
         return probabilityOfCNFSimplified(clause);
     }
 
-    private static double probabilityOfCNFSimplified(CNF<?> simplifiedCNF) {
-        Set<CNF<?>> independentConnectedConjuncts = ConnectedVariables.getIndependentConnectedConjuncts(simplifiedCNF);
+    private static double probabilityOfCNFSimplified(CNF<?> cnf) {
+        Set<CNF<?>> independentConnectedConjuncts = ConnectedVariables.getIndependentConnectedConjuncts(cnf);
         if (independentConnectedConjuncts.size() == 1) {
-            SplitClauses split = SplitClauses.split(simplifiedCNF);
+            SplitClauses split = SplitClauses.split(cnf);
             return (probabilityOfCNF(split.getRest()) -
                     probabilityOfCNF(split.getDisconnectedFromFirst()) / Math.pow(2, split.getFirst().getVariables().size()));
         }

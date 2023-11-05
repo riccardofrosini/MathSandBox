@@ -9,18 +9,24 @@ import java.util.stream.Stream;
 
 public class ProbabilityFormulaOfCNF {
 
-    private final Map<Set<ProbabilityFormulaOfCNF>, Integer> sumsOfMultiplications;
+    private final Map<Set<ProbabilityFormulaOfCNF>, Long> sumsOfMultiplications;
 
     protected ProbabilityFormulaOfCNF() {
-        this.sumsOfMultiplications = Map.of(Set.of(this), 1);
+        this.sumsOfMultiplications = Map.of(Set.of(this), 1L);
     }
 
-    protected ProbabilityFormulaOfCNF(Map<Set<ProbabilityFormulaOfCNF>, Integer> sumsOfMultiplications) {
+    protected ProbabilityFormulaOfCNF(Map<Set<ProbabilityFormulaOfCNF>, Long> sumsOfMultiplications) {
         this.sumsOfMultiplications = sumsOfMultiplications;
     }
 
-    protected Stream<Entry<Set<ProbabilityFormulaOfCNF>, Integer>> getSumsOfMultiplications() {
+    protected Stream<Entry<Set<ProbabilityFormulaOfCNF>, Long>> getSumsOfMultiplications() {
         return sumsOfMultiplications.entrySet().stream();
+    }
+
+    public double getProbability() {
+        return sumsOfMultiplications.entrySet().stream().mapToDouble(setLongEntry ->
+                setLongEntry.getKey().stream().mapToDouble(ProbabilityFormulaOfCNF::getProbability).reduce((left, right) -> left * right).getAsDouble()
+                        * setLongEntry.getValue()).sum();
     }
 
     @Override
@@ -43,9 +49,9 @@ public class ProbabilityFormulaOfCNF {
     @Override
     public String toString() {
         return "(" + sumsOfMultiplications.entrySet().stream()
-                .map(setIntegerEntry -> (setIntegerEntry.getValue() == 1 || setIntegerEntry.getValue() == -1 ?
-                        (setIntegerEntry.getValue() == -1 ? "- " : "") : setIntegerEntry.getValue() + " ")
-                        + setIntegerEntry.getKey().stream()
+                .map(setLongEntry -> (setLongEntry.getValue() == 1 || setLongEntry.getValue() == -1 ?
+                        (setLongEntry.getValue() == -1 ? "- " : "") : setLongEntry.getValue() + " ")
+                        + setLongEntry.getKey().stream()
                         .map(ProbabilityFormulaOfCNF::toString)
                         .collect(Collectors.joining(" * ")))
                 .collect(Collectors.joining(" + ")) + ")";

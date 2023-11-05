@@ -28,13 +28,13 @@ public class ProbabilityFormula {
         return getFormulaOfCNFNonSimplified(clause);
     }
 
-    private static ProbabilityFormulaOfCNF getFormulaOfCNFNonSimplified(CNF<?> simplifiedCNF) {
-        Set<CNF<?>> independentConnectedConjuncts = ConnectedVariables.getIndependentConnectedConjuncts(simplifiedCNF);
+    private static ProbabilityFormulaOfCNF getFormulaOfCNFNonSimplified(CNF<?> cnf) {
+        Set<CNF<?>> independentConnectedConjuncts = ConnectedVariables.getIndependentConnectedConjuncts(cnf);
         if (independentConnectedConjuncts.size() == 1) {
-            SplitClauses split = SplitClauses.split(simplifiedCNF);
+            SplitClauses split = SplitClauses.split(cnf);
             return ProbabilityFormulaBuilder.buildSumOfProbability(Map.of(
-                    Set.of(getFormulaOfCNF(split.getRest())), 1,
-                    Set.of(getFormulaOfCNF(split.getDisconnectedFromFirst()), getFormulaOfCNF(ClauseBuilder.buildNegationOfDisjunctOfSingletons(split.getFirst()))), -1));
+                    Set.of(getFormulaOfCNF(split.getRest())), 1L,
+                    Set.of(getFormulaOfCNF(split.getDisconnectedFromFirst()), getFormulaOfCNF(ClauseBuilder.buildNegationOfDisjunctOfSingletons(split.getFirst()))), -1L));
         }
         return ProbabilityFormulaBuilder.buildProductOfProbability(independentConnectedConjuncts.stream().map(ProbabilityFormula::getFormulaOfCNF).collect(Collectors.toUnmodifiableSet()));
     }
