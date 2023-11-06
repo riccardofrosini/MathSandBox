@@ -86,8 +86,7 @@ public class Main {
                     ProbabilityFormulaOfCNF formulaOfCNF = ProbabilityFormula.getFormulaOfCNF(cnf);
                     System.out.println(cnf);
                     System.out.println(formulaOfCNF);
-                    long countSolutions = SolutionCounter.countSolutionsOfCNF(cnf);
-                    System.out.println(probability + " " + countSolutions + " " + ((double) countSolutions / probability));
+                    System.out.println(probability + " " + SolutionCounter.countSolutionsOfCNF(cnf));
                     probability = formulaOfCNF.getProbability();
                     System.out.println(probability + " " + probability * Math.pow(2, cnf.getVariables().size()));
                 }
