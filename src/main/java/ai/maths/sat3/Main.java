@@ -52,10 +52,11 @@ public class Main {
             }
 
             HashSet<CNF<?>> newCNFs = new HashSet<>();
+            System.out.println(newDisjuncts.size() + " " + previous.size());
             if (previous.isEmpty()) {
                 for (DisjunctOfSingletonsOrSingleton disjunct : newDisjuncts) {
                     CNF<?> cnf = ClauseBuilder.buildCNF(disjunct);
-                    if (!(cnf instanceof ConjunctOfSingletonsOrSingleton) && (cnf instanceof DisjunctOfSingletonsOrSingleton || ConnectedVariables.getIndependentConnectedConjuncts(cnf).size() == 1)) {
+                    if (!CNFs.contains(cnf) && !(cnf instanceof ConjunctOfSingletonsOrSingleton) && cnf instanceof DisjunctOfSingletonsOrSingleton) {
                         newCNFs.add(cnf);
                     }
                 }
@@ -68,25 +69,27 @@ public class Main {
                         } else {
                             newCNF = ClauseBuilder.buildCNF(disjunct, cnf.getSubClauses().toArray(DisjunctOfSingletonsOrSingleton[]::new));
                         }
-                        if (!(newCNF instanceof ConjunctOfSingletonsOrSingleton) && (newCNF instanceof DisjunctOfSingletonsOrSingleton
-                                || ConnectedVariables.getIndependentConnectedConjuncts(newCNF).size() == 1)) {
+                        if (!CNFs.contains(newCNF) && !(newCNF instanceof ConjunctOfSingletonsOrSingleton) &&
+                                (newCNF instanceof DisjunctOfSingletonsOrSingleton || ConnectedVariables.getIndependentConnectedConjuncts(newCNF).size() == 1)) {
                             newCNFs.add(newCNF);
                         }
                     }
                 }
             }
             previous.clear();
-            newCNFs.stream().filter(cnf -> !CNFs.contains(cnf)).forEach(cnf -> {
+            newCNFs.forEach(cnf -> {
                 double probability = Probability.probabilityOfCNF(cnf);
-                long countSolutions = SolutionCounter.countSolutionsOfCNF(cnf);
-                ProbabilityFormulaOfCNF formulaOfCNF = ProbabilityFormula.getFormulaOfCNF(cnf);
-                System.out.println(cnf);
-                System.out.println(formulaOfCNF);
-                System.out.println(probability + " " + countSolutions + " " + ((double) countSolutions / probability));
-                probability = formulaOfCNF.getProbability();
-                System.out.println(probability + " " + probability * Math.pow(2, cnf.getVariables().size()));
                 if (probability != 0) {
+                    System.out.println(cnf);
                     previous.add(cnf);
+                } else {
+                    ProbabilityFormulaOfCNF formulaOfCNF = ProbabilityFormula.getFormulaOfCNF(cnf);
+                    System.out.println(cnf);
+                    System.out.println(formulaOfCNF);
+                    long countSolutions = SolutionCounter.countSolutionsOfCNF(cnf);
+                    System.out.println(probability + " " + countSolutions + " " + ((double) countSolutions / probability));
+                    probability = formulaOfCNF.getProbability();
+                    System.out.println(probability + " " + probability * Math.pow(2, cnf.getVariables().size()));
                 }
                 CNFs.add(cnf);
             });
