@@ -2,6 +2,7 @@ package ai.maths.sat3;
 
 import java.util.HashSet;
 
+import ai.maths.sat3.model.graph.Graph;
 import ai.maths.sat3.model.probability.ProbabilityFormulaOfCNF;
 import ai.maths.sat3.model.sat3.CNF;
 import ai.maths.sat3.model.sat3.ClauseBuilder;
@@ -17,6 +18,7 @@ public class Main {
 
     public static void main(String[] args) {
         HashSet<CNF<?>> CNFs = new HashSet<>();
+        HashSet<Graph> graphs = new HashSet<Graph>();
         HashSet<Variable> variables = new HashSet<>();
         HashSet<CNF<?>> previous = new HashSet<>();
         for (int varNumbers = 0; varNumbers < 100; varNumbers++) {
@@ -90,6 +92,8 @@ public class Main {
                     probability = formulaOfCNF.getProbability();
                     System.out.println(probability + " " + probability * Math.pow(2, cnf.getVariables().size()));
                 }
+                Graph graph = Graph.buildGraph(cnf);
+                graphs.add(graph);
                 CNFs.add(cnf);
             });
         }

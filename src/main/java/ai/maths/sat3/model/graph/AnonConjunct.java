@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class AnonConjunct {
 
@@ -16,6 +17,10 @@ public class AnonConjunct {
 
     protected void addAnonConjunct(AnonConjunct anonConjunct, Double probability) {
         anonConjuncts.put(anonConjunct, probability);
+    }
+
+    public Stream<Entry<AnonConjunct, Double>> getAnonConjuncts() {
+        return anonConjuncts.entrySet().stream();
     }
 
     @Override

@@ -3,11 +3,11 @@ package ai.maths.sat3.model.graph;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.Objects;
 import java.util.stream.Collectors;
 
 import ai.maths.sat3.model.sat3.CNF;
 import ai.maths.sat3.model.sat3.ClauseBuilder;
+import ai.maths.sat3.model.sat3.DisjunctOfSingletons;
 import ai.maths.sat3.model.sat3.DisjunctOfSingletonsOrSingleton;
 import ai.maths.sat3.probability.Probability;
 
@@ -21,22 +21,27 @@ public class Graph {
 
     public static Graph buildGraph(CNF<?> cnf) {
         Map<DisjunctOfSingletonsOrSingleton, AnonConjunct> disjunctOfSingletonsOrSingletonAnonConjunctsMap = new HashMap<>();
-        cnf.getSubClauses().forEach(
-                disjunctOfSingletonsOrSingleton1 -> {
-                    AnonConjunct anonConjunct1 = disjunctOfSingletonsOrSingletonAnonConjunctsMap.computeIfAbsent(disjunctOfSingletonsOrSingleton1,
-                            k -> new AnonConjunct());
-                    cnf.getSubClauses().forEach(disjunctOfSingletonsOrSingleton2 -> {
-                        AnonConjunct anonConjunct2 = disjunctOfSingletonsOrSingletonAnonConjunctsMap.computeIfAbsent(disjunctOfSingletonsOrSingleton2,
+        if (cnf instanceof DisjunctOfSingletons) {
+            AnonConjunct anonConjunct = new AnonConjunct();
+            disjunctOfSingletonsOrSingletonAnonConjunctsMap.put((DisjunctOfSingletons) cnf, anonConjunct);
+        } else {
+            cnf.getSubClauses().forEach(
+                    disjunctOfSingletonsOrSingleton1 -> {
+                        AnonConjunct anonConjunct1 = disjunctOfSingletonsOrSingletonAnonConjunctsMap.computeIfAbsent(disjunctOfSingletonsOrSingleton1,
                                 k -> new AnonConjunct());
-                        if (anonConjunct1 != anonConjunct2) {
-                            double probabilityOfCNF = Probability.probabilityOfCNF(ClauseBuilder.buildCNF(disjunctOfSingletonsOrSingleton1, disjunctOfSingletonsOrSingleton2));
-                            anonConjunct1.addAnonConjunct(anonConjunct2,
-                                    probabilityOfCNF / Probability.probabilityOfCNF(disjunctOfSingletonsOrSingleton1));
-                            anonConjunct2.addAnonConjunct(anonConjunct1,
-                                    probabilityOfCNF / Probability.probabilityOfCNF(disjunctOfSingletonsOrSingleton2));
-                        }
+                        cnf.getSubClauses().forEach(disjunctOfSingletonsOrSingleton2 -> {
+                            AnonConjunct anonConjunct2 = disjunctOfSingletonsOrSingletonAnonConjunctsMap.computeIfAbsent(disjunctOfSingletonsOrSingleton2,
+                                    k -> new AnonConjunct());
+                            if (anonConjunct1 != anonConjunct2) {
+                                double probabilityOfCNF = Probability.probabilityOfCNF(ClauseBuilder.buildCNF(disjunctOfSingletonsOrSingleton1, disjunctOfSingletonsOrSingleton2));
+                                anonConjunct1.addAnonConjunct(anonConjunct2,
+                                        probabilityOfCNF / Probability.probabilityOfCNF(disjunctOfSingletonsOrSingleton1));
+                                anonConjunct2.addAnonConjunct(anonConjunct1,
+                                        probabilityOfCNF / Probability.probabilityOfCNF(disjunctOfSingletonsOrSingleton2));
+                            }
+                        });
                     });
-                });
+        }
         return new Graph(disjunctOfSingletonsOrSingletonAnonConjunctsMap);
     }
 
@@ -66,6 +71,10 @@ public class Graph {
 
     @Override
     public int hashCode() {
-        return Objects.hash(variableAnonVariableMap);
+        return variableAnonVariableMap.values().stream().
+                mapToInt(value -> value.getAnonConjuncts().mapToInt(probability ->
+                                (int) Math.round(probability.getValue()))
+                        .reduce((left, right) -> left + right * 3).orElse(0)).reduce((left, right) ->
+                        left * right).orElse(0);
     }
 }
