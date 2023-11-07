@@ -1,5 +1,6 @@
 package ai.maths.sat3.model.graph;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -34,6 +35,14 @@ public class AnonConjunct {
                 .map(anonConjunctDoubleEntry -> new Double[]{anonConjunctDoubleEntry.getValue(), anonConjunctDoubleEntry.getKey().anonConjuncts.get(that)})
                 .collect(Collectors.groupingBy(doubles -> doubles)).entrySet().stream()
                 .collect(Collectors.toMap(Entry::getKey, doublesListEntry -> doublesListEntry.getValue().size()));
-        return probabilitiesMap1.equals(probabilitiesMap2);
+        return probabilitiesMap1.entrySet().stream().allMatch(anonConjunctIntegerEntry1 ->
+                probabilitiesMap2.entrySet().stream().anyMatch(anonConjunctIntegerEntry2 ->
+                        Arrays.equals(anonConjunctIntegerEntry1.getKey(), anonConjunctIntegerEntry2.getKey()) &&
+                                anonConjunctIntegerEntry1.getValue().equals(anonConjunctIntegerEntry2.getValue())
+                )) && probabilitiesMap2.entrySet().stream().allMatch(anonConjunctIntegerEntry2 ->
+                probabilitiesMap1.entrySet().stream().anyMatch(anonConjunctIntegerEntry1 ->
+                        Arrays.equals(anonConjunctIntegerEntry2.getKey(), anonConjunctIntegerEntry1.getKey()) &&
+                                anonConjunctIntegerEntry2.getValue().equals(anonConjunctIntegerEntry1.getValue())
+                ));
     }
 }

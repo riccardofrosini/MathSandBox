@@ -53,7 +53,15 @@ public class Graph {
                 .entrySet().stream().collect(Collectors.toMap(Entry::getKey, anonConjunctListEntry -> anonConjunctListEntry.getValue().size()));
         Map<AnonConjunct, Integer> anonConjunctCounterMap2 = graph.variableAnonVariableMap.values().stream().collect(Collectors.groupingBy(anonConjunct -> anonConjunct))
                 .entrySet().stream().collect(Collectors.toMap(Entry::getKey, anonConjunctListEntry -> anonConjunctListEntry.getValue().size()));
-        return Objects.equals(anonConjunctCounterMap1, anonConjunctCounterMap2);
+        return anonConjunctCounterMap1.entrySet().stream().allMatch(anonConjunctIntegerEntry1 ->
+                anonConjunctCounterMap2.entrySet().stream().anyMatch(anonConjunctIntegerEntry2 ->
+                        anonConjunctIntegerEntry1.getKey().equals(anonConjunctIntegerEntry2.getKey()) &&
+                                anonConjunctIntegerEntry1.getValue().equals(anonConjunctIntegerEntry2.getValue())
+                )) && anonConjunctCounterMap2.entrySet().stream().allMatch(anonConjunctIntegerEntry2 ->
+                anonConjunctCounterMap1.entrySet().stream().anyMatch(anonConjunctIntegerEntry1 ->
+                        anonConjunctIntegerEntry2.getKey().equals(anonConjunctIntegerEntry1.getKey()) &&
+                                anonConjunctIntegerEntry2.getValue().equals(anonConjunctIntegerEntry1.getValue())
+                ));
     }
 
     @Override
