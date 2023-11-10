@@ -22,6 +22,9 @@ public class AnonConjunct {
     public Stream<Entry<AnonConjunct, Double>> getAnonConjuncts() {
         return anonConjuncts.entrySet().stream();
     }
+    public Double getProbabilityOfAnonConjunctGivenThisAnonConjunct(AnonConjunct anonConjunct){
+        return anonConjuncts.get(anonConjunct);
+    }
 
     @Override
     public boolean equals(Object o) {

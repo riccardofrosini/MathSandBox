@@ -1,15 +1,15 @@
 package ai.maths.sat3.model.graph;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.stream.Collectors;
-
 import ai.maths.sat3.model.sat3.CNF;
 import ai.maths.sat3.model.sat3.ClauseBuilder;
 import ai.maths.sat3.model.sat3.DisjunctOfSingletons;
 import ai.maths.sat3.model.sat3.DisjunctOfSingletonsOrSingleton;
 import ai.maths.sat3.probability.Probability;
+
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.stream.Collectors;
 
 public class Graph {
 
@@ -76,5 +76,16 @@ public class Graph {
                                 (int) Math.round(probability.getValue()))
                         .reduce((left, right) -> left + right * 3).orElse(0)).reduce((left, right) ->
                         left * right).orElse(0);
+    }
+
+    @Override
+    public String toString() {
+        return variableAnonVariableMap.values().stream()
+                .map(anonConjunct ->
+                        anonConjunct.hashCode() + " " + anonConjunct.getAnonConjuncts()
+                                .map(anonConjunctDoubleEntry ->
+                                        anonConjunctDoubleEntry.getKey().hashCode() + " " + anonConjunctDoubleEntry.getValue() + " " + anonConjunctDoubleEntry.getKey().getProbabilityOfAnonConjunctGivenThisAnonConjunct(anonConjunct))
+                                .collect(Collectors.joining("\n|\t\t", "\n|\t\t", "")))
+                .collect(Collectors.joining("\n\t", "\t", ""));
     }
 }

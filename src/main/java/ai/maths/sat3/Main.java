@@ -1,18 +1,14 @@
 package ai.maths.sat3;
 
-import java.util.HashSet;
-
 import ai.maths.sat3.model.graph.Graph;
 import ai.maths.sat3.model.probability.ProbabilityFormulaOfCNF;
-import ai.maths.sat3.model.sat3.CNF;
-import ai.maths.sat3.model.sat3.ClauseBuilder;
-import ai.maths.sat3.model.sat3.ConjunctOfSingletonsOrSingleton;
-import ai.maths.sat3.model.sat3.DisjunctOfSingletonsOrSingleton;
-import ai.maths.sat3.model.sat3.Variable;
+import ai.maths.sat3.model.sat3.*;
 import ai.maths.sat3.probability.ConnectedVariables;
 import ai.maths.sat3.probability.Probability;
 import ai.maths.sat3.probability.ProbabilityFormula;
 import ai.maths.sat3.probability.SolutionCounter;
+
+import java.util.HashSet;
 
 public class Main {
 
@@ -93,6 +89,7 @@ public class Main {
                     System.out.println(probability + " " + probability * Math.pow(2, cnf.getVariables().size()));
                 }
                 Graph graph = Graph.buildGraph(cnf);
+                System.out.println(graph);
                 graphs.add(graph);
                 CNFs.add(cnf);
             });
