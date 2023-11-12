@@ -1,29 +1,21 @@
 package ai.maths.sat3.model.graph;
 
-import java.util.Arrays;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 public class AnonConjunct {
 
-    private final Map<AnonConjunct, Double> anonConjuncts;
+    private final Map<InOutProbabilities, List<AnonConjunct>> anonConjuncts;
 
     protected AnonConjunct() {
         this.anonConjuncts = new HashMap<>();
     }
 
-    protected void addAnonConjunct(AnonConjunct anonConjunct, Double probability) {
-        anonConjuncts.put(anonConjunct, probability);
-    }
-
-    public Stream<Entry<AnonConjunct, Double>> getAnonConjuncts() {
-        return anonConjuncts.entrySet().stream();
-    }
-    public Double getProbabilityOfAnonConjunctGivenThisAnonConjunct(AnonConjunct anonConjunct){
-        return anonConjuncts.get(anonConjunct);
+    protected void addAnonConjunct(AnonConjunct anonConjunct, double out, double in) {
+        anonConjuncts.computeIfAbsent(new InOutProbabilities(out, in), inOutProbabilities -> new ArrayList<>()).add(anonConjunct);
     }
 
     @Override
@@ -35,22 +27,66 @@ public class AnonConjunct {
             return false;
         }
         AnonConjunct that = (AnonConjunct) o;
-        Map<Double[], Integer> probabilitiesMap1 = anonConjuncts.entrySet().stream()
-                .map(anonConjunctDoubleEntry -> new Double[]{anonConjunctDoubleEntry.getValue(), anonConjunctDoubleEntry.getKey().anonConjuncts.get(this)})
-                .collect(Collectors.groupingBy(doubles -> doubles)).entrySet().stream()
-                .collect(Collectors.toMap(Entry::getKey, doublesListEntry -> doublesListEntry.getValue().size()));
-        Map<Double[], Integer> probabilitiesMap2 = that.anonConjuncts.entrySet().stream()
-                .map(anonConjunctDoubleEntry -> new Double[]{anonConjunctDoubleEntry.getValue(), anonConjunctDoubleEntry.getKey().anonConjuncts.get(that)})
-                .collect(Collectors.groupingBy(doubles -> doubles)).entrySet().stream()
-                .collect(Collectors.toMap(Entry::getKey, doublesListEntry -> doublesListEntry.getValue().size()));
-        return probabilitiesMap1.entrySet().stream().allMatch(anonConjunctIntegerEntry1 ->
-                probabilitiesMap2.entrySet().stream().anyMatch(anonConjunctIntegerEntry2 ->
-                        Arrays.equals(anonConjunctIntegerEntry1.getKey(), anonConjunctIntegerEntry2.getKey()) &&
-                                anonConjunctIntegerEntry1.getValue().equals(anonConjunctIntegerEntry2.getValue())
-                )) && probabilitiesMap2.entrySet().stream().allMatch(anonConjunctIntegerEntry2 ->
-                probabilitiesMap1.entrySet().stream().anyMatch(anonConjunctIntegerEntry1 ->
-                        Arrays.equals(anonConjunctIntegerEntry2.getKey(), anonConjunctIntegerEntry1.getKey()) &&
-                                anonConjunctIntegerEntry2.getValue().equals(anonConjunctIntegerEntry1.getValue())
-                ));
+        return anonConjuncts.entrySet().stream().allMatch(inOutProbabilitiesListEntry1 ->
+                that.anonConjuncts.entrySet().stream().anyMatch(inOutProbabilitiesListEntry2 ->
+                        inOutProbabilitiesListEntry1.getKey().equals(inOutProbabilitiesListEntry2.getKey()) &&
+                                inOutProbabilitiesListEntry1.getValue().size() == inOutProbabilitiesListEntry2.getValue().size())) &&
+                that.anonConjuncts.entrySet().stream().allMatch(inOutProbabilitiesListEntry1 ->
+                        anonConjuncts.entrySet().stream().anyMatch(inOutProbabilitiesListEntry2 ->
+                                inOutProbabilitiesListEntry1.getKey().equals(inOutProbabilitiesListEntry2.getKey()) &&
+                                        inOutProbabilitiesListEntry1.getValue().size() == inOutProbabilitiesListEntry2.getValue().size()));
+    }
+
+    @Override
+    public int hashCode() {
+        return anonConjuncts.entrySet().stream()
+                .mapToInt(value -> value.getKey().hashCode() * value.getValue().size())
+                .reduce(1, (left, right) -> left * right);
+    }
+
+    @Override
+    public String toString() {
+        return hashCode() + " " + anonConjuncts.entrySet().stream()
+                .map(inOutProbabilitiesListEntry -> inOutProbabilitiesListEntry.getValue().stream()
+                        .map(anonConjunct -> anonConjunct.hashCode() + " " + inOutProbabilitiesListEntry.getKey().out + " " + inOutProbabilitiesListEntry.getKey().in)
+                        .collect(Collectors.joining("\n|\t\t", "\n|\t\t", "")))
+                .collect(Collectors.joining(""));
+    }
+
+
+    public static class InOutProbabilities {
+
+        private final double out;
+        private final double in;
+
+        public InOutProbabilities(double out, double in) {
+            this.out = out;
+            this.in = in;
+        }
+
+        public double getOut() {
+            return out;
+        }
+
+        public double getIn() {
+            return in;
+        }
+
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) {
+                return true;
+            }
+            if (o == null || getClass() != o.getClass()) {
+                return false;
+            }
+            InOutProbabilities that = (InOutProbabilities) o;
+            return that.out == out && that.in == in;
+        }
+
+        @Override
+        public int hashCode() {
+            return (int) Math.round(out * 8191 - in * 127);
+        }
     }
 }

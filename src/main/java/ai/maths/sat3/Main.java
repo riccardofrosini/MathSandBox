@@ -1,20 +1,24 @@
 package ai.maths.sat3;
 
+import java.util.HashSet;
+
 import ai.maths.sat3.model.graph.Graph;
 import ai.maths.sat3.model.probability.ProbabilityFormulaOfCNF;
-import ai.maths.sat3.model.sat3.*;
+import ai.maths.sat3.model.sat3.CNF;
+import ai.maths.sat3.model.sat3.ClauseBuilder;
+import ai.maths.sat3.model.sat3.ConjunctOfSingletonsOrSingleton;
+import ai.maths.sat3.model.sat3.DisjunctOfSingletonsOrSingleton;
+import ai.maths.sat3.model.sat3.Variable;
 import ai.maths.sat3.probability.ConnectedVariables;
 import ai.maths.sat3.probability.Probability;
 import ai.maths.sat3.probability.ProbabilityFormula;
 import ai.maths.sat3.probability.SolutionCounter;
 
-import java.util.HashSet;
-
 public class Main {
 
     public static void main(String[] args) {
         HashSet<CNF<?>> CNFs = new HashSet<>();
-        HashSet<Graph> graphs = new HashSet<Graph>();
+        HashSet<Graph> graphs = new HashSet<>();
         HashSet<Variable> variables = new HashSet<>();
         HashSet<CNF<?>> previous = new HashSet<>();
         for (int varNumbers = 0; varNumbers < 100; varNumbers++) {
@@ -78,19 +82,19 @@ public class Main {
             newCNFs.forEach(cnf -> {
                 double probability = Probability.probabilityOfCNF(cnf);
                 if (probability != 0) {
-                    System.out.println(cnf);
                     previous.add(cnf);
-                } else {
-                    ProbabilityFormulaOfCNF formulaOfCNF = ProbabilityFormula.getFormulaOfCNF(cnf);
-                    System.out.println(cnf);
-                    System.out.println(formulaOfCNF);
-                    System.out.println(probability + " " + SolutionCounter.countSolutionsOfCNF(cnf));
-                    probability = formulaOfCNF.getProbability();
-                    System.out.println(probability + " " + probability * Math.pow(2, cnf.getVariables().size()));
                 }
+                ProbabilityFormulaOfCNF formulaOfCNF = ProbabilityFormula.getFormulaOfCNF(cnf);
+                System.out.println(cnf);
+                System.out.println(formulaOfCNF);
+                System.out.println(probability + " " + SolutionCounter.countSolutionsOfCNF(cnf));
+                probability = formulaOfCNF.getProbability();
+                System.out.println(probability + " " + probability * Math.pow(2, cnf.getVariables().size()));
+
                 Graph graph = Graph.buildGraph(cnf);
-                System.out.println(graph);
-                graphs.add(graph);
+                if (graphs.add(graph)) {
+                    System.out.println(graph);
+                }
                 CNFs.add(cnf);
             });
         }

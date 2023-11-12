@@ -50,7 +50,7 @@ public class ProbabilityFormulaOfCNF {
     public String toString() {
         return "(" + sumsOfMultiplications.entrySet().stream()
                 .map(setLongEntry -> (setLongEntry.getValue() == 1 || setLongEntry.getValue() == -1 ?
-                        (setLongEntry.getValue() == -1 ? "- " : "") : setLongEntry.getValue() + " ")
+                        (setLongEntry.getValue() == -1 ? "-" : "") : setLongEntry.getValue() + " ")
                         + setLongEntry.getKey().stream()
                         .map(ProbabilityFormulaOfCNF::toString)
                         .collect(Collectors.joining(" * ")))
