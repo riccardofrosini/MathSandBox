@@ -70,7 +70,7 @@ public class Graph {
     public int hashCode() {
         return variableAnonVariableMap.values().stream()
                 .mapToInt(AnonConjunct::hashCode)
-                .reduce(1, (left, right) -> left * right) * (int) Math.pow(2, variables);
+                .reduce((int) Math.pow(2, variables), (left, right) -> left * right);
     }
 
     @Override
