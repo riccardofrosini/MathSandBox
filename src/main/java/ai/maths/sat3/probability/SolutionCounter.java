@@ -21,10 +21,10 @@ public class SolutionCounter {
             return 1;
         }
         if (clause instanceof NegVariable) {
-            return (long) Math.pow(2, clause.getVariables().size()) - countSolutionsOfCNF(((NegVariable) clause).getNegatedClause());
+            return (1L << clause.getVariables().size()) - countSolutionsOfCNF(((NegVariable) clause).getNegatedClause());
         }
         if (clause instanceof DisjunctOfSingletons) {
-            return (long) Math.pow(2, clause.getVariables().size()) - 1;
+            return (1L << clause.getVariables().size()) - 1;
         }
         if (clause instanceof ConjunctOfSingletons) {
             return 1;
@@ -32,7 +32,7 @@ public class SolutionCounter {
         SimplifyCNF simplifiedCNF = SimplifyCNF.simplify(clause);
         if (simplifiedCNF.getSimplifiedCnf() != clause) {
             return countSolutionsOfCNF(simplifiedCNF.getSimplifiedCnf())
-                    * (long) Math.pow(2, simplifiedCNF.getLostVariablesNotGiven().size());
+                    * (1L << simplifiedCNF.getLostVariablesNotGiven().size());
         }
         return countSolutionsOfCNFNonSimplified(clause);
 
@@ -45,10 +45,10 @@ public class SolutionCounter {
             CNF<?> first = split.getRest();
             CNF<?> independentCNF = split.getDisconnectedFromFirst();
             return countSolutionsOfCNF(first) *
-                    (long) Math.pow(2, split.getFirst().getVariables().stream()
+                    (1L << split.getFirst().getVariables().stream()
                             .filter(variable -> !first.getVariables().contains(variable)).count())
                     - countSolutionsOfCNF(independentCNF) *
-                    (long) Math.pow(2, first.getVariables().stream()
+                    (1L << first.getVariables().stream()
                             .filter(variable -> !independentCNF.getVariables().contains(variable) && !split.getFirst().getVariables().contains(variable)).count());
         }
         return independentConnectedConjuncts.stream().mapToLong(SolutionCounter::countSolutionsOfCNF).reduce(1, (left, right) -> left * right);

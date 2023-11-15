@@ -89,16 +89,17 @@ public class Main {
                 graphs.computeIfAbsent(Graph.buildGraph(cnf), graph -> new HashSet<>()).add(cnf);
                 CNFs.add(cnf);
             });
+
+            graphs.entrySet().stream().filter(graphHashSetEntry -> graphHashSetEntry.getValue().stream()
+                            .map(Probability::probabilityOfCNF)
+                            .collect(Collectors.groupingBy(o -> o)).size() > 1)
+                    .forEach(hashSetEntry ->
+                            System.out.println(hashSetEntry.getKey()
+                                    + "\n CNFs: " + hashSetEntry.getValue().stream()
+                                    .map(cnf -> {
+                                        double probability = Probability.probabilityOfCNF(cnf);
+                                        return cnf + " " + probability + " " + (1L << cnf.getVariables().size()) * probability;
+                                    }).collect(Collectors.joining("\n\t", "\n\t", ""))));
         }
-        graphs.entrySet().stream().filter(graphHashSetEntry -> graphHashSetEntry.getValue().stream()
-                        .map(Probability::probabilityOfCNF)
-                        .collect(Collectors.groupingBy(o -> o)).size() > 1)
-                .forEach(hashSetEntry ->
-                        System.out.println(hashSetEntry.getKey()
-                                + "\n CNFs: " + hashSetEntry.getValue().stream()
-                                .map(cnf -> {
-                                    double probability = Probability.probabilityOfCNF(cnf);
-                                    return cnf + " " + probability + " " + (Math.pow(2, cnf.getVariables().size()) * probability);
-                                }).collect(Collectors.joining("\n\t", "\n\t", ""))));
     }
 }

@@ -16,8 +16,8 @@ public class AnonConjunct {
         this.variables = variables;
     }
 
-    protected void addAnonConjunct(AnonConjunct anonConjunct, double out, double in) {
-        anonConjuncts.computeIfAbsent(new InOutProbabilities(out, in, variables, anonConjunct.variables), inOutProbabilities -> new ArrayList<>()).add(anonConjunct);
+    protected void addAnonConjunct(AnonConjunct anonConjunct, int variablesInCommon, double out, double in) {
+        anonConjuncts.computeIfAbsent(new InOutProbabilities(out, in, variablesInCommon, anonConjunct.variables), inOutProbabilities -> new ArrayList<>()).add(anonConjunct);
     }
 
     @Override
@@ -44,7 +44,7 @@ public class AnonConjunct {
     public int hashCode() {
         return anonConjuncts.entrySet().stream()
                 .mapToInt(value -> value.getKey().hashCode() * value.getValue().size())
-                .reduce((int) Math.pow(2, variables), (left, right) -> left * right);
+                .reduce(1 << variables, (left, right) -> left * right);
     }
 
     @Override
@@ -61,13 +61,13 @@ public class AnonConjunct {
 
         private final double out;
         private final double in;
-        private final int outVariables;
+        private final int outVariablesInCommon;
         private final int inVariables;
 
-        public InOutProbabilities(double out, double in, int outVariables, int inVariables) {
+        public InOutProbabilities(double out, double in, int outVariablesInCommon, int inVariables) {
             this.out = out;
             this.in = in;
-            this.outVariables = outVariables;
+            this.outVariablesInCommon = outVariablesInCommon;
             this.inVariables = inVariables;
         }
 
@@ -89,12 +89,12 @@ public class AnonConjunct {
             }
             InOutProbabilities that = (InOutProbabilities) o;
             return that.out == out && that.in == in &&
-                    that.outVariables == outVariables && that.inVariables == inVariables;
+                    that.outVariablesInCommon == outVariablesInCommon && that.inVariables == inVariables;
         }
 
         @Override
         public int hashCode() {
-            return (int) Math.round(out * 8191 * outVariables - in * 127 * inVariables);
+            return (int) Math.round(out * 8191 * outVariablesInCommon - in * 127 * inVariables);
         }
     }
 }

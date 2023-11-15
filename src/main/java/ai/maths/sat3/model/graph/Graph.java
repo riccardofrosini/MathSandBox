@@ -36,7 +36,9 @@ public class Graph {
                                     k -> new AnonConjunct(k.getVariables().size()));
                             if (anonConjunct1 != anonConjunct2) {
                                 double probabilityOfCNF = Probability.probabilityOfCNF(ClauseBuilder.buildCNF(disjunctOfSingletonsOrSingleton1, disjunctOfSingletonsOrSingleton2));
-                                anonConjunct1.addAnonConjunct(anonConjunct2,
+                                long count = disjunctOfSingletonsOrSingleton1.getVariables().stream().filter(variable -> disjunctOfSingletonsOrSingleton2.getVariables().contains(variable))
+                                        .count();
+                                anonConjunct1.addAnonConjunct(anonConjunct2, (int) count,
                                         probabilityOfCNF / Probability.probabilityOfCNF(disjunctOfSingletonsOrSingleton1),
                                         probabilityOfCNF / Probability.probabilityOfCNF(disjunctOfSingletonsOrSingleton2));
                             }
@@ -70,7 +72,7 @@ public class Graph {
     public int hashCode() {
         return variableAnonVariableMap.values().stream()
                 .mapToInt(AnonConjunct::hashCode)
-                .reduce((int) Math.pow(2, variables), (left, right) -> left * right);
+                .reduce(1 << variables, (left, right) -> left * right);
     }
 
     @Override

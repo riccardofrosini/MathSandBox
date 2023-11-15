@@ -18,7 +18,7 @@ public class ProbabilityFormulaOfConjunctOfSingletonsOrSingleton extends Probabi
     }
 
     public double getProbability() {
-        return this == TRUE ? 1.0 : 1 / Math.pow(2, conjunctOfSingletonsOrSingleton.getVariables().size());
+        return this == TRUE ? 1.0 : 1.0 / (1L << conjunctOfSingletonsOrSingleton.getVariables().size());
     }
 
     @Override
