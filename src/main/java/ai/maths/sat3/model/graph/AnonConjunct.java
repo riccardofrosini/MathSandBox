@@ -9,13 +9,15 @@ import java.util.stream.Collectors;
 public class AnonConjunct {
 
     private final Map<InOutProbabilities, List<AnonConjunct>> anonConjuncts;
+    private final int variables;
 
-    protected AnonConjunct() {
+    protected AnonConjunct(int variables) {
         this.anonConjuncts = new HashMap<>();
+        this.variables = variables;
     }
 
     protected void addAnonConjunct(AnonConjunct anonConjunct, double out, double in) {
-        anonConjuncts.computeIfAbsent(new InOutProbabilities(out, in), inOutProbabilities -> new ArrayList<>()).add(anonConjunct);
+        anonConjuncts.computeIfAbsent(new InOutProbabilities(out, in, variables, anonConjunct.variables), inOutProbabilities -> new ArrayList<>()).add(anonConjunct);
     }
 
     @Override
@@ -27,10 +29,11 @@ public class AnonConjunct {
             return false;
         }
         AnonConjunct that = (AnonConjunct) o;
-        return anonConjuncts.entrySet().stream().allMatch(inOutProbabilitiesListEntry1 ->
-                that.anonConjuncts.entrySet().stream().anyMatch(inOutProbabilitiesListEntry2 ->
-                        inOutProbabilitiesListEntry1.getKey().equals(inOutProbabilitiesListEntry2.getKey()) &&
-                                inOutProbabilitiesListEntry1.getValue().size() == inOutProbabilitiesListEntry2.getValue().size())) &&
+        return variables == that.variables &&
+                anonConjuncts.entrySet().stream().allMatch(inOutProbabilitiesListEntry1 ->
+                        that.anonConjuncts.entrySet().stream().anyMatch(inOutProbabilitiesListEntry2 ->
+                                inOutProbabilitiesListEntry1.getKey().equals(inOutProbabilitiesListEntry2.getKey()) &&
+                                        inOutProbabilitiesListEntry1.getValue().size() == inOutProbabilitiesListEntry2.getValue().size())) &&
                 that.anonConjuncts.entrySet().stream().allMatch(inOutProbabilitiesListEntry1 ->
                         anonConjuncts.entrySet().stream().anyMatch(inOutProbabilitiesListEntry2 ->
                                 inOutProbabilitiesListEntry1.getKey().equals(inOutProbabilitiesListEntry2.getKey()) &&
@@ -41,7 +44,7 @@ public class AnonConjunct {
     public int hashCode() {
         return anonConjuncts.entrySet().stream()
                 .mapToInt(value -> value.getKey().hashCode() * value.getValue().size())
-                .reduce(1, (left, right) -> left * right);
+                .reduce((int) Math.pow(2, variables), (left, right) -> left * right);
     }
 
     @Override
@@ -58,10 +61,14 @@ public class AnonConjunct {
 
         private final double out;
         private final double in;
+        private final int outVariables;
+        private final int inVariables;
 
-        public InOutProbabilities(double out, double in) {
+        public InOutProbabilities(double out, double in, int outVariables, int inVariables) {
             this.out = out;
             this.in = in;
+            this.outVariables = outVariables;
+            this.inVariables = inVariables;
         }
 
         public double getOut() {
@@ -81,12 +88,13 @@ public class AnonConjunct {
                 return false;
             }
             InOutProbabilities that = (InOutProbabilities) o;
-            return that.out == out && that.in == in;
+            return that.out == out && that.in == in &&
+                    that.outVariables == outVariables && that.inVariables == inVariables;
         }
 
         @Override
         public int hashCode() {
-            return (int) Math.round(out * 8191 - in * 127);
+            return (int) Math.round(out * 8191 * outVariables - in * 127 * inVariables);
         }
     }
 }

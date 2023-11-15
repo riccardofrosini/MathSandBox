@@ -1,9 +1,10 @@
 package ai.maths.sat3;
 
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.stream.Collectors;
 
 import ai.maths.sat3.model.graph.Graph;
-import ai.maths.sat3.model.probability.ProbabilityFormulaOfCNF;
 import ai.maths.sat3.model.sat3.CNF;
 import ai.maths.sat3.model.sat3.ClauseBuilder;
 import ai.maths.sat3.model.sat3.ConjunctOfSingletonsOrSingleton;
@@ -11,17 +12,15 @@ import ai.maths.sat3.model.sat3.DisjunctOfSingletonsOrSingleton;
 import ai.maths.sat3.model.sat3.Variable;
 import ai.maths.sat3.probability.ConnectedVariables;
 import ai.maths.sat3.probability.Probability;
-import ai.maths.sat3.probability.ProbabilityFormula;
-import ai.maths.sat3.probability.SolutionCounter;
 
 public class Main {
 
     public static void main(String[] args) {
         HashSet<CNF<?>> CNFs = new HashSet<>();
-        HashSet<Graph> graphs = new HashSet<>();
+        HashMap<Graph, HashSet<CNF<?>>> graphs = new HashMap<>();
         HashSet<Variable> variables = new HashSet<>();
         HashSet<CNF<?>> previous = new HashSet<>();
-        for (int varNumbers = 0; varNumbers < 100; varNumbers++) {
+        for (int varNumbers = 0; varNumbers < 5; varNumbers++) {
             variables.add(ClauseBuilder.buildVariable("x" + varNumbers));
             HashSet<DisjunctOfSingletonsOrSingleton> newDisjuncts = new HashSet<>();
             for (Variable variable1 : variables) {
@@ -84,19 +83,22 @@ public class Main {
                 if (probability != 0) {
                     previous.add(cnf);
                 }
-                ProbabilityFormulaOfCNF formulaOfCNF = ProbabilityFormula.getFormulaOfCNF(cnf);
-                System.out.println(cnf);
-                System.out.println(formulaOfCNF);
-                System.out.println(probability + " " + SolutionCounter.countSolutionsOfCNF(cnf));
-                probability = formulaOfCNF.getProbability();
-                System.out.println(probability + " " + probability * Math.pow(2, cnf.getVariables().size()));
-
-                Graph graph = Graph.buildGraph(cnf);
-                if (graphs.add(graph)) {
-                    System.out.println(graph);
-                }
+                //System.out.println(cnf);
+                //ProbabilityFormulaOfCNF formulaOfCNF = ProbabilityFormula.getFormulaOfCNF(cnf);
+                //System.out.println(formulaOfCNF + " " + probability + " " + SolutionCounter.countSolutionsOfCNF(cnf));
+                graphs.computeIfAbsent(Graph.buildGraph(cnf), graph -> new HashSet<>()).add(cnf);
                 CNFs.add(cnf);
             });
         }
+        graphs.entrySet().stream().filter(graphHashSetEntry -> graphHashSetEntry.getValue().stream()
+                        .map(Probability::probabilityOfCNF)
+                        .collect(Collectors.groupingBy(o -> o)).size() > 1)
+                .forEach(hashSetEntry ->
+                        System.out.println(hashSetEntry.getKey()
+                                + "\n CNFs: " + hashSetEntry.getValue().stream()
+                                .map(cnf -> {
+                                    double probability = Probability.probabilityOfCNF(cnf);
+                                    return cnf + " " + probability + " " + (Math.pow(2, cnf.getVariables().size()) * probability);
+                                }).collect(Collectors.joining("\n\t", "\n\t", ""))));
     }
 }
