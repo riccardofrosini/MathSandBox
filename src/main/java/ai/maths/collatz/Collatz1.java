@@ -22,12 +22,17 @@ public class Collatz1 {
         while (s <= e) {
             //System.out.print((((double) s / graph.get(s)) / ((double) e / graph.get(e))) + " " + ((double) (3 + 3 * (s-1)) / (4 + 3 * (s-1))) + " ");
             System.out.print((((double) s / graph.get(s)) / ((double) e / graph.get(e))) - ((double) (3 + 3 * (s - 1)) / (4 + 3 * (s - 1))));
-            System.out.print(" " + (((((double) s / graph.get(s)) / ((double) e / graph.get(e))) - ((double) (3 + 3 * (s - 1)) / (4 + 3 * (s - 1)))) < 1));
+            System.out.print(" ");
+            System.out.print(((((double) s / graph.get(s)) / ((double) e / graph.get(e))) - ((double) (3 + 3 * (s - 1)) / (4 + 3 * (s - 1)))) < 1);
             System.out.print(" ");
             s = s + 2;
             e = e - 2;
         }
 
+        plotGraph(maxIter, graph);
+    }
+
+    private static void plotGraph(long maxIter, HashMap<Long, Long> graph) {
         final XYSeriesDemo demo = new XYSeriesDemo();
 
         for (long i = 1; i <= maxIter; i += 2) {
