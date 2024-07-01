@@ -22,7 +22,7 @@ class XYSeriesDemo extends ApplicationFrame {
     void postProcess() {
         final XYSeriesCollection data = new XYSeriesCollection(series);
         final JFreeChart chart = ChartFactory.createXYLineChart(
-                "Node division",
+                "Collatz",
                 "X",
                 "Y",
                 data,
