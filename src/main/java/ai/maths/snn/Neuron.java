@@ -5,6 +5,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.PipedInputStream;
 import java.io.PipedOutputStream;
+import java.util.ArrayList;
 import java.util.HashMap;
 
 import ai.maths.neat.utils.RandomUtils;
@@ -50,10 +51,14 @@ public class Neuron<T extends InputStream> implements Runnable {
                     if ((connected.size() < 2 || growth > 1) && RandomUtils.getRandomInt(ConfigAndUtils.REPRODUCTION_PROBABILITY_1_OUT_OF) < 1) {
                         reproduce();
                     }
-                    if (growth > 2 && RandomUtils.getRandomInt(ConfigAndUtils.CONNECTION_PROBABILITY_1_OUT_OF) < 1) {
-                        connected.keySet().stream().flatMap(neuron -> neuron.connected.keySet().stream())
-                                .filter(neuron -> !connected.containsKey(neuron) && neuron != this).findAny()
-                                .ifPresent(this::connect);
+                    if (connected.size() > 2 && RandomUtils.getRandomInt(ConfigAndUtils.CONNECTION_PROBABILITY_1_OUT_OF) < 1) {
+                        ArrayList<Neuron<PipedInputStream>> neurons = new ArrayList<>(connected.keySet());
+                        int randomInt = RandomUtils.getRandomInt(neurons.size());
+                        Neuron<PipedInputStream> n1 = neurons.get(randomInt);
+                        Neuron<PipedInputStream> n2 = neurons.get((randomInt + RandomUtils.getRandomInt(neurons.size() - 1) + 1) % neurons.size());
+                        if (!n1.connected.containsKey(n2) && !n2.connected.containsKey(n1)) {
+                            n1.connect(n2);
+                        }
                     }
                     if (newFloatSignal >= growth * connected.size()) {
                         growth = growth * ConfigAndUtils.INCREASE;
