@@ -5,12 +5,13 @@ import java.util.function.Function;
 public class Collatz1 {
 
     private static int steps = 2;
-    private static int maxiPowIter = 29;
+    private static int maxiPowIter = 24;
 
     public static void main(String[] args) {
         long maxIter = getEndOfSymmetry(maxiPowIter);
         System.out.println(maxIter);
         printStatsInternal(maxiPowIter);
+        printStatsExternal(maxiPowIter);
         plotGraph(maxIter, aLong -> (double) aLong / getNextValue(aLong));
     }
 
@@ -19,23 +20,28 @@ public class Collatz1 {
         long e = getEndOfSymmetryOfTwoAdjacentCentersOfSymmetry(maxiPowIter);
         long v = 1;
         while (s <= e) {
-            double difference = ((double) e / getNextValue(e)) - ((double) s / getNextValue(s));
-            double ratio = (((double) s / getNextValue(s)) / ((double) e / getNextValue(e)));
-            double estimateRatio = getEstimatedRatioInternal(v);
-            double error = ratio - estimateRatio;
-            System.out.print("Values : ");
-            System.out.print(s + " " + getNextValue(s) + " " + e + " " + getNextValue(e));
-            System.out.print(" Difference: ");
-            System.out.print(difference);
-            System.out.print(", Ratio: ");
-            System.out.print(ratio);
-            System.out.print(", Estimate Ratio: ");
-            System.out.print(estimateRatio);
-            System.out.print(", Error: ");
-            System.out.print(error);
-            System.out.print(", Error less than 1: ");
-            System.out.print(error < 1);
-            System.out.println();
+            long batch_index = v % 100000000000L;
+            if (batch_index >= 1 && batch_index <= 100) {
+                long nextS = getNextValue(s);
+                long nextE = getNextValue(e);
+                double difference = ((double) e / nextE) - ((double) s / nextS);
+                double ratio = (((double) s / nextS) / ((double) e / nextE));
+                double estimateRatio = getEstimatedRatioInternal(v);
+                double error = Math.abs(ratio - estimateRatio);
+                System.out.print("Values : ");
+                System.out.print(s + " " + nextS + " " + e + " " + nextE);
+                System.out.print(" Difference: ");
+                System.out.print(difference);
+                System.out.print(", Ratio: ");
+                System.out.print(ratio);
+                System.out.print(", Estimate Ratio: ");
+                System.out.print(estimateRatio);
+                System.out.print(", Error: ");
+                System.out.print(error);
+                System.out.print(", Error less than 1: ");
+                System.out.print(error < 1);
+                System.out.println();
+            }
             s += steps;
             e -= steps;
             v += steps;
@@ -46,23 +52,27 @@ public class Collatz1 {
         long s = 1;
         long e = getEndOfSymmetry(maxiPowIter);
         while (s <= e) {
-            double difference = ((double) e / getNextValue(e)) - ((double) s / getNextValue(s));
-            double ratio = (((double) s / getNextValue(s)) / ((double) e / getNextValue(e)));
-            double estimateRatio = getEstimatedRatioExternal(s);
-            double error = ratio - estimateRatio;
-            System.out.print("Values : ");
-            System.out.print(s + " " + getNextValue(s) + " " + e + " " + getNextValue(e));
-            System.out.print(" Difference: ");
-            System.out.print(difference);
-            System.out.print(", Ratio: ");
-            System.out.print(ratio);
-            System.out.print(", Estimate Ratio: ");
-            System.out.print(estimateRatio);
-            System.out.print(", Error: ");
-            System.out.print(error);
-            System.out.print(", Error less than 1: ");
-            System.out.print(error < 1);
-            System.out.println();
+            if (s % 100000000 >= 1 && s % 100000000 <= 100) {
+                long nextS = getNextValue(s);
+                long nextE = getNextValue(e);
+                double difference = ((double) e / nextE) - ((double) s / nextS);
+                double ratio = (((double) s / nextS) / ((double) e / nextE));
+                double estimateRatio = getEstimatedRatioExternal(s);
+                double error = Math.abs(ratio - estimateRatio);
+                System.out.print("Values : ");
+                System.out.print(s + " " + nextS + " " + e + " " + nextE);
+                System.out.print(" Difference: ");
+                System.out.print(difference);
+                System.out.print(", Ratio: ");
+                System.out.print(ratio);
+                System.out.print(", Estimate Ratio: ");
+                System.out.print(estimateRatio);
+                System.out.print(", Error: ");
+                System.out.print(error);
+                System.out.print(", Error less than 1: ");
+                System.out.print(error < 1);
+                System.out.println();
+            }
             s += steps;
             e -= steps;
         }
@@ -97,7 +107,7 @@ public class Collatz1 {
     }
 
     private static long getMiddleOfTwoAdjacentCentersOfSymmetry(int i) {
-        return (long) (5 * Math.pow(2, 2 * i - 3) - 1) / 3;
+        return (getCenterOfSymmetry(i) + getCenterOfSymmetry(i - 1)) / 2;
     }
 
 
