@@ -1,5 +1,7 @@
 package ai.maths.snn;
 
+import static ai.maths.snn.ConfigAndUtils.SAMPLE_BYTE_SIZE;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -25,6 +27,7 @@ public class Neuron<T extends InputStream> implements Runnable {
     protected void connect(Neuron<PipedInputStream> n) {
         try {
             connected.put(n, new PipedOutputStream(n.in));
+            System.out.println("Connect " + connected.size());
         } catch (IOException e) {
         }
     }
@@ -36,18 +39,48 @@ public class Neuron<T extends InputStream> implements Runnable {
                 PipedOutputStream pipedOutputStream = new PipedOutputStream(pipedInputStream);
                 Neuron<PipedInputStream> neuron = new Neuron<>(pipedInputStream);
                 connected.put(neuron, pipedOutputStream);
+                System.out.println("Reproduce " + connected.size());
                 new Thread(neuron).start();
             }
         } catch (IOException e) {
         }
     }
 
+    public void readWrite() throws IOException {
+        if (in.available() > SAMPLE_BYTE_SIZE) {
+            int intSignal = ConfigAndUtils.byteArrayToInt(in.readNBytes(SAMPLE_BYTE_SIZE));
+            int newIntSignal = (int) (intSignal * growth);
+            if ((connected.size() < 2 || growth > 1) && RandomUtils.getRandomInt(ConfigAndUtils.REPRODUCTION_PROBABILITY_1_OUT_OF) < 1) {
+                reproduce();
+            }
+            if (connected.size() > 2 && RandomUtils.getRandomInt(ConfigAndUtils.CONNECTION_PROBABILITY_1_OUT_OF) < 1) {
+                ArrayList<Neuron<PipedInputStream>> neurons = new ArrayList<>(connected.keySet());
+                int randomInt = RandomUtils.getRandomInt(neurons.size());
+                Neuron<PipedInputStream> n1 = neurons.get(randomInt);
+                Neuron<PipedInputStream> n2 = neurons.get((randomInt + RandomUtils.getRandomInt(neurons.size() - 1) + 1) % neurons.size());
+                if (!n1.connected.containsKey(n2) && !n2.connected.containsKey(n1)) {
+                    n1.connect(n2);
+                }
+            }
+            if (newIntSignal >= growth * connected.size()) {
+                growth = Math.min(growth * ConfigAndUtils.INCREASE, 2);
+            } else {
+                growth = Math.max(growth * ConfigAndUtils.DECREASE, 0.01f);
+            }
+            for (OutputStream pipedOutputStream : connected.values()) {
+                pipedOutputStream.write(ConfigAndUtils.intToByteArray(newIntSignal));
+                pipedOutputStream.flush();
+            }
+        }
+    }
+
     public void run() {
         while (true) {
             try {
-                if (in.available() > 4) {
-                    float floatSignal = ConfigAndUtils.byteArrayToFloat(in.readNBytes(4));
-                    float newFloatSignal = floatSignal * growth;
+                if (in.available() > SAMPLE_BYTE_SIZE) {
+                    int intSignal = ConfigAndUtils.byteArrayToInt(in.readNBytes(SAMPLE_BYTE_SIZE));
+                    int newIntSignal = (int) (intSignal * growth);
+                    System.out.println(intSignal + " " + newIntSignal);
                     if ((connected.size() < 2 || growth > 1) && RandomUtils.getRandomInt(ConfigAndUtils.REPRODUCTION_PROBABILITY_1_OUT_OF) < 1) {
                         reproduce();
                     }
@@ -60,13 +93,13 @@ public class Neuron<T extends InputStream> implements Runnable {
                             n1.connect(n2);
                         }
                     }
-                    if (newFloatSignal >= growth * connected.size()) {
-                        growth = growth * ConfigAndUtils.INCREASE;
+                    if (Math.abs(newIntSignal) >= growth * connected.size()) {
+                        growth = Math.min(growth * ConfigAndUtils.INCREASE, 2);
                     } else {
-                        growth = growth * ConfigAndUtils.DECREASE;
+                        growth = Math.max(growth * ConfigAndUtils.DECREASE, 0.01f);
                     }
                     for (OutputStream pipedOutputStream : connected.values()) {
-                        pipedOutputStream.write(ConfigAndUtils.float2ByteArray(newFloatSignal));
+                        pipedOutputStream.write(ConfigAndUtils.intToByteArray(newIntSignal));
                         pipedOutputStream.flush();
                     }
                 } else {
