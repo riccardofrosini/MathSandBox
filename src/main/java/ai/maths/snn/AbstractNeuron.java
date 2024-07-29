@@ -5,19 +5,11 @@ import java.io.OutputStream;
 
 public class AbstractNeuron<I extends InputStream, O extends OutputStream> {
 
-    I in;
-    O out;
+    protected I in;
+    protected O out;
 
     public AbstractNeuron(I in, O out) {
         this.in = in;
         this.out = out;
-    }
-
-    public I getIn() {
-        return in;
-    }
-
-    public O getOut() {
-        return out;
     }
 }

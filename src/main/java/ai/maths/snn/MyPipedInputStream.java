@@ -234,7 +234,7 @@ public class MyPipedInputStream extends InputStream {
         }
     }
 
-    public void newConnection() {
+    public synchronized void newConnection() {
         connections++;
         closedByWriter = false;
     }

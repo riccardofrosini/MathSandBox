@@ -9,19 +9,19 @@ public class ConfigAndUtils {
     public static int REPRODUCTION_PROBABILITY_1_OUT_OF = 1000;
     public static int CONNECTION_PROBABILITY_1_OUT_OF = 1000;
     public static float SAMPLE_RATE = 24000;
-    public static int SAMPLE_BIT_SIZE = 8;
-    public static int SAMPLE_BYTE_SIZE = 1;
-    public static int CHANNELS = 1;
+    public static int SAMPLE_BIT_SIZE = 16;
     public static boolean SIGNED = true;
     public static boolean BIGENDIAN = true;
+    public static int CHANNELS = 1;
     public static AudioFormat AUDIO_FORMAT = new AudioFormat(SAMPLE_RATE, SAMPLE_BIT_SIZE,
             CHANNELS, SIGNED, BIGENDIAN);
+    public static int FRAME_BYTE_SIZE = AUDIO_FORMAT.getFrameSize();
 
 
     public static byte[] intToByteArray(int value) {
-        byte[] bytes = new byte[SAMPLE_BYTE_SIZE];
-        for (int i = 0; i < SAMPLE_BYTE_SIZE; i++) {
-            bytes[SAMPLE_BYTE_SIZE - i - 1] = (byte) (value >> (i * 8));
+        byte[] bytes = new byte[FRAME_BYTE_SIZE];
+        for (int i = 0; i < FRAME_BYTE_SIZE; i++) {
+            bytes[FRAME_BYTE_SIZE - i - 1] = (byte) (value >> (i * 8));
         }
         System.out.println("Bytes1 " + value + " " + bytes);
         return bytes;
