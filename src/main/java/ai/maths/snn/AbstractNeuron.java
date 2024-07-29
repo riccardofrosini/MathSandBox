@@ -3,7 +3,7 @@ package ai.maths.snn;
 import java.io.InputStream;
 import java.io.OutputStream;
 
-public class AbstractNeuron<I extends InputStream, O extends OutputStream> implements InterfaceNeuron<I, O> {
+public class AbstractNeuron<I extends InputStream, O extends OutputStream> {
 
     I in;
     O out;
