@@ -1,6 +1,6 @@
 package ai.maths.snn;
 
-import ai.maths.snn.Neuron.NonConnectibleNeuron;
+import ai.maths.snn.Neuron.InputNeuron;
 
 public class AI {
 
@@ -8,8 +8,7 @@ public class AI {
         AuditoryInput auditoryInput = new AuditoryInput();
         AuditoryOutput auditoryOutput = new AuditoryOutput();
 
-        NonConnectibleNeuron nonConnectibleNeuron = new NonConnectibleNeuron(auditoryInput.start(), auditoryOutput.start());
-        new Thread(nonConnectibleNeuron).start();
+        InputNeuron nonConnectibleNeuron = new InputNeuron(auditoryInput.start(), auditoryOutput.start());
 
     }
 

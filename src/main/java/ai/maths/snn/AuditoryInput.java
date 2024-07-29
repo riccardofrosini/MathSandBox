@@ -9,9 +9,6 @@ import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.LineUnavailableException;
 import javax.sound.sampled.TargetDataLine;
 
-/**
- * A sample program is to demonstrate how to record sound in Java author: www.codejava.net
- */
 public class AuditoryInput {
 
     private TargetDataLine line;

@@ -1,131 +1,66 @@
 package ai.maths.snn;
 
-import static ai.maths.snn.ConfigAndUtils.SAMPLE_BYTE_SIZE;
-
-import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.io.PipedInputStream;
-import java.io.PipedOutputStream;
-import java.util.ArrayList;
-import java.util.HashMap;
 
-import ai.maths.neat.utils.RandomUtils;
-
-public class Neuron<T extends InputStream> implements Runnable {
+public class Neuron extends ConnectibleReproducibleNeuron<MyPipedInputStream> implements Runnable {
 
     protected float growth;
-    protected T in;
-    protected HashMap<Neuron<PipedInputStream>, OutputStream> connected;
 
-    Neuron(T in) {
+    public Neuron(MyPipedInputStream in, MyPipedOutputStream out) {
+        super(in, out);
         this.growth = 1;
-        this.in = in;
-        this.connected = new HashMap<>();
-    }
-
-    protected void connect(Neuron<PipedInputStream> n) {
-        try {
-            connected.put(n, new PipedOutputStream(n.in));
-            System.out.println("Connect " + connected.size());
-        } catch (IOException e) {
-        }
-    }
-
-    protected void reproduce() {
-        try {
-            if (!(this instanceof NonReproducibleNeuron)) {
-                PipedInputStream pipedInputStream = new PipedInputStream();
-                PipedOutputStream pipedOutputStream = new PipedOutputStream(pipedInputStream);
-                Neuron<PipedInputStream> neuron = new Neuron<>(pipedInputStream);
-                connected.put(neuron, pipedOutputStream);
-                System.out.println("Reproduce " + connected.size());
-                new Thread(neuron).start();
-            }
-        } catch (IOException e) {
-        }
-    }
-
-    public void readWrite() throws IOException {
-        if (in.available() > SAMPLE_BYTE_SIZE) {
-            int intSignal = ConfigAndUtils.byteArrayToInt(in.readNBytes(SAMPLE_BYTE_SIZE));
-            int newIntSignal = (int) (intSignal * growth);
-            if ((connected.size() < 2 || growth > 1) && RandomUtils.getRandomInt(ConfigAndUtils.REPRODUCTION_PROBABILITY_1_OUT_OF) < 1) {
-                reproduce();
-            }
-            if (connected.size() > 2 && RandomUtils.getRandomInt(ConfigAndUtils.CONNECTION_PROBABILITY_1_OUT_OF) < 1) {
-                ArrayList<Neuron<PipedInputStream>> neurons = new ArrayList<>(connected.keySet());
-                int randomInt = RandomUtils.getRandomInt(neurons.size());
-                Neuron<PipedInputStream> n1 = neurons.get(randomInt);
-                Neuron<PipedInputStream> n2 = neurons.get((randomInt + RandomUtils.getRandomInt(neurons.size() - 1) + 1) % neurons.size());
-                if (!n1.connected.containsKey(n2) && !n2.connected.containsKey(n1)) {
-                    n1.connect(n2);
-                }
-            }
-            if (newIntSignal >= growth * connected.size()) {
-                growth = Math.min(growth * ConfigAndUtils.INCREASE, 2);
-            } else {
-                growth = Math.max(growth * ConfigAndUtils.DECREASE, 0.01f);
-            }
-            for (OutputStream pipedOutputStream : connected.values()) {
-                pipedOutputStream.write(ConfigAndUtils.intToByteArray(newIntSignal));
-                pipedOutputStream.flush();
-            }
-        }
     }
 
     public void run() {
-        while (true) {
-            try {
-                if (in.available() > SAMPLE_BYTE_SIZE) {
-                    int intSignal = ConfigAndUtils.byteArrayToInt(in.readNBytes(SAMPLE_BYTE_SIZE));
-                    int newIntSignal = (int) (intSignal * growth);
-                    System.out.println(intSignal + " " + newIntSignal);
-                    if ((connected.size() < 2 || growth > 1) && RandomUtils.getRandomInt(ConfigAndUtils.REPRODUCTION_PROBABILITY_1_OUT_OF) < 1) {
-                        reproduce();
-                    }
-                    if (connected.size() > 2 && RandomUtils.getRandomInt(ConfigAndUtils.CONNECTION_PROBABILITY_1_OUT_OF) < 1) {
-                        ArrayList<Neuron<PipedInputStream>> neurons = new ArrayList<>(connected.keySet());
-                        int randomInt = RandomUtils.getRandomInt(neurons.size());
-                        Neuron<PipedInputStream> n1 = neurons.get(randomInt);
-                        Neuron<PipedInputStream> n2 = neurons.get((randomInt + RandomUtils.getRandomInt(neurons.size() - 1) + 1) % neurons.size());
-                        if (!n1.connected.containsKey(n2) && !n2.connected.containsKey(n1)) {
-                            n1.connect(n2);
-                        }
-                    }
-                    if (Math.abs(newIntSignal) >= growth * connected.size()) {
-                        growth = Math.min(growth * ConfigAndUtils.INCREASE, 2);
-                    } else {
-                        growth = Math.max(growth * ConfigAndUtils.DECREASE, 0.01f);
-                    }
-                    for (OutputStream pipedOutputStream : connected.values()) {
-                        pipedOutputStream.write(ConfigAndUtils.intToByteArray(newIntSignal));
-                        pipedOutputStream.flush();
-                    }
-                } else {
-                    Thread.sleep(10);
-                }
-            } catch (IOException | InterruptedException e) {
+        //while (true) {
+        //    try {
+        //        if (in.available() > SAMPLE_BYTE_SIZE) {
+        //            int intSignal = ConfigAndUtils.byteArrayToInt(in.readNBytes(SAMPLE_BYTE_SIZE));
+        //            int newIntSignal = (int) (intSignal * growth);
+        //            System.out.println(intSignal + " " + newIntSignal);
+        //            if ((connected.size() < 2 || growth > 1) && RandomUtils.getRandomInt(ConfigAndUtils.REPRODUCTION_PROBABILITY_1_OUT_OF) < 1) {
+        //                reproduce();
+        //            }
+        //            if (connected.size() > 2 && RandomUtils.getRandomInt(ConfigAndUtils.CONNECTION_PROBABILITY_1_OUT_OF) < 1) {
+        //                ArrayList<Neuron<MyPipedInputStream>> neurons = new ArrayList<>(connected.keySet());
+        //                int randomInt = RandomUtils.getRandomInt(neurons.size());
+        //                Neuron<MyPipedInputStream> n1 = neurons.get(randomInt);
+        //                Neuron<MyPipedInputStream> n2 = neurons.get((randomInt + RandomUtils.getRandomInt(neurons.size() - 1) + 1) % neurons.size());
+        //                if (!n1.connected.containsKey(n2) && !n2.connected.containsKey(n1)) {
+        //                    n1.connect(n2);
+        //                }
+        //            }
+        //            if (Math.abs(newIntSignal) >= growth * connected.size()) {
+        //                growth = Math.min(growth * ConfigAndUtils.INCREASE, 2);
+        //            } else {
+        //                growth = Math.max(growth * ConfigAndUtils.DECREASE, 0.01f);
+        //            }
+        //            for (OutputStream pipedOutputStream : connected.values()) {
+        //                pipedOutputStream.write(ConfigAndUtils.intToByteArray(newIntSignal));
+        //                pipedOutputStream.flush();
+        //            }
+        //        } else {
+        //            Thread.sleep(10);
+        //        }
+        //    } catch (IOException | InterruptedException e) {
+        //    }
+        //}
+    }
 
-            }
+    public static class OutputNeuron extends AbstractNeuron<MyPipedInputStream, OutputStream> {
+
+        public OutputNeuron(OutputStream out) {
+            super(new MyPipedInputStream(), out);
         }
     }
 
-    private static class NonReproducibleNeuron extends Neuron<PipedInputStream> {
+    public static class InputNeuron extends ConnectibleReproducibleNeuron<InputStream> {
 
-        public NonReproducibleNeuron(PipedInputStream in, OutputStream out) {
-            super(in);
-            connected.put(this, out);
-        }
-    }
-
-    public static class NonConnectibleNeuron extends Neuron<InputStream> {
-
-        public NonConnectibleNeuron(InputStream in, OutputStream out) {
-            super(in);
-            NonReproducibleNeuron nonReproducibleNeuron = new NonReproducibleNeuron(new PipedInputStream(), out);
-            this.connect(nonReproducibleNeuron);
-            new Thread(nonReproducibleNeuron).start();
+        public InputNeuron(InputStream in, OutputStream out) {
+            super(in, new MyPipedOutputStream());
+            OutputNeuron outputNeuron = new OutputNeuron(out);
+            this.connect(outputNeuron);
         }
     }
 }
