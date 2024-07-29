@@ -1,6 +1,6 @@
 package ai.maths.snn;
 
-import static ai.maths.snn.ConfigAndUtils.SAMPLE_RATE;
+import static ai.maths.snn.Config.SAMPLE_RATE;
 
 import java.io.IOException;
 import java.io.OutputStream;

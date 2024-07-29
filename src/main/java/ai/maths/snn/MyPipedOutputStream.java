@@ -64,7 +64,6 @@ public class MyPipedOutputStream extends OutputStream {
                 disconnect(sink);
             }
         }
-
     }
 
     public synchronized void flush() throws IOException {

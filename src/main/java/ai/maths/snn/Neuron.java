@@ -1,63 +1,47 @@
 package ai.maths.snn;
 
+import static ai.maths.snn.Utils.BYTES_TO_DOUBLE;
+import static ai.maths.snn.Utils.DOUBLE_TO_BYTES;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.nio.ByteBuffer;
 
-import ai.maths.neat.utils.RandomUtils;
+import ai.maths.snn.Utils.Decoder;
+import ai.maths.snn.Utils.Encoder;
+
 
 public class Neuron extends ConnectibleReproducibleNeuron<MyPipedInputStream> {
 
-    protected float growth;
-
     public Neuron(MyPipedInputStream in, MyPipedOutputStream out) {
         super(in, out);
-        this.growth = 1;
     }
 
+    public static class OutputNeuron extends AbstractNeuron<MyPipedInputStream, OutputStream, Double> {
 
-    public synchronized void pipeline() {
-        while (true) {
-            try {
-                if (in.available() > 4) {
-                    float signal = ByteBuffer.wrap(in.readNBytes(4)).getFloat();
-                    float newSignal = signal * growth;
-                    System.out.println(signal + " " + newSignal);
-                    if ((connected.size() < 2 || growth > 1) && RandomUtils.getRandomInt(ConfigAndUtils.REPRODUCTION_PROBABILITY_1_OUT_OF) < 1) {
-                        reproduce();
-                    }
-                    if (connected.size() > 2 && RandomUtils.getRandomInt(ConfigAndUtils.CONNECTION_PROBABILITY_1_OUT_OF) < 1) {
-                        makeConnectionOfTwoOutbounds();
-                    }
-                    if (Math.abs(newSignal) >= growth * connected.size()) {
-                        growth = Math.min(growth * ConfigAndUtils.INCREASE, 2);
-                    } else {
-                        growth = Math.max(growth * ConfigAndUtils.DECREASE, 0.01f);
-                    }
-                    for (AbstractNeuron<MyPipedInputStream, ?> pipedOutputStream : connected) {
-                        pipedOutputStream.run();
-                    }
-                } else {
-                    Thread.sleep(10);
-                }
-            } catch (IOException | InterruptedException e) {
-            }
+        public OutputNeuron(OutputStream out, Encoder<Double> encoder) {
+            super(new MyPipedInputStream(), out, BYTES_TO_DOUBLE, encoder);
         }
-    }
 
-    public static class OutputNeuron extends AbstractNeuron<MyPipedInputStream, OutputStream> {
-
-        public OutputNeuron(OutputStream out) {
-            super(new MyPipedInputStream(), out);
+        @Override
+        public void pipeline() {
+            try {
+                if (in.available() > decoder.nBytesToRead) {
+                    byte[] signal = in.readNBytes(decoder.nBytesToRead);
+                    Double newSignal = decoder.transform(signal);
+                    System.out.println(signal + " " + newSignal);
+                    out.write(encoder.transform(newSignal));
+                }
+            } catch (IOException e) {
+            }
         }
     }
 
     public static class InputNeuron extends ConnectibleReproducibleNeuron<InputStream> {
 
-        public InputNeuron(InputStream in, OutputStream out) {
-            super(in, new MyPipedOutputStream());
-            OutputNeuron outputNeuron = new OutputNeuron(out);
+        public InputNeuron(InputStream in, OutputStream out, Decoder<Double> decoder, Encoder<Double> encoder) {
+            super(in, new MyPipedOutputStream(), decoder, DOUBLE_TO_BYTES);
+            OutputNeuron outputNeuron = new OutputNeuron(out, encoder);
             this.connect(outputNeuron);
         }
     }

@@ -1,6 +1,6 @@
 package ai.maths.snn;
 
-import static ai.maths.snn.ConfigAndUtils.AUDIO_FORMAT;
+import static ai.maths.snn.Config.AUDIO_FORMAT;
 
 import java.io.InputStream;
 
