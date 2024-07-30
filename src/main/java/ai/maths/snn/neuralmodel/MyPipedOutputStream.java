@@ -1,20 +1,22 @@
-package ai.maths.snn;
+package ai.maths.snn.neuralmodel;
 
 import java.io.IOException;
 import java.io.OutputStream;
+import java.util.Collections;
 import java.util.HashSet;
+import java.util.Set;
 
 public class MyPipedOutputStream extends OutputStream {
 
-    protected HashSet<MyPipedInputStream> sinks;
+    protected Set<MyPipedInputStream> sinks;
 
     public MyPipedOutputStream(MyPipedInputStream sink) {
-        sinks = new HashSet<>();
+        this();
         connect(sink);
     }
 
     public MyPipedOutputStream() {
-        sinks = new HashSet<>();
+        sinks = Collections.synchronizedSet(new HashSet<>());
     }
 
     public synchronized void connect(MyPipedInputStream sink) {
@@ -79,9 +81,9 @@ public class MyPipedOutputStream extends OutputStream {
     public void close() throws IOException {
         if (!sinks.isEmpty()) {
             for (MyPipedInputStream sink : sinks) {
-                sinks.remove(sink);
                 sink.receivedLast();
             }
+            sinks.clear();
         }
     }
 }

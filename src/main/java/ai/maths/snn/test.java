@@ -8,6 +8,9 @@ import java.io.OutputStream;
 import javax.sound.sampled.LineUnavailableException;
 import javax.sound.sampled.UnsupportedAudioFileException;
 
+import ai.maths.snn.neuralmodel.MyPipedInputStream;
+import ai.maths.snn.neuralmodel.MyPipedOutputStream;
+
 public class test {
 
     public static void main(String[] args) throws LineUnavailableException, UnsupportedAudioFileException, IOException {

@@ -1,4 +1,4 @@
-package ai.maths.snn;
+package ai.maths.snn.neuralmodel;
 
 import java.io.InputStream;
 import java.io.OutputStream;

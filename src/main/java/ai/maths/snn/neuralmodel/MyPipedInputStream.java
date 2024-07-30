@@ -1,4 +1,4 @@
-package ai.maths.snn;
+package ai.maths.snn.neuralmodel;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -7,7 +7,7 @@ public class MyPipedInputStream extends InputStream {
 
     volatile boolean closedByWriter;
     volatile boolean closedByReader;
-    int connections;
+    private int connections;
 
     Thread readSide;
     Thread writeSide;

@@ -1,4 +1,4 @@
-package ai.maths.snn;
+package ai.maths.snn.neuralmodel;
 
 import static ai.maths.snn.Utils.BYTES_TO_DOUBLE;
 import static ai.maths.snn.Utils.DOUBLE_TO_BYTES;
@@ -14,10 +14,10 @@ import ai.maths.snn.Utils.Encoder;
 public class Neuron extends ConnectibleReproducibleNeuron<MyPipedInputStream> {
 
     public Neuron(MyPipedInputStream in, MyPipedOutputStream out) {
-        super(in, out);
+        super(in, out, BYTES_TO_DOUBLE, DOUBLE_TO_BYTES);
     }
 
-    public static class OutputNeuron extends AbstractNeuron<MyPipedInputStream, OutputStream, Double> {
+    private static class OutputNeuron extends AbstractNeuron<MyPipedInputStream, OutputStream, Double> {
 
         public OutputNeuron(OutputStream out, Encoder<Double> encoder) {
             super(new MyPipedInputStream(), out, BYTES_TO_DOUBLE, encoder);
@@ -25,15 +25,20 @@ public class Neuron extends ConnectibleReproducibleNeuron<MyPipedInputStream> {
 
         @Override
         public void pipeline() {
-            try {
-                if (in.available() > decoder.nBytesToRead) {
-                    byte[] signal = in.readNBytes(decoder.nBytesToRead);
-                    Double newSignal = decoder.transform(signal);
-                    System.out.println(signal + " " + newSignal);
-                    out.write(encoder.transform(newSignal));
+            new Thread(() -> {
+                while (true) {
+                    try {
+                        if (in.available() > decoder.getnBytesToRead()) {
+                            Double signal = decoder.transform(in.readNBytes(decoder.getnBytesToRead()));
+                            System.out.println("Out " + signal);
+                            encoder.transform(signal);
+                            out.write(encoder.transform(signal));
+                            out.flush();
+                        }
+                    } catch (IOException e) {
+                    }
                 }
-            } catch (IOException e) {
-            }
+            }).start();
         }
     }
 
@@ -43,6 +48,7 @@ public class Neuron extends ConnectibleReproducibleNeuron<MyPipedInputStream> {
             super(in, new MyPipedOutputStream(), decoder, DOUBLE_TO_BYTES);
             OutputNeuron outputNeuron = new OutputNeuron(out, encoder);
             this.connect(outputNeuron);
+            outputNeuron.pipeline();
         }
     }
 }
