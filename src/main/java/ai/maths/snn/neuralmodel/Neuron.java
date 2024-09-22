@@ -30,7 +30,6 @@ public class Neuron extends ConnectibleReproducibleNeuron<MyPipedInputStream> {
                     try {
                         if (in.available() > decoder.getnBytesToRead()) {
                             Double signal = decoder.transform(in.readNBytes(decoder.getnBytesToRead()));
-                            System.out.println("Out " + signal);
                             encoder.transform(signal);
                             out.write(encoder.transform(signal));
                             out.flush();

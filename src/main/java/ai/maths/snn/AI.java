@@ -24,6 +24,7 @@ public class AI {
                 }),
                 new Encoder<>(FRAME_BYTE_SIZE, aDouble -> {
                     long value = (long) (aDouble * (1L << SAMPLE_BIT_SIZE));
+                    System.out.println("Out " + value);
                     byte[] bytes = new byte[FRAME_BYTE_SIZE];
                     for (int i = 0; i < FRAME_BYTE_SIZE; i++) {
                         bytes[FRAME_BYTE_SIZE - 1 - i] = (byte) ((value >> (i * Byte.SIZE)) & 0xFF);
